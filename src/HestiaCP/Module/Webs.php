@@ -9,6 +9,7 @@ use neto737\HestiaCP\Command\Add\WebDomain;
 use neto737\HestiaCP\Command\Add\WebDomainFtp;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
+use neto737\HestiaCP\Command\Suspend\WebDomain as SuspendWebDomain;
 use neto737\HestiaCP\Command\Delete\LetsEncryptDomain as DeleteLetsEncryptDomain;
 use neto737\HestiaCP\Command\Delete\WebDomain as DeleteWebDomain;
 use neto737\HestiaCP\Command\Delete\WebDomainFtp as DeleteWebDomainFtpAlias;
@@ -36,6 +37,20 @@ class Webs extends Module {
 	 */
 	public function addDomain(string $domain, string $ip = null, string $aliases = null, string $proxyExtensions = null, bool $restart = false): bool {
 		return $this->client->send(new WebDomain($this->user, $domain, $ip, $aliases, $proxyExtensions, $restart));
+	}
+
+	/**
+	 * @param string      $domain
+	 * @param string|null $ip
+	 * @param string|null $aliases
+	 * @param string|null $proxyExtensions
+	 * @param bool        $restart
+	 * @return bool
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
+	public function suspendDomain(string $domain, bool $restart = null): bool {
+		return $this->client->send(new SuspendWebDomain($this->user, $domain, $restart));
 	}
 
 	/**

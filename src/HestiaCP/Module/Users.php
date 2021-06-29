@@ -8,6 +8,7 @@ use neto737\HestiaCP\Command\Change\UserPassword;
 use neto737\HestiaCP\Command\Delete\User as DeleteUser;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users as ListsUsers;
+use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
 
 class Users extends Module {
 
@@ -52,6 +53,16 @@ class Users extends Module {
 	 */
 	public function add(string $user, string $password, string $email, string $package = null): bool {
 		return $this->client->send(new AddUser($user, $password, $email, $package));
+	}
+
+	/**
+	 * @param string $user
+	 * @return bool
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
+	public function suspend(string $user, bool $restart = null): bool {
+		return $this->client->send(new SuspendUser($user, $restart));
 	}
 
 	/**

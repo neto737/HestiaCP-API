@@ -2,5 +2,4 @@
 
 namespace neto737\HestiaCP\Module;
 
-interface IModule {
-}
+interface IModule { }
