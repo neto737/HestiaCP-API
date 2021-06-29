@@ -13,10 +13,14 @@ class User extends ProcessCommand {
 	/** @var string */
 	private $email;
 
-	public function __construct(string $user, string $password, string $email) {
+	/** @var string */
+	private $package;
+
+	public function __construct(string $user, string $password, string $email, string $package = 'default') {
 		$this->user = $user;
 		$this->password = $password;
 		$this->email = $email;
+		$this->package = $package;
 	}
 
 	public function getName(): string {
@@ -27,7 +31,8 @@ class User extends ProcessCommand {
 		return [
 			self::ARG_1 => $this->user,
 			self::ARG_2 => $this->password,
-			self::ARG_3 => $this->email
+			self::ARG_3 => $this->email,
+			self::ARG_4 => $this->package
 		];
 	}
 }
