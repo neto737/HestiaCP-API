@@ -1,6 +1,6 @@
 <?php
 
-namespace neto737\HestiaCP\Command\Add;
+namespace neto737\HestiaCP\Command;
 
 use neto737\HestiaCP\AuthorizationException;
 use neto737\HestiaCP\Command\Command;

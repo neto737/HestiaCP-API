@@ -2,7 +2,7 @@
 
 namespace neto737\HestiaCP\Command\Change;
 
-use neto737\HestiaCP\Command\Add\ProcessCommand;
+use neto737\HestiaCP\Command\ProcessCommand;
 
 class MailAccountPassword extends ProcessCommand {
 

@@ -2,7 +2,7 @@
 
 namespace neto737\HestiaCP\Command\Delete;
 
-use neto737\HestiaCP\Command\Add\ProcessCommand;
+use neto737\HestiaCP\Command\ProcessCommand;
 
 class WebDomainFtp extends ProcessCommand {
 
