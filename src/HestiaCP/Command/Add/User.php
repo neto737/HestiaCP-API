@@ -16,7 +16,7 @@ class User extends ProcessCommand {
 	/** @var string */
 	private $package;
 
-	public function __construct(string $user, string $password, string $email, string $package = 'default') {
+	public function __construct(string $user, string $password, string $email, string $package = null) {
 		$this->user = $user;
 		$this->password = $password;
 		$this->email = $email;
