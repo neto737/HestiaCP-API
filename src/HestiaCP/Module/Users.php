@@ -5,11 +5,11 @@ namespace neto737\HestiaCP\Module;
 use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Command\Add\User as AddUser;
 use neto737\HestiaCP\Command\Change\UserPassword;
+use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
+use neto737\HestiaCP\Command\Unsuspend\User  as UnsuspendUser;
 use neto737\HestiaCP\Command\Delete\User as DeleteUser;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users as ListsUsers;
-use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
-
 class Users extends Module {
 
 	/**
@@ -57,12 +57,24 @@ class Users extends Module {
 
 	/**
 	 * @param string $user
+	 * @param bool $restart
 	 * @return bool
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
 	public function suspend(string $user, bool $restart = null): bool {
 		return $this->client->send(new SuspendUser($user, $restart));
+	}
+
+	/**
+	 * @param string $user
+	 * @param bool $restart
+	 * @return bool
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
+	public function unsuspend(string $user, bool $restart = null): bool {
+		return $this->client->send(new UnsuspendUser($user, $restart));
 	}
 
 	/**

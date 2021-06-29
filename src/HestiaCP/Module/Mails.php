@@ -9,6 +9,8 @@ use neto737\HestiaCP\Command\Add\MailDomain;
 use neto737\HestiaCP\Command\Change\MailAccountPassword;
 use neto737\HestiaCP\Command\Suspend\MailAccount as SuspendMailAccount;
 use neto737\HestiaCP\Command\Suspend\MailDomain as SuspendMailDomain;
+use neto737\HestiaCP\Command\Unsuspend\MailAccount as UnsuspendMailAccount;
+use neto737\HestiaCP\Command\Unsuspend\MailDomain as UnsuspendMailDomain;
 use neto737\HestiaCP\Command\Delete\MailAccount as DeleteMailAccount;
 use neto737\HestiaCP\Command\Delete\MailDomain as DeleteMailDomain;
 use neto737\HestiaCP\Command\Lists\MailAccounts;
@@ -78,6 +80,17 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
+	public function unsuspendAccount(string $domain, string $account): bool {
+		return $this->client->send(new UnsuspendMailAccount($this->user,  $domain, $account));
+	}
+
+	/**
+	 * @param string $domain
+	 * @param string $account
+	 * @return bool
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
 	public function deleteAccount(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccount($this->user, $domain, $account));
 	}
@@ -113,6 +126,16 @@ class Mails extends Module {
 	 */
 	public function suspendDomain(string $domain): bool {
 		return $this->client->send(new SuspendMailDomain($this->user, $domain));
+	}
+
+	/**
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
+	public function unsuspendDomain(string $domain): bool {
+		return $this->client->send(new UnsuspendMailDomain($this->user, $domain));
 	}
 
 	/**
