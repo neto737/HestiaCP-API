@@ -43,10 +43,10 @@ class Users extends Module {
 	}
 
 	/**
-	 * @param string $user
-	 * @param string $password
-	 * @param string $email
-	 * @param string $package
+	 * @param string 	  $user
+	 * @param string 	  $password
+	 * @param string 	  $email
+	 * @param string|null $package
 	 * @return bool
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
@@ -57,12 +57,12 @@ class Users extends Module {
 
 	/**
 	 * @param string $user
-	 * @param bool $restart
+	 * @param bool 	 $restart
 	 * @return bool
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function suspend(string $user, bool $restart = null): bool {
+	public function suspend(string $user, bool $restart = false): bool {
 		return $this->client->send(new SuspendUser($user, $restart));
 	}
 
@@ -73,7 +73,7 @@ class Users extends Module {
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function unsuspend(string $user, bool $restart = null): bool {
+	public function unsuspend(string $user, bool $restart = false): bool {
 		return $this->client->send(new UnsuspendUser($user, $restart));
 	}
 

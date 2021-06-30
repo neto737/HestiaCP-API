@@ -12,7 +12,7 @@ class User extends ProcessCommand {
     /** @var string */
     private $restart;
 
-    public function __construct(string $user, bool $restart = null) {
+    public function __construct(string $user, bool $restart = false) {
         $this->user = $user;
         $this->restart = $restart;
     }

@@ -47,7 +47,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function suspendDomain(string $domain, bool $restart = null): bool {
+	public function suspendDomain(string $domain, bool $restart = false): bool {
 		return $this->client->send(new SuspendWebDomain($this->user, $domain, $restart));
 	}
 
@@ -58,7 +58,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function unsuspendDomain(string $domain, bool $restart = null): bool {
+	public function unsuspendDomain(string $domain, bool $restart = false): bool {
 		return $this->client->send(new UnsuspendWebDomain($this->user, $domain, $restart));
 	}
 

@@ -15,7 +15,7 @@ class WebDomain extends ProcessCommand {
     /** @var string */
     private $restart;
 
-    public function __construct(string $user, string $domain, bool $restart = null) {
+    public function __construct(string $user, string $domain, bool $restart = false) {
         $this->user = $user;
         $this->domain = $domain;
         $this->restart = $restart;
