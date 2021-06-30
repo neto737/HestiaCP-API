@@ -9,6 +9,3 @@ before_script:
 
 script:
   - vendor/bin/phpunit tests --coverage-clover=coverage.xml --whitelist src
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)

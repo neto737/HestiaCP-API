@@ -114,16 +114,6 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function deleteDomain(string $domain): bool {
-		return $this->client->send(new DeleteMailDomain($this->user, $domain));
-	}
-
-	/**
-	 * @param string $domain
-	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
-	 */
 	public function suspendDomain(string $domain): bool {
 		return $this->client->send(new SuspendMailDomain($this->user, $domain));
 	}
@@ -136,6 +126,16 @@ class Mails extends Module {
 	 */
 	public function unsuspendDomain(string $domain): bool {
 		return $this->client->send(new UnsuspendMailDomain($this->user, $domain));
+	}
+
+	/**
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
+	public function deleteDomain(string $domain): bool {
+		return $this->client->send(new DeleteMailDomain($this->user, $domain));
 	}
 
 	/**
