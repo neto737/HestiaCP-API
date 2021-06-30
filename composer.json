@@ -1,6 +1,6 @@
 {
     "name": "neto737/hestiacp-api",
-    "description": "HestiaCPCP PHP API",
+    "description": "HestiaCP API SDK written in PHP",
     "require": {
         "php": ">=7.3",
         "guzzlehttp/guzzle": "^7.3",
@@ -10,8 +10,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "PROFI CLOUD SERVICES",
-            "email": "info@profiservices.cloud"
+            "name": "neto737",
+            "email": "neto737@live.com"
         }
     ],
     "minimum-stability": "dev",
