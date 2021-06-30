@@ -5,7 +5,6 @@ namespace neto737\HestiaCP\Command;
 use neto737\HestiaCP\AuthorizationException;
 use neto737\HestiaCP\InvalidResponseException;
 use neto737\HestiaCP\ProcessException;
-use Psr\Http\Message\ResponseInterface;
 
 class TestAuthorization extends Command {
 
