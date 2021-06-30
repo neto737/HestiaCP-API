@@ -8,4 +8,7 @@ before_script:
   - travis_retry composer install --no-interaction --no-suggest
 
 script:
-  - vendor/bin/phpunit tests --coverage-clover=coverage.xml --whitelist src
+  - vendor/bin/phpunit --coverage-clover coverage.xml --whitelist src
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
