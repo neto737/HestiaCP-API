@@ -1,14 +1,20 @@
 <?php
+
+use neto737\HestiaCP\Command\Add\User;
+use neto737\HestiaCP\Command\Add\WebDomain;
+use neto737\HestiaCP\Command\Add\WebDomainFtp;
+use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
+use neto737\HestiaCP\Command\Add\MailAccount;
+use neto737\HestiaCP\Command\Add\MailDomain;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class commandAddTest extends \PHPUnit\Framework\TestCase
-{
+class commandAddTest extends \PHPUnit\Framework\TestCase {
 
-	public function testUser(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Add\User('admin', 'pass', 'mail@domain.com');
+	public function testUser(): void {
+		$command = new User('admin', 'pass', 'mail@domain.com');
 		$this->assertSame('v-add-user', $command->getName());
-		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass', 'arg3' => 'mail@domain.com'], $command->getRequestParams());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass', 'arg3' => 'mail@domain.com', 'arg4' => null], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 
@@ -16,9 +22,8 @@ class commandAddTest extends \PHPUnit\Framework\TestCase
 		$command->process();
 	}
 
-	public function testWebDomain(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Add\WebDomain('admin', 'domain.com');
+	public function testWebDomain(): void {
+		$command = new WebDomain('admin', 'domain.com');
 		$this->assertSame('v-add-web-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -30,9 +35,8 @@ class commandAddTest extends \PHPUnit\Framework\TestCase
 		], $command->getRequestParams());
 	}
 
-	public function testWebDomainFtp(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Add\WebDomainFtp('admin', 'domain.com', 'account', 'pass');
+	public function testWebDomainFtp(): void {
+		$command = new WebDomainFtp('admin', 'domain.com', 'account', 'pass');
 		$this->assertSame('v-add-web-domain-ftp', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -43,9 +47,8 @@ class commandAddTest extends \PHPUnit\Framework\TestCase
 		], $command->getRequestParams());
 	}
 
-	public function testLEDomain(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Add\LetsEncryptDomain('admin', 'domain.com');
+	public function testLEDomain(): void {
+		$command = new LetsEncryptDomain('admin', 'domain.com');
 		$this->assertSame('v-add-letsencrypt-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -55,9 +58,8 @@ class commandAddTest extends \PHPUnit\Framework\TestCase
 		], $command->getRequestParams());
 	}
 
-	public function testMailAccount(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Add\MailAccount('admin', 'domain.com', 'account', 'pass');
+	public function testMailAccount(): void {
+		$command = new MailAccount('admin', 'domain.com', 'account', 'pass');
 		$this->assertSame('v-add-mail-account', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -67,9 +69,8 @@ class commandAddTest extends \PHPUnit\Framework\TestCase
 		], $command->getRequestParams());
 	}
 
-	public function testMailDomain(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Add\MailDomain('admin', 'domain.com');
+	public function testMailDomain(): void {
+		$command = new MailDomain('admin', 'domain.com');
 		$this->assertSame('v-add-mail-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -79,6 +80,4 @@ class commandAddTest extends \PHPUnit\Framework\TestCase
 			'arg5' => 'yes'
 		], $command->getRequestParams());
 	}
-
-
 }

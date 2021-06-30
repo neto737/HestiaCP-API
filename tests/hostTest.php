@@ -5,11 +5,9 @@ use neto737\HestiaCP\Authorization\Host;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class hostTest extends \PHPUnit\Framework\TestCase
-{
+class hostTest extends \PHPUnit\Framework\TestCase {
 
-	public function testHost()
-	{
+	public function testHost() {
 		$credentials = new Credentials('', '');
 		$host = new Host('', $credentials);
 
@@ -19,16 +17,14 @@ class hostTest extends \PHPUnit\Framework\TestCase
 		$this->assertSame('host', $host->getHostname());
 	}
 
-	public function testUri()
-	{
+	public function testUri() {
 		$credentials = new Credentials('', '');
-		$host = new Host('https://vesta', $credentials);
+		$host = new Host('https://hestia', $credentials);
 
-		$this->assertSame('https://vesta:8083/api/', $host->buildUri());
+		$this->assertSame('https://hestia:8083/api/', $host->buildUri());
 	}
 
-	public function testPort()
-	{
+	public function testPort() {
 		$credentials = new Credentials('', '');
 		$host = new Host('', $credentials);
 
@@ -38,8 +34,7 @@ class hostTest extends \PHPUnit\Framework\TestCase
 		$this->assertSame(2023, $host->getPort());
 	}
 
-	public function testCredentials()
-	{
+	public function testCredentials() {
 		$credentials = new Credentials('', '');
 		$host = new Host('', $credentials);
 
@@ -51,5 +46,4 @@ class hostTest extends \PHPUnit\Framework\TestCase
 		$this->assertNotSame($credentials, $host->getCredentials());
 		$this->assertSame($newCredentials, $host->getCredentials());
 	}
-
 }

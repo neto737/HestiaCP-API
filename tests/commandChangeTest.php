@@ -1,21 +1,24 @@
 <?php
+
+use neto737\HestiaCP\Command\Change\UserPassword;
+use neto737\HestiaCP\Command\Change\MailAccountPassword;
+use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
+use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class commandChangeTest extends \PHPUnit\Framework\TestCase
-{
+class commandChangeTest extends \PHPUnit\Framework\TestCase {
 
-	public function testUserPassword(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Change\UserPassword('admin', 'pass');
+	public function testUserPassword(): void {
+		$command = new UserPassword('admin', 'pass');
 		$this->assertSame('v-change-user-password', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass'], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 	}
 
-	public function testMailAccountPassword(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Change\MailAccountPassword('admin', 'domain', 'account', 'pass');
+	public function testMailAccountPassword(): void {
+		$command = new MailAccountPassword('admin', 'domain', 'account', 'pass');
 		$this->assertSame('v-change-mail-account-password', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -25,9 +28,8 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase
 		], $command->getRequestParams());
 	}
 
-	public function testWebDomainFtpPassword(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Change\WebDomainFtpPassword('admin', 'domain', 'account', 'pass');
+	public function testWebDomainFtpPassword(): void {
+		$command = new WebDomainFtpPassword('admin', 'domain', 'account', 'pass');
 		$this->assertSame('v-change-web-domain-ftp-password', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -37,9 +39,8 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase
 		], $command->getRequestParams());
 	}
 
-	public function testWebDomainFtpPath(): void
-	{
-		$command = new \neto737\HestiaCP\Command\Change\WebDomainFtpPath('admin', 'domain', 'account', 'path');
+	public function testWebDomainFtpPath(): void {
+		$command = new WebDomainFtpPath('admin', 'domain', 'account', 'path');
 		$this->assertSame('v-change-web-domain-ftp-path', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -48,7 +49,4 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase
 			'arg4' => 'path'
 		], $command->getRequestParams());
 	}
-
-
-
 }
