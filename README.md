@@ -2,7 +2,7 @@
 # HestiaCP PHP API
 
   
-[![Name](https://badgen.net/packagist/name/neto737/hestiacp-api)](//packagist.org/packages/neto737/hestiacp-api) [![Latest Stable Version](https://badgen.net/packagist/v/neto737/hestiacp-api/latest)](https://packagist.org/packages/neto737/hestiacp-api) [![Total Downloads](https://badgen.net/packagist/dt/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api)  [![License](https://badgen.net/packagist/license/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api)
+[![Name](https://badgen.net/packagist/name/neto737/hestiacp-api)](//packagist.org/packages/neto737/hestiacp-api) [![Latest Stable Version](https://badgen.net/packagist/v/neto737/hestiacp-api/latest)](https://packagist.org/packages/neto737/hestiacp-api) [![Total Downloads](https://badgen.net/packagist/dt/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api)  [![License](https://badgen.net/packagist/license/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api) [![Build Status](https://travis-ci.org/neto737/HestiaCP-API.svg?branch=main)](https://travis-ci.org/neto737/HestiaCP-API)
 
   
 
