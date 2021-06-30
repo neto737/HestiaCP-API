@@ -22,7 +22,7 @@ class MailAccount extends ProcessCommand {
     }
 
     public function getName(): string {
-        return 'v-suspend-mail-account';
+        return 'v-unsuspend-mail-account';
     }
 
     public function getRequestParams(): array {
