@@ -2,6 +2,8 @@
 
 namespace neto737\HestiaCP\Command\Add;
 
+use neto737\HestiaCP\Command\ProcessCommand;
+
 class WebDomainFtp extends ProcessCommand {
 
 	/** @var string */
