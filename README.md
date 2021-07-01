@@ -8,8 +8,6 @@
 
 ## How to use
 
-  
-
 1) Installation
 
 ```sh
@@ -19,8 +17,6 @@ $ composer require neto737/hestiacp-api
 ```
 
 2) Create Client
-
-  
 
 a) Easy way
 
@@ -106,8 +102,6 @@ $userModule->delete('other_user');
 
 b) web module
 
-  
-
 ```php
 
 $webModule = $client->getModuleWeb('admin'); // web module needs user
@@ -141,8 +135,6 @@ $webModule->deleteDomain('domain.com');
 ```
 
 c) mail module
-
-  
 
 ```php
 
@@ -182,15 +174,10 @@ $mailModule->deleteDomain('domain.com');
 
 d) db module
 
-  
-
 ```php
-
-// modules
 
 $dbModule = $client->getModuleDb();
 
-  
 
 // todo
 
@@ -200,13 +187,10 @@ $dbModule = $client->getModuleDb();
 
 e) cron module
 
-  
-
 ```php
 
 $cronModule = $client->getModuleCron();
 
-  
 
 // todo
 
@@ -216,16 +200,21 @@ $cronModule = $client->getModuleCron();
 
 f) backup module
 
-  
-
 ```php
 
 $backupModule = $client->getModuleBackup();
 
-  
 
 // todo
 
 // ... etc
 
+```
+
+## Donate :heart:
+
+```
+BTC: bc1q89ntljt5lk7g9z68f5cjs83qfm2xme7g4hkur7
+ETH: 0xeef9220639F14E7A0FD825AAAd0574e5a8aD7A4B
+LTC: ltc1q508qfkd09vyya6c5zkfx4r248pf3ezj9ngjdr2
 ```
