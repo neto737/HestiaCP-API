@@ -24,7 +24,12 @@ a) Easy way
 
 use neto737\HestiaCP\Client;
 
-// easy way to create Client
+// Easy way to create Client
+// Using API Key
+
+$client = Client::simpleFactory('https://someHost', 'API_Key');
+
+// Using username and password
 
 $client = Client::simpleFactory('https://someHost', 'someUser', 'somePass');
 
@@ -35,11 +40,14 @@ b) For some reasons (more hosts, etc) you may need create objects alone
 ```php
 
 use neto737\HestiaCP\Client;
-
 use neto737\HestiaCP\Authorization\Credentials;
-
 use neto737\HestiaCP\Authorization\Host;
 
+// You can choose to use an API Key or username and password
+// API Key
+$credentials = new Credentials('API_Key');
+
+// Username and Password
 $credentials = new Credentials('someUser', 'somePassword');
 
 $host = new Host('https://someHost', $credentials);
@@ -64,7 +72,7 @@ You can simply send one of prepared commands (or you can write own command - mus
 
 $command = new SomeCommand();
 
-$response = $client->send( $command );
+$response = $client->send($command);
 
   
 
