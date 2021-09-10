@@ -25,12 +25,11 @@ a) Easy way
 use neto737\HestiaCP\Client;
 
 // Easy way to create Client
-// Using API Key
 
+// Using API Key
 $client = Client::simpleFactory('https://someHost', 'API_Key');
 
 // Using username and password
-
 $client = Client::simpleFactory('https://someHost', 'someUser', 'somePass');
 
 ```
@@ -44,6 +43,7 @@ use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 
 // You can choose to use an API Key or username and password
+
 // API Key
 $credentials = new Credentials('API_Key');
 
@@ -61,7 +61,6 @@ $client = new Client($host);
 ```php
 
 // verify login
-
 $client->testAuthorization(); // bool
 
 ```
@@ -74,7 +73,6 @@ $command = new SomeCommand();
 
 $response = $client->send($command);
 
-  
 
 echo $response->getResponseText();
 
@@ -88,7 +86,6 @@ a) user module
 
 $userModule = $client->getModuleUser();
 
-  
 
 $userModule->list(); // returns all users with data
 
@@ -114,7 +111,6 @@ b) web module
 
 $webModule = $client->getModuleWeb('admin'); // web module needs user
 
-  
 
 $webModule->listDomains();
 
@@ -148,7 +144,6 @@ c) mail module
 
 $mailModule = $client->getModuleMail('admin'); // mail module needs user
 
-  
 
 $mailModule->listDomains(); // returns mail domains from selected user
 
