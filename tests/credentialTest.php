@@ -6,6 +6,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 class credentialTest extends \PHPUnit\Framework\TestCase {
 
+	public function testApiKey() {
+		$credentials = new Credentials('');
+		$this->assertSame('', $credentials->getApiKey());
+
+		$credentials->setApiKey('key');
+		$this->assertSame('key', $credentials->getApiKey());
+	}
+
 	public function testUser() {
 		$credentials = new Credentials('', '');
 		$this->assertSame('', $credentials->getUser());
@@ -25,5 +33,8 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 	public function testParams() {
 		$credentials = new Credentials('us', 'er');
 		$this->assertSame(['user' => 'us', 'password' => 'er'], $credentials->getRequestParams());
+
+		$credentials_apikey = new Credentials('key');
+		$this->assertSame(['hash' => 'key'], $credentials_apikey->getRequestParams());
 	}
 }

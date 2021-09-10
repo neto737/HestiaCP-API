@@ -34,13 +34,13 @@ class Client {
 	}
 
 	/**
-	 * @param $hostname
-	 * @param $user
-	 * @param $password
+	 * @param string $hostname	Hostname
+	 * @param string $user		Username or API Key
+	 * @param mixed  $password	Password (must be null if using API Key)
 	 * @return Client
 	 * @throws ClientException
 	 */
-	public static function simpleFactory($hostname, $user, $password): Client {
+	public static function simpleFactory(string $hostname, string $user, string $password = null): Client {
 		$credentials = new Credentials($user, $password);
 		$host = new Host($hostname, $credentials);
 

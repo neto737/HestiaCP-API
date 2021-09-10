@@ -10,9 +10,29 @@ class Credentials {
 	/** @var string */
 	private $password;
 
-	public function __construct(string $user, string $password) {
-		$this->setUser($user);
-		$this->setPassword($password);
+	/** @var string */
+	private $api_key;
+
+	/**
+	 * @param string $user		Username or Api Key
+	 * @param string @password	Password (must be null if using API Key)
+	 */
+	public function __construct(string $user, string $password = null) {
+		if (is_null($password)) {
+			$this->setApiKey($user);
+		} else {
+			$this->setUser($user);
+			$this->setPassword($password);
+		}
+	}
+
+	public function setApiKey(string $key) {
+		$this->api_key = $key;
+		return $this;
+	}
+
+	public function getApiKey(): string {
+		return $this->api_key;
 	}
 
 	public function setUser(string $user) {
@@ -34,6 +54,12 @@ class Credentials {
 	}
 
 	public function getRequestParams(): array {
+		if ($this->api_key) {
+			return [
+				'hash' => $this->getApiKey()
+			];
+		}
+		
 		return [
 			'user' => $this->getUser(),
 			'password' => $this->getPassword()

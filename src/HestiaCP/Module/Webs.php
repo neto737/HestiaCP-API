@@ -13,7 +13,7 @@ use neto737\HestiaCP\Command\Suspend\WebDomain as SuspendWebDomain;
 use neto737\HestiaCP\Command\Unsuspend\WebDomain as UnsuspendWebDomain;
 use neto737\HestiaCP\Command\Delete\LetsEncryptDomain as DeleteLetsEncryptDomain;
 use neto737\HestiaCP\Command\Delete\WebDomain as DeleteWebDomain;
-use neto737\HestiaCP\Command\Delete\WebDomainFtp as DeleteWebDomainFtpAlias;
+use neto737\HestiaCP\Command\Delete\WebDomainFtp as DeleteWebDomainFtp;
 use neto737\HestiaCP\Command\Lists\WebDomains;
 
 class Webs extends Module {
@@ -140,7 +140,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
 	public function deleteDomainFtp(string $domain, string $ftpUser): bool {
-		return $this->client->send(new DeleteWebDomainFtpAlias($this->user, $domain, $ftpUser));
+		return $this->client->send(new DeleteWebDomainFtp($this->user, $domain, $ftpUser));
 	}
 
 	/**
