@@ -6,6 +6,8 @@ use neto737\HestiaCP\Command\Delete\WebDomainFtp;
 use neto737\HestiaCP\Command\Delete\LetsEncryptDomain;
 use neto737\HestiaCP\Command\Delete\MailAccount;
 use neto737\HestiaCP\Command\Delete\MailDomain;
+use neto737\HestiaCP\Command\Delete\UserBackup;
+use neto737\HestiaCP\Command\Delete\UserBackupExclusions;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -64,6 +66,23 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+	}
+
+	public function testUserBackup(): void {
+		$command = new UserBackup('admin', 'admin.2021-10-07_05-15-09.tar');
+		$this->assertSame('v-delete-user-backup', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'admin.2021-10-07_05-15-09.tar'
+		], $command->getRequestParams());
+	}
+
+	public function testUserBackupExclusions(): void {
+		$command = new UserBackupExclusions('admin');
+		$this->assertSame('v-delete-user-backup-exclusions', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin'
 		], $command->getRequestParams());
 	}
 }

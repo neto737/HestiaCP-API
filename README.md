@@ -101,8 +101,6 @@ $userModule->unsuspend('other_user');
 
 $userModule->delete('other_user');
 
-// ... etc
-
 ```
 
 b) web module
@@ -133,8 +131,6 @@ $webModule->suspendDomain('domain.com');
 $webModule->unsuspendDomain('domain.com');
 
 $webModule->deleteDomain('domain.com');
-
-// ... etc
 
 ```
 
@@ -171,8 +167,6 @@ $mailModule->unsuspendDomain('domain.com');
 
 $mailModule->deleteDomain('domain.com');
 
-// ... etc
-
 ```
 
 d) db module
@@ -205,12 +199,19 @@ f) backup module
 
 ```php
 
-$backupModule = $client->getModuleBackup();
+$backupModule = $client->getModuleBackup('admin'); // backup module needs user
 
+$backupModule->backup(); // create a new backup
 
-// todo
+$backupModule->delete('admin.2021-10-13_18-12-53.tar'); // delete an user backup
 
-// ... etc
+$backupModule->deleteExclusions(); // delete all backup exclusions
+
+$backupModule->listBackups(); // returns the backups list
+
+$backupModule->listBackup('admin.2021-10-13_18-12-53.tar'); // returns backup parameters list
+
+$backupModule->listBackupExclusions(); // returns the backup exclusions list
 
 ```
 

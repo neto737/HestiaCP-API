@@ -7,6 +7,7 @@ use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
 use neto737\HestiaCP\Command\ICommand;
 use neto737\HestiaCP\Command\TestAuthorization;
+use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Mails;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
@@ -141,5 +142,9 @@ class Client {
 
 	public function getModuleWeb(string $user): Webs {
 		return $this->loadModule(Webs::class, $user);
+	}
+
+	public function getModuleBackup(string $user): Backups {
+		return $this->loadModule(Backups::class, $user);
 	}
 }

@@ -10,18 +10,24 @@ use neto737\HestiaCP\Command\Unsuspend\User  as UnsuspendUser;
 use neto737\HestiaCP\Command\Delete\User as DeleteUser;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users as ListsUsers;
+use neto737\HestiaCP\Command\Backup\Users as BackupUsers;
+
 class Users extends Module {
 
 	/**
-	 * @return ArrayHash[]
+	 * The function to obtain the list of all system users.
+	 * 
+	 * @return array
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
 	public function list(): array {
-		return $this->client->send(new ListsUsers());
+		return $this->client->send(new ListsUsers);
 	}
 
 	/**
+	 * The function to obtain user parameters.
+	 * 
 	 * @param string $user
 	 * @return ArrayHash
 	 * @throws \neto737\HestiaCP\ClientException
@@ -32,6 +38,8 @@ class Users extends Module {
 	}
 
 	/**
+	 * The function changes user's password and updates RKEY value.
+	 * 
 	 * @param string $user
 	 * @param string $password
 	 * @return bool
@@ -43,6 +51,8 @@ class Users extends Module {
 	}
 
 	/**
+	 * The function creates new user account.
+	 * 
 	 * @param string 	  $user
 	 * @param string 	  $password
 	 * @param string 	  $email
@@ -56,6 +66,8 @@ class Users extends Module {
 	}
 
 	/**
+	 * The function suspends a certain user and all his objects.
+	 * 
 	 * @param string $user
 	 * @param bool 	 $restart
 	 * @return bool
@@ -67,6 +79,8 @@ class Users extends Module {
 	}
 
 	/**
+	 * The function unsuspends user and all his objects.
+	 * 
 	 * @param string $user
 	 * @param bool $restart
 	 * @return bool
@@ -78,6 +92,8 @@ class Users extends Module {
 	}
 
 	/**
+	 * This function deletes a certain user and all his resources such as domains, databases, cron jobs, etc.
+	 * 
 	 * @param string $user
 	 * @return bool
 	 * @throws \neto737\HestiaCP\ClientException
@@ -85,5 +101,16 @@ class Users extends Module {
 	 */
 	public function delete(string $user): bool {
 		return $this->client->send(new DeleteUser($user));
+	}
+
+	/**
+	 * The function backups all system users.
+	 * 
+	 * @return string
+	 * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+	 */
+	public function backup(): string {
+		return $this->client->send(new BackupUsers);
 	}
 }
