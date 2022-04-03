@@ -11,6 +11,8 @@ use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Mails;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
+use neto737\HestiaCP\Module\Databases;
+
 
 class Client {
 
@@ -146,5 +148,9 @@ class Client {
 
 	public function getModuleBackup(string $user): Backups {
 		return $this->loadModule(Backups::class, $user);
+	}
+
+	public function getModuleDb(string $user): Databases {
+		return $this->loadModule(Databases::class, $user);
 	}
 }

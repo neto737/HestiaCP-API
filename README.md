@@ -173,7 +173,9 @@ d) db module
 
 ```php
 
-$dbModule = $client->getModuleDb();
+$dbModule = $client->getModuleDb('admin'); // db module needs user
+
+$dbModule->addDatabase('dbname','dbuser','dbpass'); // add database
 
 
 // todo
