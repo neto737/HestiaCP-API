@@ -1,8 +1,8 @@
 <?php
 
-use neto737\HestiaCP\Command\TestAuthorization;
-use neto737\HestiaCP\InvalidResponseException;
-use neto737\HestiaCP\ProcessException;
+use heliocg\HestiaCP\Command\TestAuthorization;
+use heliocg\HestiaCP\InvalidResponseException;
+use heliocg\HestiaCP\ProcessException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

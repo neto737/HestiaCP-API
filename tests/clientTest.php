@@ -1,8 +1,8 @@
 <?php
 
-use neto737\HestiaCP\Authorization\Credentials;
-use neto737\HestiaCP\Authorization\Host;
-use neto737\HestiaCP\Client;
+use heliocg\HestiaCP\Authorization\Credentials;
+use heliocg\HestiaCP\Authorization\Host;
+use heliocg\HestiaCP\Client;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

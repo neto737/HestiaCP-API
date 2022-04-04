@@ -1,11 +1,11 @@
 <?php
 
-use neto737\HestiaCP\Command\Add\User;
-use neto737\HestiaCP\Command\Add\WebDomain;
-use neto737\HestiaCP\Command\Add\WebDomainFtp;
-use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
-use neto737\HestiaCP\Command\Add\MailAccount;
-use neto737\HestiaCP\Command\Add\MailDomain;
+use heliocg\HestiaCP\Command\Add\User;
+use heliocg\HestiaCP\Command\Add\WebDomain;
+use heliocg\HestiaCP\Command\Add\WebDomainFtp;
+use heliocg\HestiaCP\Command\Add\LetsEncryptDomain;
+use heliocg\HestiaCP\Command\Add\MailAccount;
+use heliocg\HestiaCP\Command\Add\MailDomain;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -18,7 +18,7 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\heliocg\HestiaCP\InvalidResponseException::class);
 		$command->process();
 	}
 

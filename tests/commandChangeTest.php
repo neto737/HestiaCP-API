@@ -1,9 +1,9 @@
 <?php
 
-use neto737\HestiaCP\Command\Change\UserPassword;
-use neto737\HestiaCP\Command\Change\MailAccountPassword;
-use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
-use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
+use heliocg\HestiaCP\Command\Change\UserPassword;
+use heliocg\HestiaCP\Command\Change\MailAccountPassword;
+use heliocg\HestiaCP\Command\Change\WebDomainFtpPassword;
+use heliocg\HestiaCP\Command\Change\WebDomainFtpPath;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

@@ -1,7 +1,7 @@
 <?php
 
-use neto737\HestiaCP\Command\Backup\Users;
-use neto737\HestiaCP\Command\Backup\User;
+use heliocg\HestiaCP\Command\Backup\Users;
+use heliocg\HestiaCP\Command\Backup\User;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

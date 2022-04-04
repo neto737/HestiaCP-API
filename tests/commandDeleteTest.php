@@ -1,13 +1,13 @@
 <?php
 
-use neto737\HestiaCP\Command\Delete\User;
-use neto737\HestiaCP\Command\Delete\WebDomain;
-use neto737\HestiaCP\Command\Delete\WebDomainFtp;
-use neto737\HestiaCP\Command\Delete\LetsEncryptDomain;
-use neto737\HestiaCP\Command\Delete\MailAccount;
-use neto737\HestiaCP\Command\Delete\MailDomain;
-use neto737\HestiaCP\Command\Delete\UserBackup;
-use neto737\HestiaCP\Command\Delete\UserBackupExclusions;
+use heliocg\HestiaCP\Command\Delete\User;
+use heliocg\HestiaCP\Command\Delete\WebDomain;
+use heliocg\HestiaCP\Command\Delete\WebDomainFtp;
+use heliocg\HestiaCP\Command\Delete\LetsEncryptDomain;
+use heliocg\HestiaCP\Command\Delete\MailAccount;
+use heliocg\HestiaCP\Command\Delete\MailDomain;
+use heliocg\HestiaCP\Command\Delete\UserBackup;
+use heliocg\HestiaCP\Command\Delete\UserBackupExclusions;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

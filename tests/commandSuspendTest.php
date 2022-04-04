@@ -1,9 +1,9 @@
 <?php
 
-use neto737\HestiaCP\Command\Suspend\User;
-use neto737\HestiaCP\Command\Suspend\WebDomain;
-use neto737\HestiaCP\Command\Suspend\MailAccount;
-use neto737\HestiaCP\Command\Suspend\MailDomain;
+use heliocg\HestiaCP\Command\Suspend\User;
+use heliocg\HestiaCP\Command\Suspend\WebDomain;
+use heliocg\HestiaCP\Command\Suspend\MailAccount;
+use heliocg\HestiaCP\Command\Suspend\MailDomain;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

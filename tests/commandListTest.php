@@ -1,15 +1,15 @@
 <?php
 
-use neto737\HestiaCP\Command\Lists\User;
-use neto737\HestiaCP\Command\Lists\Users;
-use neto737\HestiaCP\Command\Lists\WebDomains;
-use neto737\HestiaCP\Command\Lists\MailDomains;
-use neto737\HestiaCP\Command\Lists\MailDomainDkim;
-use neto737\HestiaCP\Command\Lists\MailDomainDkimDns;
-use neto737\HestiaCP\Command\Lists\MailAccounts;
-use neto737\HestiaCP\Command\Lists\UserBackups;
-use neto737\HestiaCP\Command\Lists\UserBackup;
-use neto737\HestiaCP\Command\Lists\UserBackupExclusions;
+use heliocg\HestiaCP\Command\Lists\User;
+use heliocg\HestiaCP\Command\Lists\Users;
+use heliocg\HestiaCP\Command\Lists\WebDomains;
+use heliocg\HestiaCP\Command\Lists\MailDomains;
+use heliocg\HestiaCP\Command\Lists\MailDomainDkim;
+use heliocg\HestiaCP\Command\Lists\MailDomainDkimDns;
+use heliocg\HestiaCP\Command\Lists\MailAccounts;
+use heliocg\HestiaCP\Command\Lists\UserBackups;
+use heliocg\HestiaCP\Command\Lists\UserBackup;
+use heliocg\HestiaCP\Command\Lists\UserBackupExclusions;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
