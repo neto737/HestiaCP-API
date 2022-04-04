@@ -80,4 +80,15 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg5' => 'yes'
 		], $command->getRequestParams());
 	}
+
+	public function testDatabase(): void {
+		$command = new Database('admin', 'dbname', 'dbuser', 's#4FmdF%4');
+		$this->assertSame('v-add-database', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'dbname',
+			'arg3' => 'dbuser',
+			'arg4' => 's#4FmdF%4',
+		], $command->getRequestParams());
+	}
 }
