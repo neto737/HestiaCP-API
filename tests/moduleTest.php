@@ -1,11 +1,11 @@
 <?php
 
-use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Module\Backups;
-use neto737\HestiaCP\Module\Databases;
-use neto737\HestiaCP\Module\Users;
-use neto737\HestiaCP\Module\Webs;
-use neto737\HestiaCP\Module\Mails;
+use heliocg\HestiaCP\Client;
+use heliocg\HestiaCP\Module\Backups;
+use heliocg\HestiaCP\Module\Databases;
+use heliocg\HestiaCP\Module\Users;
+use heliocg\HestiaCP\Module\Webs;
+use heliocg\HestiaCP\Module\Mails;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

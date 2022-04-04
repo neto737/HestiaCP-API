@@ -1,6 +1,6 @@
 <?php
 
-namespace neto737\HestiaCP;
+namespace heliocg\HestiaCP;
 
 class Exception extends \Exception { }
 

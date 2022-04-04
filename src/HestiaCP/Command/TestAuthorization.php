@@ -1,10 +1,10 @@
 <?php
 
-namespace neto737\HestiaCP\Command;
+namespace heliocg\HestiaCP\Command;
 
-use neto737\HestiaCP\AuthorizationException;
-use neto737\HestiaCP\InvalidResponseException;
-use neto737\HestiaCP\ProcessException;
+use heliocg\HestiaCP\AuthorizationException;
+use heliocg\HestiaCP\InvalidResponseException;
+use heliocg\HestiaCP\ProcessException;
 
 class TestAuthorization extends Command {
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace neto737\HestiaCP\Command\Add;
+namespace heliocg\HestiaCP\Command\Add;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use heliocg\HestiaCP\Command\ProcessCommand;
 
 class MailAccount extends ProcessCommand {
 

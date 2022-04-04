@@ -1,11 +1,11 @@
 <?php
 
-namespace neto737\HestiaCP\Command;
+namespace heliocg\HestiaCP\Command;
 
 use GuzzleHttp\Exception\ClientException;
-use neto737\HestiaCP\AuthorizationException;
-use neto737\HestiaCP\InvalidResponseException;
-use neto737\HestiaCP\ProcessException;
+use heliocg\HestiaCP\AuthorizationException;
+use heliocg\HestiaCP\InvalidResponseException;
+use heliocg\HestiaCP\ProcessException;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class Command implements ICommand {

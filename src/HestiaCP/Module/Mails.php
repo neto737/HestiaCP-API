@@ -1,22 +1,22 @@
 <?php
 
-namespace neto737\HestiaCP\Module;
+namespace heliocg\HestiaCP\Module;
 
 use Nette\Utils\ArrayHash;
-use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\Add\MailAccount;
-use neto737\HestiaCP\Command\Add\MailDomain;
-use neto737\HestiaCP\Command\Change\MailAccountPassword;
-use neto737\HestiaCP\Command\Suspend\MailAccount as SuspendMailAccount;
-use neto737\HestiaCP\Command\Suspend\MailDomain as SuspendMailDomain;
-use neto737\HestiaCP\Command\Unsuspend\MailAccount as UnsuspendMailAccount;
-use neto737\HestiaCP\Command\Unsuspend\MailDomain as UnsuspendMailDomain;
-use neto737\HestiaCP\Command\Delete\MailAccount as DeleteMailAccount;
-use neto737\HestiaCP\Command\Delete\MailDomain as DeleteMailDomain;
-use neto737\HestiaCP\Command\Lists\MailAccounts;
-use neto737\HestiaCP\Command\Lists\MailDomainDkim;
-use neto737\HestiaCP\Command\Lists\MailDomainDkimDns;
-use neto737\HestiaCP\Command\Lists\MailDomains;
+use heliocg\HestiaCP\Client;
+use heliocg\HestiaCP\Command\Add\MailAccount;
+use heliocg\HestiaCP\Command\Add\MailDomain;
+use heliocg\HestiaCP\Command\Change\MailAccountPassword;
+use heliocg\HestiaCP\Command\Suspend\MailAccount as SuspendMailAccount;
+use heliocg\HestiaCP\Command\Suspend\MailDomain as SuspendMailDomain;
+use heliocg\HestiaCP\Command\Unsuspend\MailAccount as UnsuspendMailAccount;
+use heliocg\HestiaCP\Command\Unsuspend\MailDomain as UnsuspendMailDomain;
+use heliocg\HestiaCP\Command\Delete\MailAccount as DeleteMailAccount;
+use heliocg\HestiaCP\Command\Delete\MailDomain as DeleteMailDomain;
+use heliocg\HestiaCP\Command\Lists\MailAccounts;
+use heliocg\HestiaCP\Command\Lists\MailDomainDkim;
+use heliocg\HestiaCP\Command\Lists\MailDomainDkimDns;
+use heliocg\HestiaCP\Command\Lists\MailDomains;
 
 class Mails extends Module {
 
@@ -33,8 +33,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return ArrayHash[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function listAccounts(string $domain): array {
 		return $this->client->send(new MailAccounts($this->user, $domain));
@@ -47,8 +47,8 @@ class Mails extends Module {
 	 * @param string $account
 	 * @param string $password
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function addAccount(string $domain, string $account, string $password): bool {
 		return $this->client->send(new MailAccount($this->user, $domain, $account, $password));
@@ -61,8 +61,8 @@ class Mails extends Module {
 	 * @param string $account
 	 * @param string $password
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function changeAccountPassword(string $domain, string $account, string $password): bool {
 		return $this->client->send(new MailAccountPassword($this->user, $domain, $account, $password));
@@ -74,8 +74,8 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function suspendAccount(string $domain, string $account): bool {
 		return $this->client->send(new SuspendMailAccount($this->user,  $domain, $account));
@@ -87,8 +87,8 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function unsuspendAccount(string $domain, string $account): bool {
 		return $this->client->send(new UnsuspendMailAccount($this->user,  $domain, $account));
@@ -100,8 +100,8 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function deleteAccount(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccount($this->user, $domain, $account));
@@ -115,8 +115,8 @@ class Mails extends Module {
 	 * @param bool   $antivirus
 	 * @param bool   $dkim
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true): bool {
 		return $this->client->send(new MailDomain($this->user, $domain, $antispam, $antivirus, $dkim));
@@ -127,8 +127,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function suspendDomain(string $domain): bool {
 		return $this->client->send(new SuspendMailDomain($this->user, $domain));
@@ -139,8 +139,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function unsuspendDomain(string $domain): bool {
 		return $this->client->send(new UnsuspendMailDomain($this->user, $domain));
@@ -151,8 +151,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function deleteDomain(string $domain): bool {
 		return $this->client->send(new DeleteMailDomain($this->user, $domain));
@@ -163,8 +163,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return ArrayHash[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function listDomainDkim(string $domain): array {
 		return $this->client->send(new MailDomainDkim($this->user, $domain));
@@ -175,8 +175,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return ArrayHash[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function listDomainDkimDns(string $domain): array {
 		return $this->client->send(new MailDomainDkimDns($this->user, $domain));
@@ -186,8 +186,8 @@ class Mails extends Module {
 	 * The function of obtaining the list of all user domains.
 	 * 
 	 * @return ArrayHash[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
 	 */
 	public function listDomains(): array {
 		return $this->client->send(new MailDomains($this->user));

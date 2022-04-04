@@ -1,5 +1,5 @@
 <?php
 
-namespace neto737\HestiaCP\Module;
+namespace heliocg\HestiaCP\Module;
 
 interface IModule { }

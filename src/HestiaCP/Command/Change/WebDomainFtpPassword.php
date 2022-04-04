@@ -1,8 +1,8 @@
 <?php
 
-namespace neto737\HestiaCP\Command\Change;
+namespace heliocg\HestiaCP\Command\Change;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use heliocg\HestiaCP\Command\ProcessCommand;
 
 class WebDomainFtpPassword extends ProcessCommand {
 

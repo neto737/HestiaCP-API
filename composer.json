@@ -6,7 +6,7 @@
         "guzzlehttp/guzzle": "^7.3",
         "nette/utils": "^3.2"
     },
-    "homepage": "https://github.com/neto737/HestiaCP-API",
+    "homepage": "https://github.com/heliocg/HestiaCP-API",
     "license": "MIT",
     "authors": [
         {

@@ -1,8 +1,8 @@
 <?php
 
-namespace neto737\HestiaCP\Command\Suspend;
+namespace heliocg\HestiaCP\Command\Suspend;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use heliocg\HestiaCP\Command\ProcessCommand;
 
 class MailDomain extends ProcessCommand {
 

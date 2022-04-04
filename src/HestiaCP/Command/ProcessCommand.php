@@ -1,10 +1,10 @@
 <?php
 
-namespace neto737\HestiaCP\Command;
+namespace heliocg\HestiaCP\Command;
 
-use neto737\HestiaCP\AuthorizationException;
-use neto737\HestiaCP\Command\Command;
-use neto737\HestiaCP\ProcessException;
+use heliocg\HestiaCP\AuthorizationException;
+use heliocg\HestiaCP\Command\Command;
+use heliocg\HestiaCP\ProcessException;
 
 abstract class ProcessCommand extends Command {
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace neto737\HestiaCP\Command\Lists;
+namespace heliocg\HestiaCP\Command\Lists;
 
-use neto737\HestiaCP\Command\ListCommand;
+use heliocg\HestiaCP\Command\ListCommand;
 
 class MailAccounts extends ListCommand {
 

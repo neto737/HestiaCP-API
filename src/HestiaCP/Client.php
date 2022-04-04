@@ -1,17 +1,17 @@
 <?php
 
-namespace neto737\HestiaCP;
+namespace heliocg\HestiaCP;
 
-use neto737\HestiaCP\Authorization\Credentials;
-use neto737\HestiaCP\Authorization\Host;
-use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
-use neto737\HestiaCP\Command\ICommand;
-use neto737\HestiaCP\Command\TestAuthorization;
-use neto737\HestiaCP\Module\Backups;
-use neto737\HestiaCP\Module\Mails;
-use neto737\HestiaCP\Module\Users;
-use neto737\HestiaCP\Module\Webs;
-use neto737\HestiaCP\Module\Databases;
+use heliocg\HestiaCP\Authorization\Credentials;
+use heliocg\HestiaCP\Authorization\Host;
+use heliocg\HestiaCP\Command\Add\LetsEncryptDomain;
+use heliocg\HestiaCP\Command\ICommand;
+use heliocg\HestiaCP\Command\TestAuthorization;
+use heliocg\HestiaCP\Module\Backups;
+use heliocg\HestiaCP\Module\Mails;
+use heliocg\HestiaCP\Module\Users;
+use heliocg\HestiaCP\Module\Webs;
+use heliocg\HestiaCP\Module\Databases;
 
 
 class Client {

@@ -1,8 +1,8 @@
 <?php
 
-namespace neto737\HestiaCP\Command\Delete;
+namespace heliocg\HestiaCP\Command\Delete;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use heliocg\HestiaCP\Command\ProcessCommand;
 
 class MailAccount extends ProcessCommand {
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace neto737\HestiaCP\Module;
+namespace heliocg\HestiaCP\Module;
 
 use Nette\Utils\ArrayHash;
-use neto737\HestiaCP\Client;
+use heliocg\HestiaCP\Client;
 
-use neto737\HestiaCP\Command\Backup\User as BackupUser;
-use neto737\HestiaCP\Command\Delete\UserBackup as DeleteUserBackup;
-use neto737\HestiaCP\Command\Delete\UserBackupExclusions as DeleteUserBackupExclusions;
-use neto737\HestiaCP\Command\Lists\UserBackup as ListsUserBackup;
-use neto737\HestiaCP\Command\Lists\UserBackups;
-use neto737\HestiaCP\Command\Lists\UserBackupExclusions as ListsUserBackupExclusions;
+use heliocg\HestiaCP\Command\Backup\User as BackupUser;
+use heliocg\HestiaCP\Command\Delete\UserBackup as DeleteUserBackup;
+use heliocg\HestiaCP\Command\Delete\UserBackupExclusions as DeleteUserBackupExclusions;
+use heliocg\HestiaCP\Command\Lists\UserBackup as ListsUserBackup;
+use heliocg\HestiaCP\Command\Lists\UserBackups;
+use heliocg\HestiaCP\Command\Lists\UserBackupExclusions as ListsUserBackupExclusions;
 
 class Backups extends Module {
 
@@ -27,8 +27,8 @@ class Backups extends Module {
      * 
      * @param bool  $notify
      * @return string
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
      */
     public function backup(bool $notify = true): string {
         return $this->client->send(new BackupUser($this->user, $notify));
@@ -39,8 +39,8 @@ class Backups extends Module {
      * 
      * @param string    $backup
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
      */
     public function delete(string $backup): bool {
         return $this->client->send(new DeleteUserBackup($this->user, $backup));
@@ -50,8 +50,8 @@ class Backups extends Module {
      * The function for deleting backup exclusion
      * 
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
      */
     public function deleteExclusions() {
         return $this->client->send(new DeleteUserBackupExclusions($this->user));
@@ -61,8 +61,8 @@ class Backups extends Module {
      * The function for obtaining the list of available user backups.
      * 
      * @return array
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
      */
     public function listBackups(): array {
         return $this->client->send(new UserBackups($this->user));
@@ -73,8 +73,8 @@ class Backups extends Module {
      * 
      * @param string    $backup
      * @return ArrayHash
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
      */
     public function listBackup(string $backup): ArrayHash {
         return $this->client->send(new ListsUserBackup($this->user, $backup));
@@ -84,8 +84,8 @@ class Backups extends Module {
      * The function for obtaining the backup exclusion list
      * 
      * @return array
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \heliocg\HestiaCP\ClientException
+	 * @throws \heliocg\HestiaCP\ProcessException
      */
     public function listBackupExclusions(): array {
         return $this->client->send(new ListsUserBackupExclusions($this->user));

@@ -1,6 +1,6 @@
 <?php
 
-namespace neto737\HestiaCP\Authorization;
+namespace heliocg\HestiaCP\Authorization;
 
 class Host {
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace neto737\HestiaCP\Module;
+namespace heliocg\HestiaCP\Module;
 
-use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\Add\Database;
-use neto737\HestiaCP\Module\Module;
+use heliocg\HestiaCP\Client;
+use heliocg\HestiaCP\Command\Add\Database;
+use heliocg\HestiaCP\Module\Module;
 
 class Databases extends Module {
 
