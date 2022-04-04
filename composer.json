@@ -1,5 +1,5 @@
 {
-    "name": "neto737/hestiacp-api",
+    "name": "heliocg/hestiacp-api",
     "description": "HestiaCP API SDK written in PHP",
     "require": {
         "php": ">=7.3",
@@ -10,8 +10,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Neto",
-            "email": "neto737@live.com"
+            "name": "Helio",
+            "email": "suporte@elicast.com.br"
         }
     ],
     "minimum-stability": "dev",

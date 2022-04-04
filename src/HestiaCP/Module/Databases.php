@@ -16,7 +16,7 @@ class Databases extends Module {
 		$this->user = $user;
 	}
 
-    public function addDatabase(string $database, string $dbuser, string $password){
+    public function addDatabase(string $database, string $dbuser, string $password): bool{
         return $this->client->send(new Database($this->user, $database, $dbuser, $password));
     }
 }

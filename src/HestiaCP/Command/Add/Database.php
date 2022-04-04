@@ -36,8 +36,6 @@ class Database extends ProcessCommand {
         self::ARG_2 => $this->database,
         self::ARG_3 => $this->dbuser,
         self::ARG_4 => $this->password,
-        self::ARG_5 => '',
-        self::ARG_6 => '',
       ];
     }
 }
