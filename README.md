@@ -2,7 +2,7 @@
 # HestiaCP PHP API
 
   
-[![Name](https://badgen.net/packagist/name/neto737/hestiacp-api)](//packagist.org/packages/neto737/hestiacp-api) [![Latest Stable Version](https://badgen.net/packagist/v/neto737/hestiacp-api/latest)](https://packagist.org/packages/neto737/hestiacp-api) [![Total Downloads](https://badgen.net/packagist/dt/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api)  [![License](https://badgen.net/packagist/license/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api) [![Build Status](https://www.travis-ci.com/neto737/HestiaCP-API.svg?branch=main)](https://www.travis-ci.com/github/neto737/HestiaCP-API) [![codecov](https://codecov.io/gh/neto737/HestiaCP-API/branch/main/graph/badge.svg?token=F93I5JQXY6)](https://codecov.io/gh/neto737/HestiaCP-API)
+[![Name](https://badgen.net/packagist/name/heliocg/hestiacp-api)](//packagist.org/packages/heliocg/hestiacp-api) [![Latest Stable Version](https://badgen.net/packagist/v/heliocg/hestiacp-api/latest)](https://packagist.org/packages/heliocg/hestiacp-api) [![Total Downloads](https://badgen.net/packagist/dt/heliocg/hestiacp-api)](https://packagist.org/packages/heliocg/hestiacp-api)  [![License](https://badgen.net/packagist/license/heliocg/hestiacp-api)](https://packagist.org/packages/heliocg/hestiacp-api) [![Build Status](https://www.travis-ci.com/heliocg/HestiaCP-API.svg?branch=main)](https://www.travis-ci.com/github/heliocg/HestiaCP-API)
 
   
 
@@ -12,7 +12,7 @@
 
 ```sh
 
-$ composer require neto737/hestiacp-api
+$ composer require heliocg/hestiacp-api
 
 ```
 
@@ -22,7 +22,7 @@ a) Easy way
 
 ```php
 
-use neto737\HestiaCP\Client;
+use heliocg\HestiaCP\Client;
 
 // Easy way to create Client
 
@@ -38,9 +38,9 @@ b) For some reasons (more hosts, etc) you may need create objects alone
 
 ```php
 
-use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Authorization\Credentials;
-use neto737\HestiaCP\Authorization\Host;
+use heliocg\HestiaCP\Client;
+use heliocg\HestiaCP\Authorization\Credentials;
+use heliocg\HestiaCP\Authorization\Host;
 
 // You can choose to use an API Key or username and password
 
@@ -65,7 +65,7 @@ $client->testAuthorization(); // bool
 
 ```
 
-You can simply send one of prepared commands (or you can write own command - must implements `\neto737\HestiaCP\Command\ICommand` )
+You can simply send one of prepared commands (or you can write own command - must implements `\heliocg\HestiaCP\Command\ICommand` )
 
 ```php
 
@@ -215,12 +215,4 @@ $backupModule->listBackup('admin.2021-10-13_18-12-53.tar'); // returns backup pa
 
 $backupModule->listBackupExclusions(); // returns the backup exclusions list
 
-```
-
-## Donate :heart:
-
-```
-BTC: bc1q89ntljt5lk7g9z68f5cjs83qfm2xme7g4hkur7
-ETH: 0xeef9220639F14E7A0FD825AAAd0574e5a8aD7A4B
-LTC: ltc1q508qfkd09vyya6c5zkfx4r248pf3ezj9ngjdr2
 ```
