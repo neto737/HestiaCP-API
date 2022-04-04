@@ -216,3 +216,6 @@ $backupModule->listBackup('admin.2021-10-13_18-12-53.tar'); // returns backup pa
 $backupModule->listBackupExclusions(); // returns the backup exclusions list
 
 ```
+
+# License
+HestiaCP API is licensed under GPL v3 license, and is based on the [neto737](https://github.com/neto737/HestiaCP-API) project.
