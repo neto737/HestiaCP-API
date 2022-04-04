@@ -218,4 +218,4 @@ $backupModule->listBackupExclusions(); // returns the backup exclusions list
 ```
 
 # License
-HestiaCP API is licensed under GPL v3 license, and is based on the [neto737](https://github.com/neto737/HestiaCP-API) project.
+HestiaCP API is licensed under MIT license, and is based on the [neto737](https://github.com/neto737/HestiaCP-API) project.
