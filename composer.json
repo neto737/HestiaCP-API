@@ -3,7 +3,7 @@
     "description": "HestiaCP API SDK written in PHP",
     "require": {
         "php": ">=7.3",
-        "guzzlehttp/guzzle": "^7.3",
+        "guzzlehttp/guzzle": "^7.4",
         "nette/utils": "^3.2"
     },
     "homepage": "https://github.com/neto737/HestiaCP-API",
