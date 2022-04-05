@@ -53,7 +53,7 @@ class Backups extends Module {
      * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
      */
-    public function deleteExclusions() {
+    public function deleteExclusions(): bool {
         return $this->client->send(new DeleteUserBackupExclusions($this->user));
     }
 
