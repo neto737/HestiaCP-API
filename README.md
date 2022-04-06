@@ -173,7 +173,12 @@ d) db module
 
 ```php
 
-$dbModule = $client->getModuleDb();
+$dbModule = $client->getModuleDatabase('admin');
+
+
+$dbModule->add('database', 'dbuser', 'dbpass');
+
+$dbModule->delete('admin_database');
 
 
 // todo

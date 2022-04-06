@@ -6,6 +6,7 @@ use neto737\HestiaCP\Command\Add\WebDomainFtp;
 use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
 use neto737\HestiaCP\Command\Add\MailAccount;
 use neto737\HestiaCP\Command\Add\MailDomain;
+use neto737\HestiaCP\Command\Add\Database;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -78,6 +79,18 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg3' => 'yes',
 			'arg4' => 'yes',
 			'arg5' => 'yes'
+		], $command->getRequestParams());
+	}
+
+	public function testDatabase(): void {
+		$command = new Database('admin', 'database', 'user', 'pass', 'mysql');
+		$this->assertSame('v-add-database', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'database',
+			'arg3' => 'user',
+			'arg4' => 'pass',
+			'arg5' => 'mysql'
 		], $command->getRequestParams());
 	}
 }
