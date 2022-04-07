@@ -10,6 +10,8 @@ use neto737\HestiaCP\Command\Lists\MailAccounts;
 use neto737\HestiaCP\Command\Lists\UserBackups;
 use neto737\HestiaCP\Command\Lists\UserBackup;
 use neto737\HestiaCP\Command\Lists\UserBackupExclusions;
+use neto737\HestiaCP\Command\Lists\Database;
+use neto737\HestiaCP\Command\Lists\Databases;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -85,6 +87,18 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 	public function testUserBackupExclusions(): void {
 		$command = new UserBackupExclusions('admin');
 		$this->assertSame('v-list-user-backup-exclusions', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
+	}
+
+	public function testListDatabase(): void {
+		$command = new Database('admin', 'test');
+		$this->assertSame('v-list-database', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'test', 'arg3' => 'json'], $command->getRequestParams());
+	}
+
+	public function testListDatabases(): void {
+		$command = new Databases('admin');
+		$this->assertSame('v-list-databases', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 	}
 }

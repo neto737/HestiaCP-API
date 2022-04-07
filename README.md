@@ -180,6 +180,12 @@ $dbModule->add('database', 'dbuser', 'dbpass');
 
 $dbModule->delete('admin_database');
 
+$dbModule->deleteDatabases();
+
+$dbModule->listDatabase('database');
+
+$dbModule->listDatabases();
+
 
 // todo
 

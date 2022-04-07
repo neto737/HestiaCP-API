@@ -9,6 +9,7 @@ use neto737\HestiaCP\Command\Delete\MailDomain;
 use neto737\HestiaCP\Command\Delete\UserBackup;
 use neto737\HestiaCP\Command\Delete\UserBackupExclusions;
 use neto737\HestiaCP\Command\Delete\Database;
+use neto737\HestiaCP\Command\Delete\Databases;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -93,6 +94,14 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'admin_test'
+		], $command->getRequestParams());
+	}
+
+	public function testDatabases(): void {
+		$command = new Databases('admin');
+		$this->assertSame('v-delete-databases', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin'
 		], $command->getRequestParams());
 	}
 }

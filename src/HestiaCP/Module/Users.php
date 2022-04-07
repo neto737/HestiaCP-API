@@ -15,7 +15,7 @@ use neto737\HestiaCP\Command\Backup\Users as BackupUsers;
 class Users extends Module {
 
 	/**
-	 * The function to obtain the list of all system users.
+	 * This function to obtain the list of all system users.
 	 * 
 	 * @return array
 	 * @throws \neto737\HestiaCP\ClientException
@@ -26,7 +26,7 @@ class Users extends Module {
 	}
 
 	/**
-	 * The function to obtain user parameters.
+	 * This function to obtain user parameters.
 	 * 
 	 * @param string $user
 	 * @return ArrayHash
@@ -38,7 +38,7 @@ class Users extends Module {
 	}
 
 	/**
-	 * The function changes user's password and updates RKEY value.
+	 * This function changes user's password and updates RKEY value.
 	 * 
 	 * @param string $user
 	 * @param string $password
@@ -51,7 +51,7 @@ class Users extends Module {
 	}
 
 	/**
-	 * The function creates new user account.
+	 * This function creates new user account.
 	 * 
 	 * @param string 	  $user
 	 * @param string 	  $password
@@ -66,7 +66,7 @@ class Users extends Module {
 	}
 
 	/**
-	 * The function suspends a certain user and all his objects.
+	 * This function suspends a certain user and all his objects.
 	 * 
 	 * @param string $user
 	 * @param bool 	 $restart
@@ -79,7 +79,7 @@ class Users extends Module {
 	}
 
 	/**
-	 * The function unsuspends user and all his objects.
+	 * This function unsuspends user and all his objects.
 	 * 
 	 * @param string $user
 	 * @param bool $restart
@@ -104,7 +104,7 @@ class Users extends Module {
 	}
 
 	/**
-	 * The function backups all system users.
+	 * This function backups all system users.
 	 * 
 	 * @return string
 	 * @throws \neto737\HestiaCP\ClientException

@@ -29,7 +29,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function of obtaining the list of all user domains.
+	 * This function of obtaining the list of all user domains.
 	 * 
 	 * @param string $domain
 	 * @return ArrayHash[]
@@ -41,7 +41,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function add new email account.
+	 * This function add new email account.
 	 * 
 	 * @param string $domain
 	 * @param string $account
@@ -55,7 +55,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function changes email account password.
+	 * This function changes email account password.
 	 * 
 	 * @param string $domain
 	 * @param string $account
@@ -69,7 +69,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function suspends mail account.
+	 * This function suspends mail account.
 	 * 
 	 * @param string $domain
 	 * @param string $account
@@ -82,7 +82,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function unsuspends mail account.
+	 * This function unsuspends mail account.
 	 * 
 	 * @param string $domain
 	 * @param string $account
@@ -95,7 +95,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function deletes email account.
+	 * This function deletes email account.
 	 * 
 	 * @param string $domain
 	 * @param string $account
@@ -108,7 +108,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function adds MAIL domain.
+	 * This function adds MAIL domain.
 	 * 
 	 * @param string $domain
 	 * @param bool   $antispam
@@ -123,7 +123,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function suspends mail domain.
+	 * This function suspends mail domain.
 	 * 
 	 * @param string $domain
 	 * @return bool
@@ -135,7 +135,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function unsuspends mail domain.
+	 * This function unsuspends mail domain.
 	 * 
 	 * @param string $domain
 	 * @return bool
@@ -147,7 +147,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function for deleting MAIL domain. By deleting it all accounts will also be deleted.
+	 * This function for deleting MAIL domain. By deleting it all accounts will also be deleted.
 	 * 
 	 * @param string $domain
 	 * @return bool
@@ -159,7 +159,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function of obtaining domain dkim files.
+	 * This function of obtaining domain dkim files.
 	 * 
 	 * @param string $domain
 	 * @return ArrayHash[]
@@ -171,7 +171,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function of obtaining domain dkim dns records for proper setup.
+	 * This function of obtaining domain dkim dns records for proper setup.
 	 * 
 	 * @param string $domain
 	 * @return ArrayHash[]
@@ -183,7 +183,7 @@ class Mails extends Module {
 	}
 
 	/**
-	 * The function of obtaining the list of all user domains.
+	 * This function of obtaining the list of all user domains.
 	 * 
 	 * @return ArrayHash[]
 	 * @throws \neto737\HestiaCP\ClientException

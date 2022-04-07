@@ -2,6 +2,7 @@
 
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
+use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use neto737\HestiaCP\Module\Mails;
@@ -32,5 +33,10 @@ class moduleTest extends \PHPUnit\Framework\TestCase {
 	public function testModuleBackup(): void {
 		$client = $this->createClient();
 		$this->assertSame(Backups::class, get_class($client->getModuleBackup('test')));
+	}
+
+	public function testDatabases(): void {
+		$client = $this->createClient();
+		$this->assertSame(Databases::class, get_class($client->getModuleDatabase('test')));
 	}
 }

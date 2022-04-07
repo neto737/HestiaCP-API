@@ -23,7 +23,7 @@ class Backups extends Module {
 	}
 
     /**
-     * The call is used for backing up user with all its domains and databases.
+     * This call is used for backing up user with all its domains and databases.
      * 
      * @param bool  $notify
      * @return string
@@ -35,7 +35,7 @@ class Backups extends Module {
     }
 
     /**
-     * The function deletes user backup.
+     * This function deletes user backup.
      * 
      * @param string    $backup
      * @return bool
@@ -47,7 +47,7 @@ class Backups extends Module {
     }
 
     /**
-     * The function for deleting backup exclusion
+     * This function for deleting backup exclusion
      * 
      * @return bool
      * @throws \neto737\HestiaCP\ClientException
@@ -58,7 +58,7 @@ class Backups extends Module {
     }
 
     /**
-     * The function for obtaining the list of available user backups.
+     * This function for obtaining the list of available user backups.
      * 
      * @return array
      * @throws \neto737\HestiaCP\ClientException
@@ -69,7 +69,7 @@ class Backups extends Module {
     }
 
     /**
-     * The function of obtaining the list of backup parameters.
+     * This function of obtaining the list of backup parameters.
      * 
      * @param string    $backup
      * @return ArrayHash
@@ -81,7 +81,7 @@ class Backups extends Module {
     }
 
     /**
-     * The function for obtaining the backup exclusion list
+     * This function for obtaining the backup exclusion list
      * 
      * @return array
      * @throws \neto737\HestiaCP\ClientException

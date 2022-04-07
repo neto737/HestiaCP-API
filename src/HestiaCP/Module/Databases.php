@@ -3,9 +3,13 @@
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
+use Nette\Utils\ArrayHash;
 
 use neto737\HestiaCP\Command\Add\Database as AddDatabase;
 use neto737\HestiaCP\Command\Delete\Database as DeleteDatabase;
+use neto737\HestiaCP\Command\Delete\Databases as DeleteDatabases;
+use neto737\HestiaCP\Command\Lists\Database as ListDatabase;
+use neto737\HestiaCP\Command\Lists\Databases as ListDatabases;
 
 class Databases extends Module {
 
@@ -18,7 +22,7 @@ class Databases extends Module {
 	}
 
     /**
-     * The function is used for creating a new database.
+     * This function is used for creating a new database.
      * 
      * @param string    $database
      * @param string    $dbuser
@@ -33,14 +37,49 @@ class Databases extends Module {
     }
 
     /**
-     * The function is used for delete a specified database.
+     * This function is used for delete a specified database.
      * 
      * @param string    $database
      * @return bool
      * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
      */
-    public function delete(string $database) {
+    public function delete(string $database): bool {
         return $this->client->send(new DeleteDatabase($this->user, $database));
+    }
+
+    /**
+     * This function deletes all user databases.
+     * 
+     * @return bool
+     * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+     */
+    public function deleteDatabases(): bool {
+        return $this->client->send(new DeleteDatabases($this->user));
+    }
+
+    /**
+     * This function for obtaining of all database's parameters.
+     * 
+     * @param string    $database
+     * @return ArrayHash
+     * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+     */
+    public function listDatabase(string $database): ArrayHash {
+        return $this->client->send(new ListDatabase($this->user, $database));
+    }
+
+    /**
+     * This function for obtaining the list of all user's databases.
+     * 
+     * @param string    $database
+     * @return ArrayHash
+     * @throws \neto737\HestiaCP\ClientException
+	 * @throws \neto737\HestiaCP\ProcessException
+     */
+    public function listDatabases(): ArrayHash {
+        return $this->client->send(new ListDatabases($this->user));
     }
 }
