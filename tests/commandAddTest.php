@@ -34,6 +34,11 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg5' => 'none',
 			'arg6' => ''
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testWebDomainFtp(): void {
@@ -46,6 +51,11 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg4' => 'pass',
 			'arg5' => ''
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testLEDomain(): void {
@@ -57,6 +67,11 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg3' => '',
 			'arg4' => 'no'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailAccount(): void {
@@ -68,6 +83,11 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg3' => 'account',
 			'arg4' => 'pass'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailDomain(): void {
@@ -80,6 +100,11 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg4' => 'yes',
 			'arg5' => 'yes'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testDatabase(): void {
@@ -92,5 +117,10 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 			'arg4' => 'pass',
 			'arg5' => 'mysql'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 }

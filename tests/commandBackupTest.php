@@ -20,5 +20,8 @@ class commandBackupTest extends \PHPUnit\Framework\TestCase {
         $command = new User('admin');
         $this->assertSame('v-backup-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'yes'], $command->getRequestParams());
+
+        $this->expectException(TypeError::class);
+		$command->process();
     }
 }

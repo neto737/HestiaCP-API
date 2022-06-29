@@ -15,6 +15,9 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass'], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailAccountPassword(): void {
@@ -26,6 +29,11 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 			'arg3' => 'account',
 			'arg4' => 'pass'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testWebDomainFtpPassword(): void {
@@ -37,6 +45,11 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 			'arg3' => 'account',
 			'arg4' => 'pass'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testWebDomainFtpPath(): void {
@@ -48,5 +61,10 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 			'arg3' => 'account',
 			'arg4' => 'path'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 }

@@ -15,6 +15,9 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'no'], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testWebDomain(): void {
@@ -25,6 +28,11 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain.com',
             'arg3' => 'no'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailAccount(): void {
@@ -35,6 +43,11 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain.com',
 			'arg3' => 'account'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailDomain(): void {
@@ -44,5 +57,10 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin',
 			'arg2' => 'domain.com'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 }

@@ -21,6 +21,9 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin'], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testWebDomain(): void {
@@ -30,6 +33,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin',
 			'arg2' => 'domain.com'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testWebDomainFtp(): void {
@@ -40,6 +48,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain.com',
 			'arg3' => 'account'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testLEDomain(): void {
@@ -50,6 +63,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain.com',
 			'arg3' => 'no'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailAccount(): void {
@@ -60,6 +78,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain.com',
 			'arg3' => 'account'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testMailDomain(): void {
@@ -69,6 +92,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin',
 			'arg2' => 'domain.com'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testUserBackup(): void {
@@ -78,6 +106,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin',
 			'arg2' => 'admin.2021-10-07_05-15-09.tar'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testUserBackupExclusions(): void {
@@ -86,6 +119,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testDatabase(): void {
@@ -95,6 +133,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin',
 			'arg2' => 'admin_test'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 
 	public function testDatabases(): void {
@@ -103,5 +146,10 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin'
 		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$command->process();
 	}
 }
