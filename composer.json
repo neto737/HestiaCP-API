@@ -14,7 +14,7 @@
             "email": "neto737@live.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "classmap": ["src/"]
     },
