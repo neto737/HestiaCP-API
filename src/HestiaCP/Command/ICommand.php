@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command;
 
-use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
 
 interface ICommand {
@@ -13,9 +14,15 @@ interface ICommand {
 
 	public function needReturnCode(): bool;
 
-	public function process();
+	public function process(): mixed;
 
-	public function processException(ClientException $exception);
+	/**
+	 * Request timeout in seconds for this command (0 = no timeout), or null to use the client timeout.
+	 */
+	public function getTimeout(): ?float;
 
+	/**
+	 * @return array<string, string>
+	 */
 	public function getRequestParams(): array;
 }

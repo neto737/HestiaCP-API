@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Lists;
 
 use neto737\HestiaCP\Command\ListCommand;
 
 class MailDomainDkim extends ListCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $domain;
+	private string $domain;
 
 	public function __construct(string $user, string $domain) {
 		$this->user = $user;
@@ -19,11 +19,6 @@ class MailDomainDkim extends ListCommand {
 
 	public function getName(): string {
 		return 'v-list-mail-domain-dkim';
-	}
-
-	public function getResponseText(): string {
-		// bug, issue 1827 ( https://github.com/serghey-rodin/vesta/issues/1827 )
-		return preg_replace('~\,\s*\}~', '}', parent::getResponseText());
 	}
 
 	public function getRequestParams(): array {

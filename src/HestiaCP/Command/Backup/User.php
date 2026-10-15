@@ -1,30 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Backup;
 
-use neto737\HestiaCP\Command\ListCommand;
+use neto737\HestiaCP\Command\ProcessCommand;
 
-class User extends ListCommand {
+class User extends ProcessCommand {
 
-    /** @var string */
-    private $user;
+	private string $user;
 
-    /** @var bool */
-    private $notify;
+	private bool $notify;
 
-    public function __construct(string $user, bool $notify = true) {
-        $this->user = $user;
-        $this->notify = $notify;
-    }
+	public function __construct(string $user, bool $notify = true) {
+		$this->user = $user;
+		$this->notify = $notify;
+	}
 
-    public function getName(): string {
-        return 'v-backup-user';
-    }
+	public function getName(): string {
+		return 'v-backup-user';
+	}
 
-    public function getRequestParams(): array {
-        return [
-            self::ARG_1 => $this->user,
-            self::ARG_2 => $this->convertBool($this->notify)
-        ];
-    }
+	public function getTimeout(): ?float {
+		// the backup runs synchronously and can take a long time
+		return 0;
+	}
+
+	public function getRequestParams(): array {
+		return [
+			self::ARG_1 => $this->user,
+			self::ARG_2 => $this->convertBool($this->notify)
+		];
+	}
 }

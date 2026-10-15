@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Delete;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class MailDomain extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $domain;
+	private string $domain;
 
 	public function __construct(string $user, string $domain) {
 		$this->user = $user;

@@ -1,30 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Add;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class WebDomain extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $domain;
+	private string $domain;
 
-	/** @var string|null */
-	private $ip;
+	private ?string $ip = null;
 
-	/** @var string|null */
-	private $aliases;
+	private ?string $aliases = null;
 
-	/** @var string|null */
-	private $proxyExtensions;
+	private ?string $proxyExtensions = null;
 
-	/** @var bool */
-	private $restart;
+	private bool $restart;
 
-	public function __construct(string $user, string $domain, string $ip = null, string $aliases = null, string $proxyExtensions = null, bool $restart = false) {
+	public function __construct(string $user, string $domain, ?string $ip = null, ?string $aliases = null, ?string $proxyExtensions = null, bool $restart = false) {
 		$this->user = $user;
 		$this->domain = $domain;
 		$this->ip = $ip;

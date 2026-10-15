@@ -1,30 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Unsuspend;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-    /** @var string */
-    private $user;
+	private string $user;
 
-    /** @var string */
-    private $restart;
+	private bool $restart;
 
-    public function __construct(string $user, bool $restart = false) {
-        $this->user = $user;
-        $this->restart = $restart;
-    }
+	public function __construct(string $user, bool $restart = false) {
+		$this->user = $user;
+		$this->restart = $restart;
+	}
 
-    public function getName(): string {
-        return 'v-unsuspend-user';
-    }
+	public function getName(): string {
+		return 'v-unsuspend-user';
+	}
 
-    public function getRequestParams(): array {
-        return [
-            self::ARG_1 => $this->user,
-            self::ARG_2 => $this->convertBool($this->restart)
-        ];
-    }
+	public function getRequestParams(): array {
+		return [
+			self::ARG_1 => $this->user,
+			self::ARG_2 => $this->convertBool($this->restart)
+		];
+	}
 }

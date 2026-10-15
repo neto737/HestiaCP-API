@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Lists;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Command\ListCommand;
 
 class User extends ListCommand {
 
-	/** @var string */
-	private $username;
+	private string $username;
 
 	public function __construct(string $username) {
 		$this->username = $username;
@@ -18,7 +18,7 @@ class User extends ListCommand {
 		return 'v-list-user';
 	}
 
-	public function process(): ArrayHash {
+	public function process(): array {
 		return $this->convertDetail(parent::process());
 	}
 

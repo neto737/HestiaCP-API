@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Delete\User;
 use neto737\HestiaCP\Command\Delete\WebDomain;
 use neto737\HestiaCP\Command\Delete\WebDomainFtp;
@@ -22,7 +24,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -36,7 +38,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -51,7 +53,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -66,7 +68,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -81,7 +83,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -95,7 +97,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -109,7 +111,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -120,9 +122,14 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin'
 		], $command->getRequestParams());
 
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'WEB'
+		], (new UserBackupExclusions('admin', 'WEB'))->getRequestParams());
+
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -136,7 +143,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -149,7 +156,7 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 }

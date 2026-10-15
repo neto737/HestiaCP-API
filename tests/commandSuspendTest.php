@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Suspend\User;
 use neto737\HestiaCP\Command\Suspend\WebDomain;
 use neto737\HestiaCP\Command\Suspend\MailAccount;
@@ -16,7 +18,7 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -26,12 +28,12 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
-            'arg3' => 'no'
+			'arg3' => 'no'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -46,7 +48,7 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -60,7 +62,7 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 }

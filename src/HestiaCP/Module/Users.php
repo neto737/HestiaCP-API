@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Module;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Command\Add\User as AddUser;
 use neto737\HestiaCP\Command\Change\UserPassword;
 use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
-use neto737\HestiaCP\Command\Unsuspend\User  as UnsuspendUser;
+use neto737\HestiaCP\Command\Unsuspend\User as UnsuspendUser;
 use neto737\HestiaCP\Command\Delete\User as DeleteUser;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users as ListsUsers;
@@ -16,35 +17,35 @@ class Users extends Module {
 
 	/**
 	 * This function to obtain the list of all system users.
-	 * 
-	 * @return array
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 *
+	 * @return array<mixed>
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function list(): array {
-		return $this->client->send(new ListsUsers);
+		return $this->client->send(new ListsUsers());
 	}
 
 	/**
 	 * This function to obtain user parameters.
-	 * 
+	 *
 	 * @param string $user
-	 * @return ArrayHash
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @return array<mixed>
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function detail(string $user): ArrayHash {
+	public function detail(string $user): array {
 		return $this->client->send(new User($user));
 	}
 
 	/**
 	 * This function changes user's password and updates RKEY value.
-	 * 
+	 *
 	 * @param string $user
 	 * @param string $password
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changePassword(string $user, string $password): bool {
 		return $this->client->send(new UserPassword($user, $password));
@@ -52,27 +53,29 @@ class Users extends Module {
 
 	/**
 	 * This function creates new user account.
-	 * 
+	 *
 	 * @param string 	  $user
 	 * @param string 	  $password
 	 * @param string 	  $email
 	 * @param string|null $package
+	 * @param string|null $name
+	 * @param string|null $lastname
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function add(string $user, string $password, string $email, string $package = null): bool {
-		return $this->client->send(new AddUser($user, $password, $email, $package));
+	public function add(string $user, string $password, string $email, ?string $package = null, ?string $name = null, ?string $lastname = null): bool {
+		return $this->client->send(new AddUser($user, $password, $email, $package, $name, $lastname));
 	}
 
 	/**
 	 * This function suspends a certain user and all his objects.
-	 * 
+	 *
 	 * @param string $user
 	 * @param bool 	 $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function suspend(string $user, bool $restart = false): bool {
 		return $this->client->send(new SuspendUser($user, $restart));
@@ -80,12 +83,12 @@ class Users extends Module {
 
 	/**
 	 * This function unsuspends user and all his objects.
-	 * 
+	 *
 	 * @param string $user
 	 * @param bool $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function unsuspend(string $user, bool $restart = false): bool {
 		return $this->client->send(new UnsuspendUser($user, $restart));
@@ -93,11 +96,11 @@ class Users extends Module {
 
 	/**
 	 * This function deletes a certain user and all his resources such as domains, databases, cron jobs, etc.
-	 * 
+	 *
 	 * @param string $user
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function delete(string $user): bool {
 		return $this->client->send(new DeleteUser($user));
@@ -105,12 +108,12 @@ class Users extends Module {
 
 	/**
 	 * This function backups all system users.
-	 * 
-	 * @return string
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 *
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function backup(): string {
-		return $this->client->send(new BackupUsers);
+	public function backup(): bool {
+		return $this->client->send(new BackupUsers());
 	}
 }

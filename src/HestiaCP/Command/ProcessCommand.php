@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command;
 
-use neto737\HestiaCP\AuthorizationException;
-use neto737\HestiaCP\Command\Command;
-use neto737\HestiaCP\ProcessException;
+use neto737\HestiaCP\Exceptions\AuthorizationException;
+use neto737\HestiaCP\Exceptions\ProcessException;
 
 abstract class ProcessCommand extends Command {
 
@@ -20,10 +21,11 @@ abstract class ProcessCommand extends Command {
 	public function process(): bool {
 		parent::defaultProcess();
 
-		if ($this->getResponseCode() === 0) {
+		$code = $this->getResponseCode();
+		if ($code === ResponseCode::OK) {
 			return true;
 		}
 
-		$this->throwCodeException($this->getResponseCode());
+		throw $this->codeException($code);
 	}
 }

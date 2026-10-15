@@ -1,235 +1,147 @@
+<p align="center">
+  <img src=".github/logo.svg" alt="HestiaCP PHP API logo" width="128" height="128">
+</p>
 
-# HestiaCP PHP API
+<h1 align="center">HestiaCP PHP API</h1>
 
-  
-[![Name](https://badgen.net/packagist/name/neto737/hestiacp-api)](//packagist.org/packages/neto737/hestiacp-api) [![Latest Stable Version](https://badgen.net/packagist/v/neto737/hestiacp-api/latest)](https://packagist.org/packages/neto737/hestiacp-api) [![Total Downloads](https://badgen.net/packagist/dt/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api)  [![License](https://badgen.net/packagist/license/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api) [![Build Status](https://www.travis-ci.com/neto737/HestiaCP-API.svg?branch=main)](https://www.travis-ci.com/github/neto737/HestiaCP-API) [![codecov](https://codecov.io/gh/neto737/HestiaCP-API/branch/main/graph/badge.svg?token=F93I5JQXY6)](https://codecov.io/gh/neto737/HestiaCP-API)
+<p align="center">
+  A modern PHP client for the <a href="https://hestiacp.com">HestiaCP</a> API.<br>
+  Manage users, web domains, mail, databases and backups on a HestiaCP server from your PHP code.
+</p>
 
-  
+<p align="center">
+  <a href="https://packagist.org/packages/neto737/hestiacp-api"><img src="https://img.shields.io/packagist/v/neto737/hestiacp-api?label=packagist" alt="Latest Stable Version"></a>
+  <a href="https://packagist.org/packages/neto737/hestiacp-api"><img src="https://img.shields.io/packagist/dt/neto737/hestiacp-api" alt="Total Downloads"></a>
+  <img src="https://img.shields.io/badge/php-%E2%89%A5%208.2-777BB4?logo=php&logoColor=white" alt="PHP 8.2 or later">
+  <a href="https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml"><img src="https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml/badge.svg?branch=main" alt="Tests"></a>
+  <a href="https://codecov.io/gh/neto737/HestiaCP-API"><img src="https://codecov.io/gh/neto737/HestiaCP-API/branch/main/graph/badge.svg?token=F93I5JQXY6" alt="Coverage"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/packagist/l/neto737/hestiacp-api" alt="License"></a>
+</p>
 
-## How to use
+---
 
-1) Installation
+## Features
+
+- **Every HestiaCP login method:** access keys (HestiaCP 1.6+), legacy API keys, and admin username and password.
+- **Ready-made modules** for users, web domains, mail, databases and backups.
+- **Errors as exceptions:** each failure is a typed exception that carries HestiaCP's exit code, so you can tell "already exists" apart from "bad credentials".
+- **TLS verification on by default,** with an option for self-signed certificates.
+- **Plain PHP arrays** as results. The only dependency is Guzzle.
+- **Lower-level access:** send any of the bundled command classes directly, or write your own.
+- Tested on PHP 8.2 to 8.5 and checked against HestiaCP 1.10.
+
+## Requirements
+
+- PHP 8.2 or later
+- HestiaCP with the API enabled, and the IP address of the calling machine allowed in the server settings
+
+## Installation
 
 ```sh
-
-$ composer require neto737/hestiacp-api
-
+composer require neto737/hestiacp-api
 ```
 
-2) Create Client
-
-a) Easy way
+## Quick start
 
 ```php
-
 use neto737\HestiaCP\Client;
 
-// Easy way to create Client
+// Access key (HestiaCP 1.6+), written as ACCESS_KEY:SECRET_KEY
+$client = Client::simpleFactory('https://panel.example.com', 'ACCESS_KEY:SECRET_KEY');
 
-// Using API Key
-$client = Client::simpleFactory('https://someHost', 'API_Key');
-
-// Using username and password
-$client = Client::simpleFactory('https://someHost', 'someUser', 'somePass');
-
-```
-
-b) For some reasons (more hosts, etc) you may need create objects alone
-
-```php
-
-use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Authorization\Credentials;
-use neto737\HestiaCP\Authorization\Host;
-
-// You can choose to use an API Key or username and password
-
-// API Key
-$credentials = new Credentials('API_Key');
-
-// Username and Password
-$credentials = new Credentials('someUser', 'somePassword');
-
-$host = new Host('https://someHost', $credentials);
-
-$client = new Client($host);
-
-```
-
-3) Usage
-
-```php
-
-// verify login
+// Check that the credentials work
 $client->testAuthorization(); // bool
 
+// List all users
+$users = $client->getModuleUser()->list(); // ['admin' => ['NAME' => '...', 'CONTACT' => '...', ...], ...]
+
+// Add a web domain for the admin user and give it a Let's Encrypt certificate
+$web = $client->getModuleWeb('admin');
+$web->addDomain('example.com');
+$web->addDomainLetsEncrypt('example.com', 'www.example.com');
+
+// Create a mailbox
+$mail = $client->getModuleMail('admin');
+$mail->addDomain('example.com');
+$mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 ```
 
-You can simply send one of prepared commands (or you can write own command - must implements `\neto737\HestiaCP\Command\ICommand` )
+> [!NOTE]
+> TLS certificates are verified by default. If your panel still uses the self-signed certificate created at install, see [TLS certificates](docs/authentication.md#tls-certificates).
+
+## Modules
+
+| Module | Get it with | What it covers |
+| --- | --- | --- |
+| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, suspend and unsuspend, back up all users. |
+| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Let's Encrypt certificates and FTP accounts. |
+| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, DKIM keys and DNS records. |
+| [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. |
+| [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
+
+Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md).
+
+## Error handling
 
 ```php
+use neto737\HestiaCP\Command\ResponseCode;
+use neto737\HestiaCP\Exceptions\AuthorizationException;
+use neto737\HestiaCP\Exceptions\ClientException;
+use neto737\HestiaCP\Exceptions\ProcessException;
 
-$command = new SomeCommand();
-
-$response = $client->send($command);
-
-
-echo $response->getResponseText();
-
+try {
+	$client->getModuleUser()->add('jane', 'S3cure-Pa$$word', 'jane@example.com');
+} catch (AuthorizationException $e) {
+	// wrong credentials, or not allowed to run the command
+} catch (ProcessException $e) {
+	if ($e->getCode() === ResponseCode::E_EXISTS) {
+		// the user already exists
+	}
+} catch (ClientException $e) {
+	// connection problem: timeout, DNS, TLS, ...
+}
 ```
 
-Or you can use prepared modules
+All exception types and exit codes are listed in [Error handling](docs/errors.md).
 
-a) user module
+## Documentation
 
-```php
+- [Authentication and client setup](docs/authentication.md): access keys, legacy API keys, passwords, hostname rules, TLS and timeouts
+- [Error handling](docs/errors.md): exception types and HestiaCP exit codes
+- Modules: [Users](docs/users.md) · [Web domains](docs/web.md) · [Mail](docs/mail.md) · [Databases](docs/databases.md) · [Backups](docs/backups.md)
+- [Sending commands directly](docs/commands.md): using the command classes, and writing your own
 
-$userModule = $client->getModuleUser();
+**Upgrading from v1?** Read [UPGRADING.md](UPGRADING.md). All changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
+## Contributing
 
-$userModule->list(); // returns all users with data
+Bug reports and pull requests are welcome. To run the checks:
 
-$userModule->detail('admin'); // returns selected user with data
-
-$userModule->changePassword('admin', 'otherPa$$word');
-
-$userModule->add('other_user', 'pa$$word', 'some@email.com');
-
-$userModule->suspend('other_user');
-
-$userModule->unsuspend('other_user');
-
-$userModule->delete('other_user');
-
+```sh
+composer install
+composer check    # coding style, static analysis and tests
 ```
 
-b) web module
+Each check can also run on its own: `composer test` (PHPUnit), `composer analyse` (PHPStan) and `composer cs` (PHP-CS-Fixer). `composer cs-fix` fixes the coding style. The code uses tabs for indentation and LF line endings.
 
-```php
+The tests use Guzzle's mock handler, so they don't need a HestiaCP server.
 
-$webModule = $client->getModuleWeb('admin'); // web module needs user
+## Credits
 
+This library started as a fork of [ProfiCloS/vestacp-api](https://github.com/ProfiCloS/vestacp-api) by PROFI CLOUD SERVICES s.r.o., a client for VestaCP, and was adapted and extended for HestiaCP.
 
-$webModule->listDomains();
+This is a community project. It is not affiliated with or endorsed by the HestiaCP project. The Hestia logo used in this project's logo is copyright [hestiacp.com](https://hestiacp.com) and is included unmodified.
 
-$webModule->addDomain('domain.com');
+## Support the project :heart:
 
-$webModule->addDomainLetsEncrypt('domain.com', 'www.domain.com'); // needs longer timeout
-
-$webModule->deleteDomainLetsEncrypt('domain.com');
-
-$webModule->addDomainFtp('domain.com', 'test', 'pa$$word');
-
-$webModule->changeDomainFtpPassword('domain.com', 'admin_test', 'otherPa$$word');
-
-$webModule->changeDomainFtpPath('domain.com', 'admin_test', 'path/other');
-
-$webModule->deleteDomainFtp('domain.com', 'admin_test');
-
-$webModule->suspendDomain('domain.com');
-
-$webModule->unsuspendDomain('domain.com');
-
-$webModule->deleteDomain('domain.com');
-
-```
-
-c) mail module
-
-```php
-
-$mailModule = $client->getModuleMail('admin'); // mail module needs user
-
-
-$mailModule->listDomains(); // returns mail domains from selected user
-
-$mailModule->addDomain('domain.com'); // add domain
-
-$mailModule->listAccounts('domain.com'); // returns accounts from selected user and domain
-
-$mailModule->listDomainDkim('domain.com');
-
-$mailModule->listDomainDkimDns('domain.com');
-
-$mailModule->addAccount('domain.com', 'info', 'pa$$word'); // add info@domain.com account
-
-$mailModule->changeAccountPassword('domain.com', 'info', 'otherPa$$word'); // change info@domain.com password
-
-$mailModule->suspendAccount('domain.com', 'info'); // suspend info@domain.com account
-
-$mailModule->unsuspendAccount('domain.com', 'info'); // unsuspend info@domain.com account
-
-$mailModule->deleteAccount('domain.com', 'info');
-
-$mailModule->suspendDomain('domain.com');
-
-$mailModule->unsuspendDomain('domain.com');
-
-$mailModule->deleteDomain('domain.com');
-
-```
-
-d) db module
-
-```php
-
-$dbModule = $client->getModuleDatabase('admin');
-
-
-$dbModule->add('database', 'dbuser', 'dbpass');
-
-$dbModule->delete('admin_database');
-
-$dbModule->deleteDatabases();
-
-$dbModule->listDatabase('database');
-
-$dbModule->listDatabases();
-
-
-// todo
-
-// ... etc
-
-```
-
-e) cron module
-
-```php
-
-$cronModule = $client->getModuleCron();
-
-
-// todo
-
-// ... etc
-
-```
-
-f) backup module
-
-```php
-
-$backupModule = $client->getModuleBackup('admin'); // backup module needs user
-
-$backupModule->backup(); // create a new backup
-
-$backupModule->delete('admin.2021-10-13_18-12-53.tar'); // delete an user backup
-
-$backupModule->deleteExclusions(); // delete all backup exclusions
-
-$backupModule->listBackups(); // returns the backups list
-
-$backupModule->listBackup('admin.2021-10-13_18-12-53.tar'); // returns backup parameters list
-
-$backupModule->listBackupExclusions(); // returns the backup exclusions list
-
-```
-
-## Donate :heart:
+If this library saves you time, you can support its development via [Liberapay](https://liberapay.com/neto737), [PayPal](https://paypal.me/neto737) or crypto:
 
 ```
 BTC: bc1q89ntljt5lk7g9z68f5cjs83qfm2xme7g4hkur7
 ETH: 0xeef9220639F14E7A0FD825AAAd0574e5a8aD7A4B
 LTC: ltc1q508qfkd09vyya6c5zkfx4r248pf3ezj9ngjdr2
 ```
+
+## License
+
+Released under the [MIT License](LICENSE).

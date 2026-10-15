@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users;
 use neto737\HestiaCP\Command\Lists\WebDomains;
@@ -24,7 +26,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertFalse($command->needReturnCode());
 
-		$this->expectException(TypeError::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -33,8 +35,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-users', $command->getName());
 		$this->assertSame(['arg1' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 
 	public function testWebDomains(): void {
@@ -42,8 +43,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-web-domains', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 
 	public function testMailDomains(): void {
@@ -51,22 +51,23 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-mail-domains', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 
 	public function testMailDomainDkim(): void {
 		$command = new MailDomainDkim('admin', 'domain');
 		$this->assertSame('v-list-mail-domain-dkim', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
-		$this->assertSame('', $command->getResponseText());
+
+		$this->assertSame([], $command->process());
 	}
 
 	public function testMailDomainDkimDns(): void {
 		$command = new MailDomainDkimDns('admin', 'domain');
 		$this->assertSame('v-list-mail-domain-dkim-dns', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
-		$this->assertSame('', $command->getResponseText());
+
+		$this->assertSame([], $command->process());
 	}
 
 	public function testMailAccounts(): void {
@@ -74,8 +75,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-mail-accounts', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 
 	public function testUserBackups(): void {
@@ -83,16 +83,15 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-user-backups', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 
 	public function testUserBackup(): void {
 		$command = new UserBackup('admin', 'admin.2021-10-07_05-15-09.tar');
 		$this->assertSame('v-list-user-backup', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'admin.2021-10-07_05-15-09.tar', 'arg3' => 'json'], $command->getRequestParams());
-	
-		$this->expectException(TypeError::class);
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -101,8 +100,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-user-backup-exclusions', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 
 	public function testListDatabase(): void {
@@ -110,7 +108,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-database', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'test', 'arg3' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -119,7 +117,6 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-databases', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
-		$this->expectException(TypeError::class);
-		$command->process();
+		$this->assertSame([], $command->process());
 	}
 }
