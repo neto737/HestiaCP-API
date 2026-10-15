@@ -13,9 +13,9 @@
         "sdk"
     ],
     "require": {
-        "php": ">=8.1",
-        "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.15.2 || ^8.2"
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.15.2 || ^8.2",
+        "psr/http-message": "^1.1 || ^2.0"
     },
     "homepage": "https://github.com/neto737/HestiaCP-API",
     "support": {
@@ -47,10 +47,13 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0",
-        "phpstan/phpstan": "^2.1",
         "friendsofphp/php-cs-fixer": "^3.86",
-        "phpstan/phpstan-phpunit": "^2.0"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0"
+    },
+    "config": {
+        "sort-packages": true
     },
     "scripts": {
         "test": "phpunit",
