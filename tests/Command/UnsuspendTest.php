@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Command;
+
 use neto737\HestiaCP\Command\Unsuspend\User;
 use neto737\HestiaCP\Command\Unsuspend\WebDomain;
 use neto737\HestiaCP\Command\Unsuspend\MailAccount;
 use neto737\HestiaCP\Command\Unsuspend\MailDomain;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class commandUnsuspendTest extends \PHPUnit\Framework\TestCase {
+class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
 		$command = new User('admin');

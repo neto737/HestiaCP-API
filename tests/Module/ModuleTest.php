@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Module;
+
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;
@@ -9,9 +11,9 @@ use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use neto737\HestiaCP\Module\Mails;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class moduleTest extends \PHPUnit\Framework\TestCase {
+class ModuleTest extends \PHPUnit\Framework\TestCase {
 
 	public function createClient(): Client {
 		return Client::simpleFactory('https://someHost', 'someUser', 'somePass');

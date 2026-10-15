@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests;
+
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -33,7 +35,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  * @phpstan-import-type ClientOptions from Client
  * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
  */
-class clientSendTest extends \PHPUnit\Framework\TestCase {
+class ClientSendTest extends \PHPUnit\Framework\TestCase {
 
 	/** @var array<array-key, HistoryEntry> */
 	private array $history = [];

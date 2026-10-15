@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Authorization;
+
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class hostTest extends \PHPUnit\Framework\TestCase {
+class HostTest extends \PHPUnit\Framework\TestCase {
 
 	public function testHost(): void {
 		$credentials = new Credentials('', '');

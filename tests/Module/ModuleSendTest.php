@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Module;
+
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -16,7 +18,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 /**
  * Calls every module method through a mocked client and checks the request it sends and the value it returns.
@@ -25,7 +27,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
  * @phpstan-type ModuleCall \Closure(Client): mixed
  */
-class moduleSendTest extends \PHPUnit\Framework\TestCase {
+class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 
 	private const LIST_BODY = '{"first": {"NAME": "First"}, "second": {"NAME": "Second"}}';
 

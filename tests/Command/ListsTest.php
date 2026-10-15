@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Command;
+
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users;
 use neto737\HestiaCP\Command\Lists\WebDomains;
@@ -15,9 +17,9 @@ use neto737\HestiaCP\Command\Lists\UserBackupExclusions;
 use neto737\HestiaCP\Command\Lists\Database;
 use neto737\HestiaCP\Command\Lists\Databases;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class commandListTest extends \PHPUnit\Framework\TestCase {
+class ListsTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
 		$command = new User('admin');

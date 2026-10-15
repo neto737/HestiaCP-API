@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Command;
+
 use neto737\HestiaCP\Command\Change\UserPassword;
 use neto737\HestiaCP\Command\Change\MailAccountPassword;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class commandChangeTest extends \PHPUnit\Framework\TestCase {
+class ChangeTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUserPassword(): void {
 		$command = new UserPassword('admin', 'pass');

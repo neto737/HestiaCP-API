@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Command;
+
 use neto737\HestiaCP\Command\Backup\Users;
 use neto737\HestiaCP\Command\Backup\User;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class commandBackupTest extends \PHPUnit\Framework\TestCase {
+class BackupTest extends \PHPUnit\Framework\TestCase {
 
 	public function testBackupUsers(): void {
 		$command = new Users();
