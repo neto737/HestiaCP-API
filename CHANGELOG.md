@@ -54,6 +54,7 @@ This will be released as 2.0.0. It brings the library up to date with HestiaCP 1
 - `TestAuthorization` sent an empty command, which current HestiaCP rejects. It now runs `v-list-sys-info` and returns `false` on an authentication failure.
 - `Backup\User` and `Backup\Users` failed because they expected JSON. `Backup\Users` also sent a `json` argument the script doesn't take.
 - PHP 8.1 deprecation warnings from passing `null` to `preg_match()` and `preg_replace()`.
+- `getModuleMail()`, `getModuleWeb()`, `getModuleBackup()` and `getModuleDatabase()` cached one module per class, so asking for a second user returned the first user's module and ran its calls against the first user's account. Modules are now cached per user.
 
 ## [1.2.0] - 2021-10-13
 
