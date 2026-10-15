@@ -36,5 +36,34 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 
 		$credentials_apikey = new Credentials('key');
 		$this->assertSame(['hash' => 'key'], $credentials_apikey->getRequestParams());
+
+		$credentials_accesskey = Credentials::accessKey('access', 'secret');
+		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials_accesskey->getRequestParams());
+	}
+
+	public function testAccessKey() {
+		$credentials = Credentials::accessKey('access', 'secret');
+		$this->assertSame('access', $credentials->getAccessKey());
+		$this->assertSame('secret', $credentials->getSecretKey());
+		$this->assertNull($credentials->getApiKey());
+		$this->assertNull($credentials->getUser());
+		$this->assertNull($credentials->getPassword());
+	}
+
+	public function testSwitchBetweenKeys() {
+		$credentials = Credentials::accessKey('access', 'secret');
+		$credentials->setApiKey('key');
+		$this->assertNull($credentials->getAccessKey());
+		$this->assertNull($credentials->getSecretKey());
+		$this->assertSame(['hash' => 'key'], $credentials->getRequestParams());
+
+		$credentials->setAccessKey('access', 'secret');
+		$this->assertNull($credentials->getApiKey());
+		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials->getRequestParams());
+	}
+
+	public function testNamedConstructors() {
+		$this->assertSame(['hash' => 'key'], Credentials::legacyHash('key')->getRequestParams());
+		$this->assertSame(['user' => 'us', 'password' => 'er'], Credentials::password('us', 'er')->getRequestParams());
 	}
 }

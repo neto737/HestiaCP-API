@@ -60,13 +60,16 @@ use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 
-// You can choose to use an API Key or username and password
+// You can choose to use an access key, a legacy API key, or username and password
 
-// API Key
-$credentials = new Credentials('API_Key');
+// Access key (HestiaCP 1.6+)
+$credentials = Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
 
-// Username and Password
-$credentials = new Credentials('someUser', 'somePassword');
+// Legacy API Key
+$credentials = Credentials::legacyHash('API_Key');
+
+// Username and Password (HestiaCP only accepts the admin/root user)
+$credentials = Credentials::password('admin', 'somePassword');
 
 $host = new Host('https://someHost', $credentials);
 

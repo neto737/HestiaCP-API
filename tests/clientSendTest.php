@@ -6,6 +6,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use neto737\HestiaCP\Authorization\Credentials;
+use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Exceptions\ClientException;
@@ -52,6 +54,27 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 		parse_str((string) $request->getBody(), $params);
 		$this->assertSame([
 			'hash' => 'ACCESS:SECRET',
+			'arg1' => 'user',
+			'arg2' => 'pass',
+			'arg3' => 'mail@domain.com',
+			'returncode' => 'yes',
+			'cmd' => 'v-add-user'
+		], $params);
+	}
+
+	public function testRequestFormatWithAccessKey(): void {
+		$this->history = [];
+		$stack = HandlerStack::create(new MockHandler([self::codeResponse(0)]));
+		$stack->push(Middleware::history($this->history));
+
+		$host = new Host('https://someHost', Credentials::accessKey('ACCESS', 'SECRET'));
+		$client = new Client($host, ['handler' => $stack]);
+		$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
+
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame([
+			'access_key' => 'ACCESS',
+			'secret_key' => 'SECRET',
 			'arg1' => 'user',
 			'arg2' => 'pass',
 			'arg3' => 'mail@domain.com',
