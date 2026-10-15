@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Command\Lists;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Command\ListCommand;
 
 class UserBackup extends ListCommand {
@@ -22,7 +21,7 @@ class UserBackup extends ListCommand {
         return 'v-list-user-backup';
     }
 
-    public function process(): ArrayHash {
+    public function process(): array {
 		return $this->convertDetail(parent::process());
 	}
 

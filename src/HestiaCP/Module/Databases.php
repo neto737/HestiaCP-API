@@ -3,7 +3,6 @@
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use Nette\Utils\ArrayHash;
 
 use neto737\HestiaCP\Command\Add\Database as AddDatabase;
 use neto737\HestiaCP\Command\Delete\Database as DeleteDatabase;
@@ -63,18 +62,18 @@ class Databases extends Module {
      * This function for obtaining of all database's parameters.
      * 
      * @param string    $database
-     * @return ArrayHash
+     * @return array
      * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
      */
-    public function listDatabase(string $database): ArrayHash {
+    public function listDatabase(string $database): array {
         return $this->client->send(new ListDatabase($this->user, $database));
     }
 
     /**
      * This function for obtaining the list of all user's databases.
      * 
-     * @return ArrayHash[]
+     * @return array[]
      * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
      */

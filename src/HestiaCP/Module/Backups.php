@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Module;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Client;
 
 use neto737\HestiaCP\Command\Backup\User as BackupUser;
@@ -72,11 +71,11 @@ class Backups extends Module {
      * This function of obtaining the list of backup parameters.
      * 
      * @param string    $backup
-     * @return ArrayHash
+     * @return array
      * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
      */
-    public function listBackup(string $backup): ArrayHash {
+    public function listBackup(string $backup): array {
         return $this->client->send(new ListsUserBackup($this->user, $backup));
     }
 

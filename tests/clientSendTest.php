@@ -6,7 +6,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\AuthorizationException;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\ClientException;
@@ -189,17 +188,31 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 		]);
 
 		$users = $client->send(new Users());
-		$this->assertSame(['admin', 'user'], array_keys($users));
-		$this->assertInstanceOf(ArrayHash::class, $users['admin']);
-		$this->assertSame('System Administrator', $users['admin']->NAME);
+		$this->assertSame([
+			'admin' => ['NAME' => 'System Administrator'],
+			'user' => ['NAME' => 'User']
+		], $users);
 	}
 
 	public function testListDetail(): void {
 		$client = $this->createClient([new Response(200, [], '{"admin": {"NAME": "System Administrator"}}')]);
 
 		$user = $client->send(new User('admin'));
-		$this->assertInstanceOf(ArrayHash::class, $user);
-		$this->assertSame('System Administrator', $user->NAME);
+		$this->assertSame(['NAME' => 'System Administrator'], $user);
+	}
+
+	public function testListDetailNotObject(): void {
+		$client = $this->createClient([new Response(200, [], '{"admin": "System Administrator"}')]);
+
+		$this->expectException(InvalidResponseException::class);
+		$client->send(new User('admin'));
+	}
+
+	public function testListNotList(): void {
+		$client = $this->createClient([new Response(200, [], '"OK"')]);
+
+		$this->expectException(ProcessException::class);
+		$client->send(new Users());
 	}
 
 	public function testListEmpty(): void {

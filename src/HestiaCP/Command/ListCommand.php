@@ -2,9 +2,6 @@
 
 namespace neto737\HestiaCP\Command;
 
-use Nette\Utils\ArrayHash;
-use Nette\Utils\Json;
-use Nette\Utils\JsonException;
 use neto737\HestiaCP\AuthorizationException;
 use neto737\HestiaCP\InvalidResponseException;
 use neto737\HestiaCP\ProcessException;
@@ -16,7 +13,7 @@ abstract class ListCommand extends Command {
 	}
 
 	/**
-	 * @return array|ArrayHash
+	 * @return array
 	 * @throws ProcessException
 	 * @throws AuthorizationException
 	 */
@@ -31,31 +28,30 @@ abstract class ListCommand extends Command {
 		}
 
 		try {
-			$response = Json::decode($responseJson);
-		} catch (JsonException $e) {
+			$response = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
+		} catch (\JsonException $e) {
 			throw new ProcessException($responseJson, 0, $e);
 		}
 
-		// convert response to array
-		return $this->convertList((array)$response);
-	}
-
-	protected function convertList(array $list): array {
-		foreach ($list as $key => $item) {
-			$list[$key] = ArrayHash::from((array) $item);
+		if (!is_array($response)) {
+			throw new ProcessException($responseJson);
 		}
 
-		return $list;
+		return $response;
 	}
 
 	/**
+	 * Returns the only item of a single-object list, e.g. {"admin": {...}}.
+	 *
 	 * @throws InvalidResponseException
 	 */
-	protected function convertDetail(array $list): ArrayHash {
-		if ($list === []) {
+	protected function convertDetail(array $list): array {
+		$detail = array_shift($list);
+
+		if (!is_array($detail)) {
 			throw new InvalidResponseException('Empty response');
 		}
 
-		return array_shift($list);
+		return $detail;
 	}
 }

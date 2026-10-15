@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Module;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Command\Add\User as AddUser;
 use neto737\HestiaCP\Command\Change\UserPassword;
 use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
@@ -29,11 +28,11 @@ class Users extends Module {
 	 * This function to obtain user parameters.
 	 * 
 	 * @param string $user
-	 * @return ArrayHash
+	 * @return array
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function detail(string $user): ArrayHash {
+	public function detail(string $user): array {
 		return $this->client->send(new User($user));
 	}
 

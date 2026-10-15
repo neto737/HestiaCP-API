@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Command\Lists;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Command\ListCommand;
 
 class Database extends ListCommand {
@@ -22,7 +21,7 @@ class Database extends ListCommand {
 		return 'v-list-database';
 	}
 
-	public function process(): ArrayHash {
+	public function process(): array {
 		return $this->convertDetail(parent::process());
 	}
 

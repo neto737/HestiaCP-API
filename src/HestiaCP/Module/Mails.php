@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Module;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Command\Add\MailAccount;
 use neto737\HestiaCP\Command\Add\MailDomain;
@@ -32,7 +31,7 @@ class Mails extends Module {
 	 * This function of obtaining the list of all user domains.
 	 * 
 	 * @param string $domain
-	 * @return ArrayHash[]
+	 * @return array[]
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
@@ -162,7 +161,7 @@ class Mails extends Module {
 	 * This function of obtaining domain dkim files.
 	 * 
 	 * @param string $domain
-	 * @return ArrayHash[]
+	 * @return array[]
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
@@ -174,7 +173,7 @@ class Mails extends Module {
 	 * This function of obtaining domain dkim dns records for proper setup.
 	 * 
 	 * @param string $domain
-	 * @return ArrayHash[]
+	 * @return array[]
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
@@ -185,7 +184,7 @@ class Mails extends Module {
 	/**
 	 * This function of obtaining the list of all user domains.
 	 * 
-	 * @return ArrayHash[]
+	 * @return array[]
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */

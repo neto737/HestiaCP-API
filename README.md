@@ -118,6 +118,19 @@ echo $response->getResponseText();
 
 Or you can use prepared modules
 
+List and detail methods return plain associative arrays decoded from HestiaCP's JSON, keyed by the object name:
+
+```php
+
+$users = $client->getModuleUser()->list(); // ['admin' => ['NAME' => '...', 'CONTACT' => '...', ...], ...]
+
+$admin = $client->getModuleUser()->detail('admin');
+echo $admin['CONTACT'];
+
+```
+
+> Before v2.0 these methods returned `Nette\Utils\ArrayHash` objects. To upgrade, replace `$item->FIELD` with `$item['FIELD']`.
+
 a) user module
 
 ```php

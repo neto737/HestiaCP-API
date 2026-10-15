@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Module;
 
-use Nette\Utils\ArrayHash;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
 use neto737\HestiaCP\Command\Add\WebDomain;
@@ -166,7 +165,7 @@ class Webs extends Module {
 	/**
 	 * This function to obtain the list of all user web domains.
 	 * 
-	 * @return ArrayHash[]
+	 * @return array[]
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
