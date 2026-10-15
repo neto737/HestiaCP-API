@@ -7,6 +7,8 @@ use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Command\Command;
 use neto737\HestiaCP\Command\ICommand;
 use neto737\HestiaCP\Command\TestAuthorization;
+use neto737\HestiaCP\Exceptions\ClientException;
+use neto737\HestiaCP\Exceptions\ProcessException;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Mails;
@@ -37,7 +39,7 @@ class Client {
 	 * @param array|null $options
 	 * @throws ClientException
 	 */
-	public function __construct(Host $host, array $options = null) {
+	public function __construct(Host $host, ?array $options = null) {
 		$this->setHost($host);
 		$this->prepareCommunication($options);
 	}
@@ -50,7 +52,7 @@ class Client {
 	 * @return Client
 	 * @throws ClientException
 	 */
-	public static function simpleFactory(string $hostname, string $user, string $password = null, array $options = null): Client {
+	public static function simpleFactory(string $hostname, string $user, ?string $password = null, ?array $options = null): Client {
 		$credentials = new Credentials($user, $password);
 		$host = new Host($hostname, $credentials);
 
@@ -126,7 +128,7 @@ class Client {
 	 * @return Client
 	 * @throws ClientException
 	 */
-	private function prepareCommunication(array $options = null): Client {
+	private function prepareCommunication(?array $options = null): Client {
 		try {
 			$this->guzzleClient = new \GuzzleHttp\Client([
 				'timeout' => $options['timeout'] ?? 10.0,

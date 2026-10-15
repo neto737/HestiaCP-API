@@ -1,7 +1,7 @@
 <?php
 
 use neto737\HestiaCP\Command\TestAuthorization;
-use neto737\HestiaCP\InvalidResponseException;
+use neto737\HestiaCP\Exceptions\InvalidResponseException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

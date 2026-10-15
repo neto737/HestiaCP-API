@@ -2,9 +2,9 @@
 
 namespace neto737\HestiaCP\Command;
 
-use neto737\HestiaCP\AuthorizationException;
+use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Command\Command;
-use neto737\HestiaCP\ProcessException;
+use neto737\HestiaCP\Exceptions\ProcessException;
 
 abstract class ProcessCommand extends Command {
 

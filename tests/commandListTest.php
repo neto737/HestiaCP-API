@@ -24,7 +24,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertFalse($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -87,7 +87,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-user-backup', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'admin.2021-10-07_05-15-09.tar', 'arg3' => 'json'], $command->getRequestParams());
 	
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -104,7 +104,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('v-list-database', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'test', 'arg3' => 'json'], $command->getRequestParams());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 

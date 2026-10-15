@@ -24,7 +24,7 @@ class WebDomain extends ProcessCommand {
 	/** @var bool */
 	private $restart;
 
-	public function __construct(string $user, string $domain, string $ip = null, string $aliases = null, string $proxyExtensions = null, bool $restart = false) {
+	public function __construct(string $user, string $domain, ?string $ip = null, ?string $aliases = null, ?string $proxyExtensions = null, bool $restart = false) {
 		$this->user = $user;
 		$this->domain = $domain;
 		$this->ip = $ip;

@@ -34,10 +34,10 @@ class Webs extends Module {
 	 * @param string|null $proxyExtensions
 	 * @param bool        $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomain(string $domain, string $ip = null, string $aliases = null, string $proxyExtensions = null, bool $restart = false): bool {
+	public function addDomain(string $domain, ?string $ip = null, ?string $aliases = null, ?string $proxyExtensions = null, bool $restart = false): bool {
 		return $this->client->send(new WebDomain($this->user, $domain, $ip, $aliases, $proxyExtensions, $restart));
 	}
 
@@ -47,8 +47,8 @@ class Webs extends Module {
 	 * @param string      $domain
 	 * @param bool        $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function suspendDomain(string $domain, bool $restart = false): bool {
 		return $this->client->send(new SuspendWebDomain($this->user, $domain, $restart));
@@ -60,8 +60,8 @@ class Webs extends Module {
 	 * @param string      $domain
 	 * @param bool        $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function unsuspendDomain(string $domain, bool $restart = false): bool {
 		return $this->client->send(new UnsuspendWebDomain($this->user, $domain, $restart));
@@ -72,8 +72,8 @@ class Webs extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function deleteDomain(string $domain): bool {
 		return $this->client->send(new DeleteWebDomain($this->user, $domain));
@@ -86,10 +86,10 @@ class Webs extends Module {
 	 * @param string|null $aliases
 	 * @param bool        $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomainLetsEncrypt(string $domain, string $aliases = null, bool $restart = false): bool {
+	public function addDomainLetsEncrypt(string $domain, ?string $aliases = null, bool $restart = false): bool {
 		return $this->client->send(new LetsEncryptDomain($this->user, $domain, $aliases, $restart));
 	}
 
@@ -99,8 +99,8 @@ class Webs extends Module {
 	 * @param string $domain
 	 * @param bool   $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function deleteDomainLetsEncrypt(string $domain, bool $restart = false): bool {
 		return $this->client->send(new DeleteLetsEncryptDomain($this->user, $domain, $restart));
@@ -114,10 +114,10 @@ class Webs extends Module {
 	 * @param string      $ftpPassword
 	 * @param string|null $ftpPath
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomainFtp(string $domain, string $ftpUser, string $ftpPassword, string $ftpPath = null): bool {
+	public function addDomainFtp(string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null): bool {
 		return $this->client->send(new WebDomainFtp($this->user, $domain, $ftpUser, $ftpPassword, $ftpPath));
 	}
 
@@ -128,8 +128,8 @@ class Webs extends Module {
 	 * @param string      $ftpUser
 	 * @param string      $ftpPassword
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changeDomainFtpPassword(string $domain, string $ftpUser, string $ftpPassword): bool {
 		return $this->client->send(new WebDomainFtpPassword($this->user, $domain, $ftpUser, $ftpPassword));
@@ -142,8 +142,8 @@ class Webs extends Module {
 	 * @param string $ftpUser
 	 * @param string $ftpPath
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changeDomainFtpPath(string $domain, string $ftpUser, string $ftpPath): bool {
 		return $this->client->send(new WebDomainFtpPath($this->user, $domain, $ftpUser, $ftpPath));
@@ -155,8 +155,8 @@ class Webs extends Module {
 	 * @param string $domain
 	 * @param string $ftpUser
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function deleteDomainFtp(string $domain, string $ftpUser): bool {
 		return $this->client->send(new DeleteWebDomainFtp($this->user, $domain, $ftpUser));
@@ -166,8 +166,8 @@ class Webs extends Module {
 	 * This function to obtain the list of all user web domains.
 	 * 
 	 * @return array[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomains(): array {
 		return $this->client->send(new WebDomains($this->user));

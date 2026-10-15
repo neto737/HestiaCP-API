@@ -87,9 +87,9 @@ Errors are thrown as exceptions. The HestiaCP exit code is available as the exce
 
 ```php
 
-use neto737\HestiaCP\AuthorizationException;
-use neto737\HestiaCP\ClientException;
-use neto737\HestiaCP\ProcessException;
+use neto737\HestiaCP\Exceptions\AuthorizationException;
+use neto737\HestiaCP\Exceptions\ClientException;
+use neto737\HestiaCP\Exceptions\ProcessException;
 
 try {
 	$client->getModuleUser()->add('other_user', 'pa$$word', 'some@email.com');

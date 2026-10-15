@@ -28,8 +28,8 @@ class Databases extends Module {
      * @param string    $dbpass
      * @param string    $type
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function add(string $database, string $dbuser, string $dbpass, string $type = 'mysql'): bool {
         return $this->client->send(new AddDatabase($this->user, $database, $dbuser, $dbpass, $type));
@@ -40,8 +40,8 @@ class Databases extends Module {
      * 
      * @param string    $database
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function delete(string $database): bool {
         return $this->client->send(new DeleteDatabase($this->user, $database));
@@ -51,8 +51,8 @@ class Databases extends Module {
      * This function deletes all user databases.
      * 
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function deleteDatabases(): bool {
         return $this->client->send(new DeleteDatabases($this->user));
@@ -63,8 +63,8 @@ class Databases extends Module {
      * 
      * @param string    $database
      * @return array
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function listDatabase(string $database): array {
         return $this->client->send(new ListDatabase($this->user, $database));
@@ -74,8 +74,8 @@ class Databases extends Module {
      * This function for obtaining the list of all user's databases.
      * 
      * @return array[]
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function listDatabases(): array {
         return $this->client->send(new ListDatabases($this->user));

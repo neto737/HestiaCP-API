@@ -16,7 +16,7 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -32,7 +32,7 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -48,7 +48,7 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 
@@ -64,7 +64,7 @@ class commandChangeTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertTrue($command->needReturnCode());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
 }

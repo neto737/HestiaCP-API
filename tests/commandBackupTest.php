@@ -12,7 +12,7 @@ class commandBackupTest extends \PHPUnit\Framework\TestCase {
         $this->assertSame('v-backup-users', $command->getName());
         $this->assertSame([], $command->getRequestParams());
 
-		$this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
     }
 
@@ -21,7 +21,7 @@ class commandBackupTest extends \PHPUnit\Framework\TestCase {
         $this->assertSame('v-backup-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'yes'], $command->getRequestParams());
 
-        $this->expectException(\neto737\HestiaCP\InvalidResponseException::class);
+        $this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
     }
 }

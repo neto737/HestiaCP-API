@@ -32,8 +32,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return array[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listAccounts(string $domain): array {
 		return $this->client->send(new MailAccounts($this->user, $domain));
@@ -46,8 +46,8 @@ class Mails extends Module {
 	 * @param string $account
 	 * @param string $password
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function addAccount(string $domain, string $account, string $password): bool {
 		return $this->client->send(new MailAccount($this->user, $domain, $account, $password));
@@ -60,8 +60,8 @@ class Mails extends Module {
 	 * @param string $account
 	 * @param string $password
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changeAccountPassword(string $domain, string $account, string $password): bool {
 		return $this->client->send(new MailAccountPassword($this->user, $domain, $account, $password));
@@ -73,8 +73,8 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function suspendAccount(string $domain, string $account): bool {
 		return $this->client->send(new SuspendMailAccount($this->user,  $domain, $account));
@@ -86,8 +86,8 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function unsuspendAccount(string $domain, string $account): bool {
 		return $this->client->send(new UnsuspendMailAccount($this->user,  $domain, $account));
@@ -99,8 +99,8 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function deleteAccount(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccount($this->user, $domain, $account));
@@ -114,8 +114,8 @@ class Mails extends Module {
 	 * @param bool   $antivirus
 	 * @param bool   $dkim
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true): bool {
 		return $this->client->send(new MailDomain($this->user, $domain, $antispam, $antivirus, $dkim));
@@ -126,8 +126,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function suspendDomain(string $domain): bool {
 		return $this->client->send(new SuspendMailDomain($this->user, $domain));
@@ -138,8 +138,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function unsuspendDomain(string $domain): bool {
 		return $this->client->send(new UnsuspendMailDomain($this->user, $domain));
@@ -150,8 +150,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function deleteDomain(string $domain): bool {
 		return $this->client->send(new DeleteMailDomain($this->user, $domain));
@@ -162,8 +162,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return array[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomainDkim(string $domain): array {
 		return $this->client->send(new MailDomainDkim($this->user, $domain));
@@ -174,8 +174,8 @@ class Mails extends Module {
 	 * 
 	 * @param string $domain
 	 * @return array[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomainDkimDns(string $domain): array {
 		return $this->client->send(new MailDomainDkimDns($this->user, $domain));
@@ -185,8 +185,8 @@ class Mails extends Module {
 	 * This function of obtaining the list of all user domains.
 	 * 
 	 * @return array[]
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomains(): array {
 		return $this->client->send(new MailDomains($this->user));

@@ -17,8 +17,8 @@ class Users extends Module {
 	 * This function to obtain the list of all system users.
 	 * 
 	 * @return array
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function list(): array {
 		return $this->client->send(new ListsUsers);
@@ -29,8 +29,8 @@ class Users extends Module {
 	 * 
 	 * @param string $user
 	 * @return array
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function detail(string $user): array {
 		return $this->client->send(new User($user));
@@ -42,8 +42,8 @@ class Users extends Module {
 	 * @param string $user
 	 * @param string $password
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changePassword(string $user, string $password): bool {
 		return $this->client->send(new UserPassword($user, $password));
@@ -57,10 +57,10 @@ class Users extends Module {
 	 * @param string 	  $email
 	 * @param string|null $package
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function add(string $user, string $password, string $email, string $package = null): bool {
+	public function add(string $user, string $password, string $email, ?string $package = null): bool {
 		return $this->client->send(new AddUser($user, $password, $email, $package));
 	}
 
@@ -70,8 +70,8 @@ class Users extends Module {
 	 * @param string $user
 	 * @param bool 	 $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function suspend(string $user, bool $restart = false): bool {
 		return $this->client->send(new SuspendUser($user, $restart));
@@ -83,8 +83,8 @@ class Users extends Module {
 	 * @param string $user
 	 * @param bool $restart
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function unsuspend(string $user, bool $restart = false): bool {
 		return $this->client->send(new UnsuspendUser($user, $restart));
@@ -95,8 +95,8 @@ class Users extends Module {
 	 * 
 	 * @param string $user
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function delete(string $user): bool {
 		return $this->client->send(new DeleteUser($user));
@@ -106,8 +106,8 @@ class Users extends Module {
 	 * This function backups all system users.
 	 * 
 	 * @return bool
-	 * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function backup(): bool {
 		return $this->client->send(new BackupUsers);

@@ -17,7 +17,7 @@ class Credentials {
 	 * @param string $user		Username or Api Key
 	 * @param string @password	Password (must be null if using API Key)
 	 */
-	public function __construct(string $user, string $password = null) {
+	public function __construct(string $user, ?string $password = null) {
 		if (is_null($password)) {
 			$this->setApiKey($user);
 		} else {

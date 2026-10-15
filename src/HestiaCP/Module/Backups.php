@@ -26,8 +26,8 @@ class Backups extends Module {
      * 
      * @param bool  $notify
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function backup(bool $notify = true): bool {
         return $this->client->send(new BackupUser($this->user, $notify));
@@ -38,8 +38,8 @@ class Backups extends Module {
      * 
      * @param string    $backup
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function delete(string $backup): bool {
         return $this->client->send(new DeleteUserBackup($this->user, $backup));
@@ -49,8 +49,8 @@ class Backups extends Module {
      * This function for deleting backup exclusion
      * 
      * @return bool
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function deleteExclusions(): bool {
         return $this->client->send(new DeleteUserBackupExclusions($this->user));
@@ -60,8 +60,8 @@ class Backups extends Module {
      * This function for obtaining the list of available user backups.
      * 
      * @return array
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function listBackups(): array {
         return $this->client->send(new UserBackups($this->user));
@@ -72,8 +72,8 @@ class Backups extends Module {
      * 
      * @param string    $backup
      * @return array
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function listBackup(string $backup): array {
         return $this->client->send(new ListsUserBackup($this->user, $backup));
@@ -83,8 +83,8 @@ class Backups extends Module {
      * This function for obtaining the backup exclusion list
      * 
      * @return array
-     * @throws \neto737\HestiaCP\ClientException
-	 * @throws \neto737\HestiaCP\ProcessException
+     * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
     public function listBackupExclusions(): array {
         return $this->client->send(new ListsUserBackupExclusions($this->user));

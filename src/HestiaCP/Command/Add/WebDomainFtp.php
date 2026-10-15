@@ -21,7 +21,7 @@ class WebDomainFtp extends ProcessCommand {
 	/** @var string|null */
 	private $ftpPath;
 
-	public function __construct(string $user, string $domain, string $ftpUser, string $ftpPassword, string $ftpPath = null) {
+	public function __construct(string $user, string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null) {
 		$this->user = $user;
 		$this->domain = $domain;
 		$this->ftpUser = $ftpUser;
