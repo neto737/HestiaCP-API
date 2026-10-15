@@ -235,25 +235,23 @@ d) db module
 
 ```php
 
-$dbModule = $client->getModuleDatabase('admin');
+$dbModule = $client->getModuleDatabase('admin'); // db module needs user
 
+$dbModule->add('database', 'dbuser', 'dbpass'); // creates admin_database with the user admin_dbuser (type defaults to mysql)
 
-$dbModule->add('database', 'dbuser', 'dbpass');
+$dbModule->add('database', 'dbuser', 'dbpass', 'pgsql'); // PostgreSQL, if it is installed on the server
 
-$dbModule->delete('admin_database');
+$dbModule->listDatabases(); // ['admin_database' => ['DATABASE' => '...', 'DBUSER' => '...', ...], ...]
 
-$dbModule->deleteDatabases();
+$dbModule->listDatabase('admin_database'); // returns the database parameters
 
-$dbModule->listDatabase('database');
+$dbModule->delete('admin_database'); // delete one database
 
-$dbModule->listDatabases();
-
-
-// todo
-
-// ... etc
+$dbModule->deleteDatabases(); // delete all databases of the user
 
 ```
+
+> HestiaCP prefixes the database name and the database user with the owner's username. `add()` takes the names without the prefix; the other methods take the full name (`admin_database`).
 
 e) backup module
 
