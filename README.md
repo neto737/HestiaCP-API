@@ -37,6 +37,8 @@ $client = Client::simpleFactory('https://someHost', 'admin', 'somePass');
 
 ```
 
+The hostname must start with `https://` (or `http://`) and contain only the host, for example `https://panel.example.com`. An IP address works too: `https://192.0.2.10`, or `https://[2001:db8::1]` for IPv6 (the brackets are required). A trailing slash is removed. The port is a separate argument of `Host` (default `8083`). An invalid hostname throws `\neto737\HestiaCP\Exceptions\InvalidArgumentException`.
+
 The API has to be enabled in the HestiaCP server settings, and the IP address of the machine that calls it has to be allowed.
 
 Client options can be passed as the last argument of `simpleFactory()` or `new Client()`:

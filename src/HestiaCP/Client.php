@@ -8,6 +8,7 @@ use neto737\HestiaCP\Command\Command;
 use neto737\HestiaCP\Command\ICommand;
 use neto737\HestiaCP\Command\TestAuthorization;
 use neto737\HestiaCP\Exceptions\ClientException;
+use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 use neto737\HestiaCP\Exceptions\ProcessException;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;
@@ -45,12 +46,13 @@ class Client {
 	}
 
 	/**
-	 * @param string     $hostname	Hostname
+	 * @param string     $hostname	Scheme and host, e.g. https://panel.example.com
 	 * @param string     $user		Username or API Key
 	 * @param mixed      $password	Password (must be null if using API Key)
 	 * @param array|null $options	See Client::__construct()
 	 * @return Client
 	 * @throws ClientException
+	 * @throws InvalidArgumentException
 	 */
 	public static function simpleFactory(string $hostname, string $user, ?string $password = null, ?array $options = null): Client {
 		$credentials = new Credentials($user, $password);

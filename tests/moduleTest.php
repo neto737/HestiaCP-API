@@ -12,7 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class moduleTest extends \PHPUnit\Framework\TestCase {
 
 	public function createClient(): Client {
-		return Client::simpleFactory('someHost', 'someUser', 'somePass');
+		return Client::simpleFactory('https://someHost', 'someUser', 'somePass');
 	}
 
 	public function testModuleUser(): void {
