@@ -57,6 +57,7 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'user',
 			'arg2' => 'pass',
 			'arg3' => 'mail@domain.com',
+			'arg4' => 'default',
 			'returncode' => 'yes',
 			'cmd' => 'v-add-user'
 		], $params);
@@ -78,6 +79,7 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'user',
 			'arg2' => 'pass',
 			'arg3' => 'mail@domain.com',
+			'arg4' => 'default',
 			'returncode' => 'yes',
 			'cmd' => 'v-add-user'
 		], $params);

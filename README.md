@@ -151,6 +151,8 @@ $userModule->changePassword('admin', 'otherPa$$word');
 
 $userModule->add('other_user', 'pa$$word', 'some@email.com');
 
+$userModule->add('other_user', 'pa$$word', 'some@email.com', 'default', 'John', 'Doe'); // with package, first name and last name
+
 $userModule->suspend('other_user');
 
 $userModule->unsuspend('other_user');
@@ -171,6 +173,10 @@ $webModule->listDomains();
 $webModule->addDomain('domain.com');
 
 $webModule->addDomainLetsEncrypt('domain.com', 'www.domain.com'); // needs longer timeout
+
+$webModule->addDomainLetsEncrypt('domain.com', null, true); // certificate for the mail domain
+
+$webModule->addDomainLetsEncrypt('domain.com', 'www.domain.com', false, 'rsa'); // key algorithm: ecdsa-256 (default), ecdsa-384 or rsa (needs HestiaCP newer than 1.10.5)
 
 $webModule->deleteDomainLetsEncrypt('domain.com');
 
@@ -260,6 +266,8 @@ $backupModule->backup(); // create a new backup (waits until the backup is done,
 $backupModule->delete('admin.2021-10-13_18-12-53.tar'); // delete an user backup
 
 $backupModule->deleteExclusions(); // delete all backup exclusions
+
+$backupModule->deleteExclusions('WEB'); // delete only one type of exclusion (WEB, DNS, MAIL, DB, CRON or USER)
 
 $backupModule->listBackups(); // returns the backups list
 

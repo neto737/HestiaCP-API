@@ -15,12 +15,43 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 	public function testUser(): void {
 		$command = new User('admin', 'pass', 'mail@domain.com');
 		$this->assertSame('v-add-user', $command->getName());
-		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass', 'arg3' => 'mail@domain.com', 'arg4' => null], $command->getRequestParams());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass', 'arg3' => 'mail@domain.com', 'arg4' => 'default'], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
+	}
+
+	public function testUserWithName(): void {
+		$command = new User('admin', 'pass', 'mail@domain.com', null, 'John', 'Doe');
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'pass',
+			'arg3' => 'mail@domain.com',
+			'arg4' => 'default',
+			'arg5' => 'John',
+			'arg6' => 'Doe'
+		], $command->getRequestParams());
+
+		$command = new User('admin', 'pass', 'mail@domain.com', 'custom', 'John');
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'pass',
+			'arg3' => 'mail@domain.com',
+			'arg4' => 'custom',
+			'arg5' => 'John'
+		], $command->getRequestParams());
+
+		$command = new User('admin', 'pass', 'mail@domain.com', null, null, 'Doe');
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'pass',
+			'arg3' => 'mail@domain.com',
+			'arg4' => 'default',
+			'arg5' => '',
+			'arg6' => 'Doe'
+		], $command->getRequestParams());
 	}
 
 	public function testWebDomain(): void {
@@ -72,6 +103,22 @@ class commandAddTest extends \PHPUnit\Framework\TestCase {
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
+	}
+
+	public function testLEDomainMailAndKeyAlgo(): void {
+		$command = new LetsEncryptDomain('admin', 'domain.com', 'www.domain.com', true, LetsEncryptDomain::KEY_ALGO_RSA);
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'www.domain.com',
+			'arg4' => 'yes',
+			'arg5' => 'rsa'
+		], $command->getRequestParams());
+	}
+
+	public function testLEDomainInvalidKeyAlgo(): void {
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidArgumentException::class);
+		new LetsEncryptDomain('admin', 'domain.com', null, false, 'dsa');
 	}
 
 	public function testMailAccount(): void {

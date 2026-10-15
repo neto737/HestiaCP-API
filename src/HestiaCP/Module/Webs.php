@@ -84,13 +84,15 @@ class Webs extends Module {
 	 * 
 	 * @param string      $domain
 	 * @param string|null $aliases
-	 * @param bool        $restart
+	 * @param bool        $mail    Issue the certificate for the mail domain instead of the web domain
+	 * @param string|null $keyAlgo One of the LetsEncryptDomain::KEY_ALGO_* constants. Needs a HestiaCP version newer than 1.10.5.
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 * @throws \neto737\HestiaCP\Exceptions\InvalidArgumentException
 	 */
-	public function addDomainLetsEncrypt(string $domain, ?string $aliases = null, bool $restart = false): bool {
-		return $this->client->send(new LetsEncryptDomain($this->user, $domain, $aliases, $restart));
+	public function addDomainLetsEncrypt(string $domain, ?string $aliases = null, bool $mail = false, ?string $keyAlgo = null): bool {
+		return $this->client->send(new LetsEncryptDomain($this->user, $domain, $aliases, $mail, $keyAlgo));
 	}
 
 	/**

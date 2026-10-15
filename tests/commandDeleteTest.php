@@ -120,6 +120,11 @@ class commandDeleteTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin'
 		], $command->getRequestParams());
 
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'WEB'
+		], (new UserBackupExclusions('admin', 'WEB'))->getRequestParams());
+
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);

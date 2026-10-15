@@ -56,12 +56,14 @@ class Users extends Module {
 	 * @param string 	  $password
 	 * @param string 	  $email
 	 * @param string|null $package
+	 * @param string|null $name
+	 * @param string|null $lastname
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function add(string $user, string $password, string $email, ?string $package = null): bool {
-		return $this->client->send(new AddUser($user, $password, $email, $package));
+	public function add(string $user, string $password, string $email, ?string $package = null, ?string $name = null, ?string $lastname = null): bool {
+		return $this->client->send(new AddUser($user, $password, $email, $package, $name, $lastname));
 	}
 
 	/**

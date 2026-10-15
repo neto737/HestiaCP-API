@@ -47,13 +47,14 @@ class Backups extends Module {
 
     /**
      * This function for deleting backup exclusion
-     * 
+     *
+     * @param string|null $system Exclusion type to delete (WEB, DNS, MAIL, DB, CRON or USER). Deletes all of them when not set.
      * @return bool
      * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
      */
-    public function deleteExclusions(): bool {
-        return $this->client->send(new DeleteUserBackupExclusions($this->user));
+    public function deleteExclusions(?string $system = null): bool {
+        return $this->client->send(new DeleteUserBackupExclusions($this->user, $system));
     }
 
     /**
