@@ -26,7 +26,7 @@ class commandSuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
-            'arg3' => 'no'
+			'arg3' => 'no'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());

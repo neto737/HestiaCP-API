@@ -9,12 +9,12 @@ class UserBackup extends ProcessCommand {
 	/** @var string */
 	private $user;
 
-    /** @var string */
-    private $backup;
+	/** @var string */
+	private $backup;
 
 	public function __construct(string $user, string $backup) {
 		$this->user = $user;
-        $this->backup = $backup;
+		$this->backup = $backup;
 	}
 
 	public function getName(): string {
@@ -24,7 +24,7 @@ class UserBackup extends ProcessCommand {
 	public function getRequestParams(): array {
 		return [
 			self::ARG_1 => $this->user,
-            self::ARG_2 => $this->backup
+			self::ARG_2 => $this->backup
 		];
 	}
 }

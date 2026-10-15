@@ -2,4 +2,4 @@
 
 namespace neto737\HestiaCP\Exceptions;
 
-class InvalidArgumentException extends Exception { }
+class InvalidArgumentException extends Exception {}

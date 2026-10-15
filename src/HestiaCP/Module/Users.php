@@ -5,7 +5,7 @@ namespace neto737\HestiaCP\Module;
 use neto737\HestiaCP\Command\Add\User as AddUser;
 use neto737\HestiaCP\Command\Change\UserPassword;
 use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
-use neto737\HestiaCP\Command\Unsuspend\User  as UnsuspendUser;
+use neto737\HestiaCP\Command\Unsuspend\User as UnsuspendUser;
 use neto737\HestiaCP\Command\Delete\User as DeleteUser;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users as ListsUsers;
@@ -15,18 +15,18 @@ class Users extends Module {
 
 	/**
 	 * This function to obtain the list of all system users.
-	 * 
+	 *
 	 * @return array
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function list(): array {
-		return $this->client->send(new ListsUsers);
+		return $this->client->send(new ListsUsers());
 	}
 
 	/**
 	 * This function to obtain user parameters.
-	 * 
+	 *
 	 * @param string $user
 	 * @return array
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -38,7 +38,7 @@ class Users extends Module {
 
 	/**
 	 * This function changes user's password and updates RKEY value.
-	 * 
+	 *
 	 * @param string $user
 	 * @param string $password
 	 * @return bool
@@ -51,7 +51,7 @@ class Users extends Module {
 
 	/**
 	 * This function creates new user account.
-	 * 
+	 *
 	 * @param string 	  $user
 	 * @param string 	  $password
 	 * @param string 	  $email
@@ -68,7 +68,7 @@ class Users extends Module {
 
 	/**
 	 * This function suspends a certain user and all his objects.
-	 * 
+	 *
 	 * @param string $user
 	 * @param bool 	 $restart
 	 * @return bool
@@ -81,7 +81,7 @@ class Users extends Module {
 
 	/**
 	 * This function unsuspends user and all his objects.
-	 * 
+	 *
 	 * @param string $user
 	 * @param bool $restart
 	 * @return bool
@@ -94,7 +94,7 @@ class Users extends Module {
 
 	/**
 	 * This function deletes a certain user and all his resources such as domains, databases, cron jobs, etc.
-	 * 
+	 *
 	 * @param string $user
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -106,12 +106,12 @@ class Users extends Module {
 
 	/**
 	 * This function backups all system users.
-	 * 
+	 *
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function backup(): bool {
-		return $this->client->send(new BackupUsers);
+		return $this->client->send(new BackupUsers());
 	}
 }

@@ -6,30 +6,30 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-    /** @var string */
-    private $user;
+	/** @var string */
+	private $user;
 
-    /** @var bool */
-    private $notify;
+	/** @var bool */
+	private $notify;
 
-    public function __construct(string $user, bool $notify = true) {
-        $this->user = $user;
-        $this->notify = $notify;
-    }
+	public function __construct(string $user, bool $notify = true) {
+		$this->user = $user;
+		$this->notify = $notify;
+	}
 
-    public function getName(): string {
-        return 'v-backup-user';
-    }
+	public function getName(): string {
+		return 'v-backup-user';
+	}
 
-    public function getTimeout(): ?float {
-        // the backup runs synchronously and can take a long time
-        return 0;
-    }
+	public function getTimeout(): ?float {
+		// the backup runs synchronously and can take a long time
+		return 0;
+	}
 
-    public function getRequestParams(): array {
-        return [
-            self::ARG_1 => $this->user,
-            self::ARG_2 => $this->convertBool($this->notify)
-        ];
-    }
+	public function getRequestParams(): array {
+		return [
+			self::ARG_1 => $this->user,
+			self::ARG_2 => $this->convertBool($this->notify)
+		];
+	}
 }

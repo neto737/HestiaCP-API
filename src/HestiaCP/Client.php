@@ -36,7 +36,7 @@ class Client {
 	 *  - handler (callable)    Custom Guzzle handler stack (middleware, testing)
 	 *
 	 * @param Host $host
-	 * @param array|null $options
+	 * @param array|null  $options
 	 * @throws ClientException
 	 */
 	public function __construct(Host $host, ?array $options = null) {
@@ -45,10 +45,10 @@ class Client {
 	}
 
 	/**
-	 * @param string     $hostname	Scheme and host, e.g. https://panel.example.com
-	 * @param string     $user		Username or API Key
-	 * @param mixed      $password	Password (must be null if using API Key)
-	 * @param array|null $options	See Client::__construct()
+	 * @param string      $hostname	Scheme and host, e.g. https://panel.example.com
+	 * @param string      $user		Username or API Key
+	 * @param string|null $password	Password (must be null if using API Key)
+	 * @param array|null  $options	See Client::__construct()
 	 * @return Client
 	 * @throws ClientException
 	 * @throws InvalidArgumentException
@@ -125,7 +125,7 @@ class Client {
 	}
 
 	/**
-	 * @param array|null $options
+	 * @param array|null  $options
 	 * @return Client
 	 * @throws ClientException
 	 */

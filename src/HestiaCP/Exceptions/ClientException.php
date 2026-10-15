@@ -2,4 +2,4 @@
 
 namespace neto737\HestiaCP\Exceptions;
 
-class ClientException extends RuntimeException { }
+class ClientException extends RuntimeException {}

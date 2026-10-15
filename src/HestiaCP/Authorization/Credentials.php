@@ -4,19 +4,19 @@ namespace neto737\HestiaCP\Authorization;
 
 class Credentials {
 
-	/** @var string */
+	/** @var string|null */
 	private $user;
 
-	/** @var string */
+	/** @var string|null */
 	private $password;
 
-	/** @var string */
+	/** @var string|null */
 	private $api_key;
 
-	/** @var string */
+	/** @var string|null */
 	private $access_key;
 
-	/** @var string */
+	/** @var string|null */
 	private $secret_key;
 
 	/**

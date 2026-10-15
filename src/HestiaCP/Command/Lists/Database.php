@@ -9,12 +9,12 @@ class Database extends ListCommand {
 	/** @var string */
 	private $username;
 
-    /** @var string */
-    private $database;
+	/** @var string */
+	private $database;
 
 	public function __construct(string $username, string $database) {
 		$this->username = $username;
-        $this->database = $database;
+		$this->database = $database;
 	}
 
 	public function getName(): string {
@@ -28,7 +28,7 @@ class Database extends ListCommand {
 	public function getRequestParams(): array {
 		return [
 			self::ARG_1 => $this->username,
-            self::ARG_2 => $this->database,
+			self::ARG_2 => $this->database,
 			self::ARG_3 => self::FORMAT_JSON
 		];
 	}

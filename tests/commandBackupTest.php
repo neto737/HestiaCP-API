@@ -7,21 +7,21 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 class commandBackupTest extends \PHPUnit\Framework\TestCase {
 
-    public function testBackupUsers(): void {
-        $command = new Users;
-        $this->assertSame('v-backup-users', $command->getName());
-        $this->assertSame([], $command->getRequestParams());
+	public function testBackupUsers(): void {
+		$command = new Users();
+		$this->assertSame('v-backup-users', $command->getName());
+		$this->assertSame([], $command->getRequestParams());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
-    }
+	}
 
-    public function testBackupUser(): void {
-        $command = new User('admin');
-        $this->assertSame('v-backup-user', $command->getName());
+	public function testBackupUser(): void {
+		$command = new User('admin');
+		$this->assertSame('v-backup-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'yes'], $command->getRequestParams());
 
-        $this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
-    }
+	}
 }

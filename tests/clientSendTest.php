@@ -13,7 +13,6 @@ use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Exceptions\ClientException;
 use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
 use neto737\HestiaCP\Command\Add\User as AddUser;
-use neto737\HestiaCP\Command\Lists\Databases;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users;
 use neto737\HestiaCP\Command\ResponseCode;

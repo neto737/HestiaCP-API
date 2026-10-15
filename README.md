@@ -115,12 +115,14 @@ All exception types and exit codes are listed in [Error handling](docs/errors.md
 
 ## Contributing
 
-Bug reports and pull requests are welcome. To run the test suite:
+Bug reports and pull requests are welcome. To run the checks:
 
 ```sh
 composer install
-vendor/bin/phpunit
+composer check    # coding style, static analysis and tests
 ```
+
+Each check can also run on its own: `composer test` (PHPUnit), `composer analyse` (PHPStan) and `composer cs` (PHP-CS-Fixer). `composer cs-fix` fixes the coding style. The code uses tabs for indentation and LF line endings.
 
 The tests use Guzzle's mock handler, so they don't need a HestiaCP server.
 

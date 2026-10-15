@@ -29,7 +29,7 @@ class Mails extends Module {
 
 	/**
 	 * This function of obtaining the list of all user domains.
-	 * 
+	 *
 	 * @param string $domain
 	 * @return array[]
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -41,7 +41,7 @@ class Mails extends Module {
 
 	/**
 	 * This function add new email account.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $account
 	 * @param string $password
@@ -55,7 +55,7 @@ class Mails extends Module {
 
 	/**
 	 * This function changes email account password.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $account
 	 * @param string $password
@@ -69,7 +69,7 @@ class Mails extends Module {
 
 	/**
 	 * This function suspends mail account.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
@@ -77,12 +77,12 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function suspendAccount(string $domain, string $account): bool {
-		return $this->client->send(new SuspendMailAccount($this->user,  $domain, $account));
+		return $this->client->send(new SuspendMailAccount($this->user, $domain, $account));
 	}
 
 	/**
 	 * This function unsuspends mail account.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
@@ -90,12 +90,12 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function unsuspendAccount(string $domain, string $account): bool {
-		return $this->client->send(new UnsuspendMailAccount($this->user,  $domain, $account));
+		return $this->client->send(new UnsuspendMailAccount($this->user, $domain, $account));
 	}
 
 	/**
 	 * This function deletes email account.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $account
 	 * @return bool
@@ -108,7 +108,7 @@ class Mails extends Module {
 
 	/**
 	 * This function adds MAIL domain.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param bool   $antispam
 	 * @param bool   $antivirus
@@ -123,7 +123,7 @@ class Mails extends Module {
 
 	/**
 	 * This function suspends mail domain.
-	 * 
+	 *
 	 * @param string $domain
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -135,7 +135,7 @@ class Mails extends Module {
 
 	/**
 	 * This function unsuspends mail domain.
-	 * 
+	 *
 	 * @param string $domain
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -147,7 +147,7 @@ class Mails extends Module {
 
 	/**
 	 * This function for deleting MAIL domain. By deleting it all accounts will also be deleted.
-	 * 
+	 *
 	 * @param string $domain
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -159,7 +159,7 @@ class Mails extends Module {
 
 	/**
 	 * This function of obtaining domain dkim files.
-	 * 
+	 *
 	 * @param string $domain
 	 * @return array[]
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -171,7 +171,7 @@ class Mails extends Module {
 
 	/**
 	 * This function of obtaining domain dkim dns records for proper setup.
-	 * 
+	 *
 	 * @param string $domain
 	 * @return array[]
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -183,7 +183,7 @@ class Mails extends Module {
 
 	/**
 	 * This function of obtaining the list of all user domains.
-	 * 
+	 *
 	 * @return array[]
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException

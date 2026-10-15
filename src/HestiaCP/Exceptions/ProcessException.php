@@ -2,4 +2,4 @@
 
 namespace neto737\HestiaCP\Exceptions;
 
-class ProcessException extends RuntimeException { }
+class ProcessException extends RuntimeException {}

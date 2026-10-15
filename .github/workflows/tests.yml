@@ -7,6 +7,30 @@ on:
   workflow_dispatch:
 
 jobs:
+  quality:
+    name: Coding style and static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: --prefer-dist
+
+      - name: Check coding style
+        run: vendor/bin/php-cs-fixer check --diff
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --no-progress --error-format=github
+
   phpunit:
     name: PHP ${{ matrix.php }} (${{ matrix.dependencies }} deps)
     runs-on: ubuntu-latest

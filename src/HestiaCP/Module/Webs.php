@@ -27,7 +27,7 @@ class Webs extends Module {
 
 	/**
 	 * This function adds virtual host to a server.
-	 * 
+	 *
 	 * @param string      $domain
 	 * @param string|null $ip
 	 * @param string|null $aliases
@@ -42,8 +42,8 @@ class Webs extends Module {
 	}
 
 	/**
-	 * This function for suspending the site's operation. 
-	 * 
+	 * This function for suspending the site's operation.
+	 *
 	 * @param string      $domain
 	 * @param bool        $restart
 	 * @return bool
@@ -56,7 +56,7 @@ class Webs extends Module {
 
 	/**
 	 * This function of unsuspending the domain.
-	 * 
+	 *
 	 * @param string      $domain
 	 * @param bool        $restart
 	 * @return bool
@@ -69,7 +69,7 @@ class Webs extends Module {
 
 	/**
 	 * This call of function leads to the removal of domain and all its components (statistics, folders contents, ssl certificates, etc.).
-	 * 
+	 *
 	 * @param string $domain
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
@@ -81,7 +81,7 @@ class Webs extends Module {
 
 	/**
 	 * This function check and validates domain with Let's Encrypt
-	 * 
+	 *
 	 * @param string      $domain
 	 * @param string|null $aliases
 	 * @param bool        $mail    Issue the certificate for the mail domain instead of the web domain
@@ -97,7 +97,7 @@ class Webs extends Module {
 
 	/**
 	 * This function turns off letsencrypt SSL support for a domain.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param bool   $restart
 	 * @return bool
@@ -110,7 +110,7 @@ class Webs extends Module {
 
 	/**
 	 * This function creates additional ftp account for web domain.
-	 * 
+	 *
 	 * @param string      $domain
 	 * @param string      $ftpUser
 	 * @param string      $ftpPassword
@@ -125,7 +125,7 @@ class Webs extends Module {
 
 	/**
 	 * This function changes ftp user password.
-	 * 
+	 *
 	 * @param string      $domain
 	 * @param string      $ftpUser
 	 * @param string      $ftpPassword
@@ -139,7 +139,7 @@ class Webs extends Module {
 
 	/**
 	 * This function changes ftp user path.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $ftpUser
 	 * @param string $ftpPath
@@ -153,7 +153,7 @@ class Webs extends Module {
 
 	/**
 	 * This function deletes additional ftp account.
-	 * 
+	 *
 	 * @param string $domain
 	 * @param string $ftpUser
 	 * @return bool
@@ -166,7 +166,7 @@ class Webs extends Module {
 
 	/**
 	 * This function to obtain the list of all user web domains.
-	 * 
+	 *
 	 * @return array[]
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException

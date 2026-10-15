@@ -4,3 +4,5 @@ test.php
 /tests/log
 /.phpunit.cache
 coverage.xml
+/.phpstan.cache
+.php-cs-fixer.cache

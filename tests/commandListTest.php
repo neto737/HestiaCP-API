@@ -88,7 +88,7 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$command = new UserBackup('admin', 'admin.2021-10-07_05-15-09.tar');
 		$this->assertSame('v-list-user-backup', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'admin.2021-10-07_05-15-09.tar', 'arg3' => 'json'], $command->getRequestParams());
-	
+
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
 	}
