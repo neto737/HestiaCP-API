@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\TestAuthorization;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 

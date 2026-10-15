@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Delete\User;
 use neto737\HestiaCP\Command\Delete\WebDomain;
 use neto737\HestiaCP\Command\Delete\WebDomainFtp;

@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Delete;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class UserBackupExclusions extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string|null */
-	private $system;
+	private ?string $system = null;
 
 	/**
 	 * @param string      $user

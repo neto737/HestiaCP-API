@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Change;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class UserPassword extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $password;
+	private string $password;
 
 	public function __construct(string $user, string $password) {
 		$this->user = $user;

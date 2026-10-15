@@ -18,12 +18,12 @@ This will be released as 2.0.0. It brings the library up to date with HestiaCP 1
 - `Add\User`: optional `name` and `lastname` arguments.
 - `Delete\UserBackupExclusions`: optional `system` argument.
 - Tests for the client and command processing, using Guzzle's `MockHandler`.
-- GitHub Actions CI on PHP 8.1 to 8.5, plus a lowest-dependencies run on PHP 8.1.
+- GitHub Actions CI on PHP 8.2 to 8.5, plus a lowest-dependencies run on PHP 8.2.
 - PHPStan (level 5) and a PHP-CS-Fixer coding-style check, run in CI. `composer check` runs them with the tests.
 
 ### Changed
 
-- **BC break:** requires PHP 8.1 or later.
+- **BC break:** requires PHP 8.2 or later. PHP 8.1 reached end of life on 31 December 2025.
 - **BC break:** list and detail methods return plain associative arrays instead of `Nette\Utils\ArrayHash`. Replace `$item->FIELD` with `$item['FIELD']`.
 - **BC break:** exceptions moved from `neto737\HestiaCP\*` to `neto737\HestiaCP\Exceptions\*`, one class per file. Autoloading switched from `classmap` to PSR-4.
 - **BC break:** TLS certificates are verified by default. For a self-signed certificate, pass `'verify' => false` or a CA bundle path.
@@ -35,9 +35,11 @@ This will be released as 2.0.0. It brings the library up to date with HestiaCP 1
 - `Databases::listDatabases()` returns every database instead of only the first one.
 - `Add\User` sends a null package as `default`, so the arguments after it keep their positions.
 - `Credentials` getters return `?string`.
-- Guzzle requirement is `^7.15.2 || ^8.2`. PHPUnit is `^10.5 || ^11.5 || ^12.0`.
+- Guzzle requirement is `^7.15.2 || ^8.2`. PHPUnit is `^11.5 || ^12.0`.
 - `minimum-stability` is `stable` instead of `dev`.
 - Implicit nullable parameters (`string $x = null`) replaced with `?string`.
+- Every file declares `strict_types=1`. Properties have native types instead of `@var` docblocks.
+- **BC break:** `ICommand::process()` returns `mixed`. `ListCommand::process()` returns `array`. The setters in `Client`, `Credentials` and `Host` return `static`. `Module::$client` is typed `Client` and `ResponseCode::$messages` is typed `array`. Custom classes that implement or override these must declare compatible types.
 - Documentation links point to `hestiacp.com/docs`.
 
 ### Removed

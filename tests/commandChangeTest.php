@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Change\UserPassword;
 use neto737\HestiaCP\Command\Change\MailAccountPassword;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;

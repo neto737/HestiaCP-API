@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Backup\Users;
 use neto737\HestiaCP\Command\Backup\User;
 

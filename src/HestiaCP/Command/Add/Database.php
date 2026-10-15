@@ -1,25 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Add;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class Database extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $database;
+	private string $database;
 
-	/** @var string */
-	private $dbuser;
+	private string $dbuser;
 
-	/** @var string */
-	private $dbpass;
+	private string $dbpass;
 
-	/** @var string */
-	private $type;
+	private string $type;
 
 	public function __construct(string $user, string $database, string $dbuser, string $dbpass, string $type = 'mysql') {
 		$this->user = $user;

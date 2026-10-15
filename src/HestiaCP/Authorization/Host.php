@@ -1,19 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Authorization;
 
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 
 class Host {
 
-	/** @var string */
-	private $hostname;
+	private string $hostname;
 
-	/** @var Credentials */
-	private $credentials;
+	private Credentials $credentials;
 
-	/** @var int */
-	private $port;
+	private int $port;
 
 	/**
 	 * @param string      $hostname		Scheme and host, e.g. https://panel.example.com
@@ -33,7 +32,7 @@ class Host {
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function setHostname(string $hostname) {
+	public function setHostname(string $hostname): static {
 		$this->hostname = self::normalizeHostname($hostname);
 		return $this;
 	}
@@ -42,7 +41,7 @@ class Host {
 		return $this->hostname;
 	}
 
-	public function setCredentials(Credentials $credentials) {
+	public function setCredentials(Credentials $credentials): static {
 		$this->credentials = $credentials;
 		return $this;
 	}
@@ -51,7 +50,7 @@ class Host {
 		return $this->credentials;
 	}
 
-	public function setPort(int $port) {
+	public function setPort(int $port): static {
 		$this->port = $port;
 		return $this;
 	}

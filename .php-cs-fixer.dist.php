@@ -4,7 +4,7 @@ $finder = (new PhpCsFixer\Finder())
 	->in([__DIR__ . '/src', __DIR__ . '/tests']);
 
 return (new PhpCsFixer\Config())
-	->setRiskyAllowed(false)
+	->setRiskyAllowed(true)
 	->setIndent("\t")
 	->setCacheFile(__DIR__ . '/.php-cs-fixer.cache')
 	->setRules([
@@ -23,5 +23,6 @@ return (new PhpCsFixer\Config())
 		'single_quote' => true,
 		'no_trailing_comma_in_singleline' => true,
 		'single_line_empty_body' => true,
+		'declare_strict_types' => true,
 	])
 	->setFinder($finder);

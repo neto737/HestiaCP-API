@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;

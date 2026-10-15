@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Command\Add\User as AddUser;

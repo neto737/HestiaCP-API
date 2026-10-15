@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command;
 
 use neto737\HestiaCP\Exceptions\AuthorizationException;

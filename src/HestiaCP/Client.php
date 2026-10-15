@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP;
 
 use neto737\HestiaCP\Authorization\Credentials;
@@ -12,19 +14,18 @@ use neto737\HestiaCP\Exceptions\ProcessException;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Mails;
+use neto737\HestiaCP\Module\Module;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 
 class Client {
 
-	/** @var Host */
-	private $host;
+	private Host $host;
 
-	/** @var \GuzzleHttp\Client */
-	private $guzzleClient;
+	private \GuzzleHttp\Client $guzzleClient;
 
-	/** @var array */
-	private $modules = [];
+	/** @var array<class-string<Module>, Module> */
+	private array $modules = [];
 
 	/**
 	 * Client constructor.
@@ -60,7 +61,7 @@ class Client {
 		return new self($host, $options);
 	}
 
-	public function setHost(Host $host) {
+	public function setHost(Host $host): static {
 		$this->host = $host;
 		return $this;
 	}
@@ -85,7 +86,7 @@ class Client {
 	 * @throws ClientException
 	 * @throws ProcessException
 	 */
-	public function send(ICommand $command) {
+	public function send(ICommand $command): mixed {
 		$host = $this->getHost();
 		try {
 			$response = $this->guzzleClient->post($host->buildUri(), [
@@ -145,7 +146,12 @@ class Client {
 		return $this;
 	}
 
-	private function loadModule($moduleName, $param = null) {
+	/**
+	 * @template T of Module
+	 * @param class-string<T> $moduleName
+	 * @return T
+	 */
+	private function loadModule(string $moduleName, ?string $param = null): Module {
 		if (!isset($this->modules[$moduleName])) {
 			if ($param !== null) {
 				$this->modules[$moduleName] = new $moduleName($this, $param);

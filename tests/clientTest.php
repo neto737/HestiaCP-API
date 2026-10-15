@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Client;

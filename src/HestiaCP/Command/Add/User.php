@@ -1,28 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Add;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $password;
+	private string $password;
 
-	/** @var string */
-	private $email;
+	private string $email;
 
-	/** @var string|null */
-	private $package;
+	private ?string $package = null;
 
-	/** @var string|null */
-	private $name;
+	private ?string $name = null;
 
-	/** @var string|null */
-	private $lastname;
+	private ?string $lastname = null;
 
 	public function __construct(string $user, string $password, string $email, ?string $package = null, ?string $name = null, ?string $lastname = null) {
 		$this->user = $user;

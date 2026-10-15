@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Add\User;
 use neto737\HestiaCP\Command\Add\WebDomain;
 use neto737\HestiaCP\Command\Add\WebDomainFtp;

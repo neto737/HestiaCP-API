@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Add;
 
 use neto737\HestiaCP\Command\ProcessCommand;
@@ -13,20 +15,15 @@ class LetsEncryptDomain extends ProcessCommand {
 
 	private const KEY_ALGOS = [self::KEY_ALGO_ECDSA_256, self::KEY_ALGO_ECDSA_384, self::KEY_ALGO_RSA];
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $domain;
+	private string $domain;
 
-	/** @var string|null */
-	private $aliases;
+	private ?string $aliases = null;
 
-	/** @var bool */
-	private $mail;
+	private bool $mail;
 
-	/** @var string|null */
-	private $keyAlgo;
+	private ?string $keyAlgo = null;
 
 	/**
 	 * @param string      $user

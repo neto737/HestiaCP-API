@@ -4,9 +4,9 @@
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
-### PHP 8.1 or later
+### PHP 8.2 or later
 
-v2 requires PHP 8.1. v1 ran on PHP 7.3+.
+v2 requires PHP 8.2. v1 ran on PHP 7.3+.
 
 The `nette/utils` dependency is gone. If your own code uses Nette Utils, require it in your `composer.json` yourself.
 
@@ -110,6 +110,8 @@ Only relevant if you wrote your own command classes.
 - `getTimeout(): ?float` is now part of `ICommand`. Classes that extend `Command`, `ProcessCommand` or `ListCommand` already have it. Classes that implement `ICommand` directly must add it; return `null` to use the client timeout.
 - `processException()` was removed from `ICommand` and `Command`. The client no longer calls it, because HTTP errors no longer throw in Guzzle. Delete any implementation of it.
 - `Command::throwCodeException()` was removed. It wasn't used.
+- `ICommand::process()` now returns `mixed`. Classes that implement `ICommand` directly must declare a return type, either `mixed` or a narrower one such as `bool` or `array`. `ListCommand::process()` now returns `array`, so subclasses that override it must return `array` too.
+- The library is now fully typed. If you extend a library class and override a typed method or redeclare a typed property, use a compatible type: setters in `Client`, `Credentials` and `Host` return `static`, and `Module::$client` is `Client`.
 
 See [Sending commands directly](docs/commands.md).
 

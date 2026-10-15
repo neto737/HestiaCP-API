@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Suspend;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var bool */
-	private $restart;
+	private bool $restart;
 
 	public function __construct(string $user, bool $restart = false) {
 		$this->user = $user;

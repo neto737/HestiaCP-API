@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
@@ -11,8 +13,7 @@ use neto737\HestiaCP\Command\Lists\Databases as ListDatabases;
 
 class Databases extends Module {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
 	public function __construct(Client $client, string $user) {
 		parent::__construct($client);

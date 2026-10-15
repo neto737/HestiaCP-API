@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Suspend\User;
 use neto737\HestiaCP\Command\Suspend\WebDomain;
 use neto737\HestiaCP\Command\Suspend\MailAccount;

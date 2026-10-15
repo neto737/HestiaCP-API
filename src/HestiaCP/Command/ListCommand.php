@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command;
 
 use neto737\HestiaCP\Exceptions\AuthorizationException;
@@ -17,7 +19,7 @@ abstract class ListCommand extends Command {
 	 * @throws ProcessException
 	 * @throws AuthorizationException
 	 */
-	public function process() {
+	public function process(): array {
 		parent::defaultProcess();
 
 		$responseJson = trim((string) $this->getResponseText());

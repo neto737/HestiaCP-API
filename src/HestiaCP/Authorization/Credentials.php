@@ -1,23 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Authorization;
 
 class Credentials {
 
-	/** @var string|null */
-	private $user;
+	private ?string $user = null;
 
-	/** @var string|null */
-	private $password;
+	private ?string $password = null;
 
-	/** @var string|null */
-	private $api_key;
+	private ?string $api_key = null;
 
-	/** @var string|null */
-	private $access_key;
+	private ?string $access_key = null;
 
-	/** @var string|null */
-	private $secret_key;
+	private ?string $secret_key = null;
 
 	/**
 	 * @param string $user		Username or Api Key
@@ -53,7 +50,7 @@ class Credentials {
 		return new self($user, $password);
 	}
 
-	public function setAccessKey(string $accessKey, string $secretKey) {
+	public function setAccessKey(string $accessKey, string $secretKey): static {
 		$this->access_key = $accessKey;
 		$this->secret_key = $secretKey;
 		$this->api_key = null;
@@ -68,7 +65,7 @@ class Credentials {
 		return $this->secret_key;
 	}
 
-	public function setApiKey(string $key) {
+	public function setApiKey(string $key): static {
 		$this->api_key = $key;
 		$this->access_key = null;
 		$this->secret_key = null;
@@ -79,7 +76,7 @@ class Credentials {
 		return $this->api_key;
 	}
 
-	public function setUser(string $user) {
+	public function setUser(string $user): static {
 		$this->user = $user;
 		return $this;
 	}
@@ -88,7 +85,7 @@ class Credentials {
 		return $this->user;
 	}
 
-	public function setPassword(string $password) {
+	public function setPassword(string $password): static {
 		$this->password = $password;
 		return $this;
 	}

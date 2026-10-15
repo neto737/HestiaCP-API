@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Command\Unsuspend\User;
 use neto737\HestiaCP\Command\Unsuspend\WebDomain;
 use neto737\HestiaCP\Command\Unsuspend\MailAccount;

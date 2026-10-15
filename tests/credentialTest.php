@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Authorization\Credentials;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 class credentialTest extends \PHPUnit\Framework\TestCase {
 
-	public function testApiKey() {
+	public function testApiKey(): void {
 		$credentials = new Credentials('');
 		$this->assertSame('', $credentials->getApiKey());
 
@@ -14,7 +16,7 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('key', $credentials->getApiKey());
 	}
 
-	public function testUser() {
+	public function testUser(): void {
 		$credentials = new Credentials('', '');
 		$this->assertSame('', $credentials->getUser());
 
@@ -22,7 +24,7 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('test', $credentials->getUser());
 	}
 
-	public function testPassword() {
+	public function testPassword(): void {
 		$credentials = new Credentials('', '');
 		$this->assertSame('', $credentials->getPassword());
 
@@ -30,7 +32,7 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('test', $credentials->getPassword());
 	}
 
-	public function testParams() {
+	public function testParams(): void {
 		$credentials = new Credentials('us', 'er');
 		$this->assertSame(['user' => 'us', 'password' => 'er'], $credentials->getRequestParams());
 
@@ -41,7 +43,7 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials_accesskey->getRequestParams());
 	}
 
-	public function testAccessKey() {
+	public function testAccessKey(): void {
 		$credentials = Credentials::accessKey('access', 'secret');
 		$this->assertSame('access', $credentials->getAccessKey());
 		$this->assertSame('secret', $credentials->getSecretKey());
@@ -50,7 +52,7 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 		$this->assertNull($credentials->getPassword());
 	}
 
-	public function testSwitchBetweenKeys() {
+	public function testSwitchBetweenKeys(): void {
 		$credentials = Credentials::accessKey('access', 'secret');
 		$credentials->setApiKey('key');
 		$this->assertNull($credentials->getAccessKey());
@@ -62,7 +64,7 @@ class credentialTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials->getRequestParams());
 	}
 
-	public function testNamedConstructors() {
+	public function testNamedConstructors(): void {
 		$this->assertSame(['hash' => 'key'], Credentials::legacyHash('key')->getRequestParams());
 		$this->assertSame(['user' => 'us', 'password' => 'er'], Credentials::password('us', 'er')->getRequestParams());
 	}

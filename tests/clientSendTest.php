@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -28,7 +30,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class clientSendTest extends \PHPUnit\Framework\TestCase {
 
 	/** @var array */
-	private $history = [];
+	private array $history = [];
 
 	private function createClient(array $responses, array $options = []): Client {
 		$this->history = [];

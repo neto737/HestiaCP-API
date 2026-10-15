@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command;
 
 use Psr\Http\Message\ResponseInterface;
@@ -12,7 +14,7 @@ interface ICommand {
 
 	public function needReturnCode(): bool;
 
-	public function process();
+	public function process(): mixed;
 
 	/**
 	 * Request timeout in seconds for this command (0 = no timeout), or null to use the client timeout.

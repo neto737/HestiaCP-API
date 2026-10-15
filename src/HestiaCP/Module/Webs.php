@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
@@ -17,8 +19,7 @@ use neto737\HestiaCP\Command\Lists\WebDomains;
 
 class Webs extends Module {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
 	public function __construct(Client $client, string $user) {
 		parent::__construct($client);

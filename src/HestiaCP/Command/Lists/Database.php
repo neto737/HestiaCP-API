@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Lists;
 
 use neto737\HestiaCP\Command\ListCommand;
 
 class Database extends ListCommand {
 
-	/** @var string */
-	private $username;
+	private string $username;
 
-	/** @var string */
-	private $database;
+	private string $database;
 
 	public function __construct(string $username, string $database) {
 		$this->username = $username;

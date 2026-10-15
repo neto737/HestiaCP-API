@@ -1,25 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Add;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class WebDomainFtp extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var string */
-	private $domain;
+	private string $domain;
 
-	/** @var string */
-	private $ftpUser;
+	private string $ftpUser;
 
-	/** @var string */
-	private $ftpPassword;
+	private string $ftpPassword;
 
-	/** @var string|null */
-	private $ftpPath;
+	private ?string $ftpPath = null;
 
 	public function __construct(string $user, string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null) {
 		$this->user = $user;

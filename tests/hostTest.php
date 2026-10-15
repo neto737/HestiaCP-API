@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
@@ -8,7 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 class hostTest extends \PHPUnit\Framework\TestCase {
 
-	public function testHost() {
+	public function testHost(): void {
 		$credentials = new Credentials('', '');
 		$host = new Host('https://hestia', $credentials);
 
@@ -30,7 +32,7 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	#[\PHPUnit\Framework\Attributes\DataProvider('normalizedHostnames')]
-	public function testNormalizesHostname(string $hostname, string $expected) {
+	public function testNormalizesHostname(string $hostname, string $expected): void {
 		$host = new Host($hostname, new Credentials('', ''));
 
 		$this->assertSame($expected, $host->getHostname());
@@ -54,20 +56,20 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	#[\PHPUnit\Framework\Attributes\DataProvider('invalidHostnames')]
-	public function testRejectsInvalidHostname(string $hostname) {
+	public function testRejectsInvalidHostname(string $hostname): void {
 		$this->expectException(InvalidArgumentException::class);
 
 		new Host($hostname, new Credentials('', ''));
 	}
 
-	public function testRejectsUnbracketedIpv6() {
+	public function testRejectsUnbracketedIpv6(): void {
 		$this->expectException(InvalidArgumentException::class);
 		$this->expectExceptionMessage('must be in brackets');
 
 		new Host('https://2001:db8::1', new Credentials('', ''));
 	}
 
-	public function testSetHostnameKeepsPreviousValueOnError() {
+	public function testSetHostnameKeepsPreviousValueOnError(): void {
 		$host = new Host('https://hestia', new Credentials('', ''));
 
 		try {
@@ -78,7 +80,7 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function testUri() {
+	public function testUri(): void {
 		$credentials = new Credentials('', '');
 		$host = new Host('https://hestia', $credentials);
 
@@ -88,7 +90,7 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('https://hestia:2083/api/', $host->buildUri());
 	}
 
-	public function testPort() {
+	public function testPort(): void {
 		$credentials = new Credentials('', '');
 		$host = new Host('https://hestia', $credentials);
 
@@ -98,7 +100,7 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(2023, $host->getPort());
 	}
 
-	public function testCredentials() {
+	public function testCredentials(): void {
 		$credentials = new Credentials('', '');
 		$host = new Host('https://hestia', $credentials);
 

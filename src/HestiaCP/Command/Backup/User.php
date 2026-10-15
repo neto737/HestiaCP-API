@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command\Backup;
 
 use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-	/** @var string */
-	private $user;
+	private string $user;
 
-	/** @var bool */
-	private $notify;
+	private bool $notify;
 
 	public function __construct(string $user, bool $notify = true) {
 		$this->user = $user;

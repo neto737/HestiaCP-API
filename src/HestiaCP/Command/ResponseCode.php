@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace neto737\HestiaCP\Command;
 
 class ResponseCode {
@@ -29,7 +31,7 @@ class ResponseCode {
 	public const E_BACKUP = 21;
 	public const E_API_DISABLED = 21;
 
-	public static $messages = [
+	public static array $messages = [
 		self::OK => 'Command has been successfully performed',
 		self::E_ARGS => 'Not enough arguments provided',
 		self::E_INVALID => 'Object or argument is not valid',
