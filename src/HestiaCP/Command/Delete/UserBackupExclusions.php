@@ -12,7 +12,7 @@ class UserBackupExclusions extends ProcessCommand {
 	/**
 	 * TODO:
 	 * Added system parameter as in the HestiaCP docs
-	 * https://docs.hestiacp.com/cli_commands/commands.html#v-delete-user-backup-exclusions
+	 * https://hestiacp.com/docs/introduction/getting-started#v-delete-user-backup-exclusions
 	 */
 
 	public function __construct(string $user) {
