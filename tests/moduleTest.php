@@ -41,4 +41,16 @@ class moduleTest extends \PHPUnit\Framework\TestCase {
 		$client = $this->createClient();
 		$this->assertSame(Databases::class, get_class($client->getModuleDatabase('test')));
 	}
+
+	public function testModuleCachedPerUser(): void {
+		$client = $this->createClient();
+
+		$this->assertSame($client->getModuleUser(), $client->getModuleUser());
+
+		$this->assertSame($client->getModuleMail('alice'), $client->getModuleMail('alice'));
+		$this->assertNotSame($client->getModuleMail('alice'), $client->getModuleMail('bob'));
+		$this->assertNotSame($client->getModuleWeb('alice'), $client->getModuleWeb('bob'));
+		$this->assertNotSame($client->getModuleBackup('alice'), $client->getModuleBackup('bob'));
+		$this->assertNotSame($client->getModuleDatabase('alice'), $client->getModuleDatabase('bob'));
+	}
 }

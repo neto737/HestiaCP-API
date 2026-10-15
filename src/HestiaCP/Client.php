@@ -24,7 +24,7 @@ class Client {
 
 	private \GuzzleHttp\Client $guzzleClient;
 
-	/** @var array<class-string<Module>, Module> */
+	/** @var array<class-string<Module>, array<string, Module>> */
 	private array $modules = [];
 
 	/**
@@ -152,15 +152,18 @@ class Client {
 	 * @return T
 	 */
 	private function loadModule(string $moduleName, ?string $param = null): Module {
-		if (!isset($this->modules[$moduleName])) {
+		// Modules bound to a user are cached per user, otherwise one user's module would be reused for another
+		$key = $param ?? '';
+
+		if (!isset($this->modules[$moduleName][$key])) {
 			if ($param !== null) {
-				$this->modules[$moduleName] = new $moduleName($this, $param);
+				$this->modules[$moduleName][$key] = new $moduleName($this, $param);
 			} else {
-				$this->modules[$moduleName] = new $moduleName($this);
+				$this->modules[$moduleName][$key] = new $moduleName($this);
 			}
 		}
 
-		return $this->modules[$moduleName];
+		return $this->modules[$moduleName][$key];
 	}
 
 	public function getModuleUser(): Users {
