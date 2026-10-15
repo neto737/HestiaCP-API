@@ -32,7 +32,7 @@ class Mails extends Module {
 	 * This function of obtaining the list of all user domains.
 	 *
 	 * @param string $domain
-	 * @return array[]
+	 * @return array<array<mixed>>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -162,7 +162,7 @@ class Mails extends Module {
 	 * This function of obtaining domain dkim files.
 	 *
 	 * @param string $domain
-	 * @return array[]
+	 * @return array<array<mixed>>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -174,7 +174,7 @@ class Mails extends Module {
 	 * This function of obtaining domain dkim dns records for proper setup.
 	 *
 	 * @param string $domain
-	 * @return array[]
+	 * @return array<array<mixed>>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -185,7 +185,7 @@ class Mails extends Module {
 	/**
 	 * This function of obtaining the list of all user domains.
 	 *
-	 * @return array[]
+	 * @return array<array<mixed>>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */

@@ -168,7 +168,7 @@ class Webs extends Module {
 	/**
 	 * This function to obtain the list of all user web domains.
 	 *
-	 * @return array[]
+	 * @return array<array<mixed>>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */

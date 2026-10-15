@@ -94,6 +94,9 @@ class Credentials {
 		return $this->password;
 	}
 
+	/**
+	 * @return array<string, string|null>
+	 */
 	public function getRequestParams(): array {
 		if ($this->access_key !== null) {
 			return [

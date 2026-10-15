@@ -60,7 +60,7 @@ class Backups extends Module {
 	/**
 	 * This function for obtaining the list of available user backups.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -72,7 +72,7 @@ class Backups extends Module {
 	 * This function of obtaining the list of backup parameters.
 	 *
 	 * @param string    $backup
-	 * @return array
+	 * @return array<mixed>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -83,7 +83,7 @@ class Backups extends Module {
 	/**
 	 * This function for obtaining the backup exclusion list
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */

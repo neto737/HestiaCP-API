@@ -21,5 +21,8 @@ interface ICommand {
 	 */
 	public function getTimeout(): ?float;
 
+	/**
+	 * @return array<string, string>
+	 */
 	public function getRequestParams(): array;
 }

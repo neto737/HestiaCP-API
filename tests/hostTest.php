@@ -20,6 +20,7 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('http://host', $host->getHostname());
 	}
 
+	/** @return array<string, array{string, string}> */
 	public static function normalizedHostnames(): array {
 		return [
 			'trailing slash' => ['https://hestia/', 'https://hestia'],
@@ -38,6 +39,7 @@ class hostTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($expected, $host->getHostname());
 	}
 
+	/** @return array<string, array{string}> */
 	public static function invalidHostnames(): array {
 		return [
 			'empty' => [''],

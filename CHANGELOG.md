@@ -19,7 +19,7 @@ This will be released as 2.0.0. It brings the library up to date with HestiaCP 1
 - `Delete\UserBackupExclusions`: optional `system` argument.
 - Tests for the client and command processing, using Guzzle's `MockHandler`.
 - GitHub Actions CI on PHP 8.2 to 8.5, plus a lowest-dependencies run on PHP 8.2.
-- PHPStan (level 5) and a PHP-CS-Fixer coding-style check, run in CI. `composer check` runs them with the tests.
+- PHPStan (level 6) and a PHP-CS-Fixer coding-style check, run in CI. `composer check` runs them with the tests.
 
 ### Changed
 

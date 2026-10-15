@@ -62,7 +62,7 @@ class Databases extends Module {
 	 * This function for obtaining of all database's parameters.
 	 *
 	 * @param string    $database
-	 * @return array
+	 * @return array<mixed>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -73,7 +73,7 @@ class Databases extends Module {
 	/**
 	 * This function for obtaining the list of all user's databases.
 	 *
-	 * @return array[]
+	 * @return array<array<mixed>>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */

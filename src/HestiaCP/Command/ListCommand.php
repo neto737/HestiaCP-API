@@ -15,7 +15,7 @@ abstract class ListCommand extends Command {
 	}
 
 	/**
-	 * @return array
+	 * @return array<mixed>
 	 * @throws ProcessException
 	 * @throws AuthorizationException
 	 */
@@ -45,6 +45,8 @@ abstract class ListCommand extends Command {
 	/**
 	 * Returns the only item of a single-object list, e.g. {"admin": {...}}.
 	 *
+	 * @param array<mixed> $list
+	 * @return array<mixed>
 	 * @throws InvalidResponseException
 	 */
 	protected function convertDetail(array $list): array {

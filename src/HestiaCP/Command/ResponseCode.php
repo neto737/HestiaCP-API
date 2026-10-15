@@ -31,6 +31,7 @@ class ResponseCode {
 	public const E_BACKUP = 21;
 	public const E_API_DISABLED = 21;
 
+	/** @var array<int, string> */
 	public static array $messages = [
 		self::OK => 'Command has been successfully performed',
 		self::E_ARGS => 'Not enough arguments provided',

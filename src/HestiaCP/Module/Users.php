@@ -18,7 +18,7 @@ class Users extends Module {
 	/**
 	 * This function to obtain the list of all system users.
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
@@ -30,7 +30,7 @@ class Users extends Module {
 	 * This function to obtain user parameters.
 	 *
 	 * @param string $user
-	 * @return array
+	 * @return array<mixed>
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
