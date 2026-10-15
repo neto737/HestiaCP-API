@@ -17,6 +17,7 @@ use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
 use neto737\HestiaCP\Command\Add\User as AddUser;
 use neto737\HestiaCP\Command\Lists\User;
 use neto737\HestiaCP\Command\Lists\Users;
+use neto737\HestiaCP\Command\ProcessCommand;
 use neto737\HestiaCP\Command\ResponseCode;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 use neto737\HestiaCP\Exceptions\ProcessException;
@@ -217,6 +218,32 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
+	// a custom command that fails with its own exception is wrapped, keeping the original
+	public function testCommandProcessingError(): void {
+		$client = $this->createClient([self::codeResponse(0)]);
+		$command = new class () extends ProcessCommand {
+			public function getName(): string {
+				return 'v-custom';
+			}
+
+			public function getRequestParams(): array {
+				return [];
+			}
+
+			public function process(): bool {
+				throw new \RuntimeException('Something broke');
+			}
+		};
+
+		try {
+			$client->send($command);
+			$this->fail('ClientException expected');
+		} catch (ClientException $e) {
+			$this->assertSame('Fatal processing error (Something broke)', $e->getMessage());
+			$this->assertInstanceOf(\RuntimeException::class, $e->getPrevious());
+		}
+	}
+
 	public function testList(): void {
 		$client = $this->createClient([
 			new Response(200, ['Hestia-Exit-Code' => '0'], '{"admin": {"NAME": "System Administrator"}, "user": {"NAME": "User"}}')
@@ -340,6 +367,28 @@ JSON;
 
 		$this->assertFalse($client->testAuthorization());
 		$this->assertFalse($client->testAuthorization());
+	}
+
+	public function testAuthorizationInvalidLegacy(): void {
+		$client = $this->createClient([
+			new Response(200, [], (string) ResponseCode::E_PASSWORD),
+			new Response(200, [], 'Error: authentication failed')
+		]);
+
+		$this->assertFalse($client->testAuthorization());
+		$this->assertFalse($client->testAuthorization());
+	}
+
+	public function testAuthorizationErrorLegacy(): void {
+		$client = $this->createClient([new Response(200, [], (string) ResponseCode::E_DISABLED)]);
+
+		try {
+			$client->testAuthorization();
+			$this->fail('ProcessException expected');
+		} catch (ProcessException $e) {
+			$this->assertNotInstanceOf(AuthorizationException::class, $e);
+			$this->assertSame(ResponseCode::E_DISABLED, $e->getCode());
+		}
 	}
 
 	public function testAuthorizationApiDisabled(): void {
