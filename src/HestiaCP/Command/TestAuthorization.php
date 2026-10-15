@@ -6,10 +6,14 @@ use neto737\HestiaCP\AuthorizationException;
 use neto737\HestiaCP\InvalidResponseException;
 use neto737\HestiaCP\ProcessException;
 
+/**
+ * Runs a harmless read-only command to check the credentials.
+ * HestiaCP rejects an empty command before checking access keys, so a real command is needed.
+ */
 class TestAuthorization extends Command {
 
 	public function getName(): string {
-		return '';
+		return 'v-list-sys-info';
 	}
 
 	public function needReturnCode(): bool {
@@ -18,20 +22,22 @@ class TestAuthorization extends Command {
 
 	/**
 	 * @return bool
+	 * @throws InvalidResponseException
 	 * @throws ProcessException
 	 */
 	public function process(): bool {
 		try {
 			parent::defaultProcess();
+
+			$code = $this->getResponseCode();
+			if ($code === ResponseCode::OK) {
+				return true;
+			}
+
+			throw $this->codeException($code);
 		} catch (AuthorizationException $e) {
 			return false;
 		}
-
-		if ($this->getResponseCode() === 1) {
-			return true;
-		}
-
-		throw new InvalidResponseException('Invalid Response. Is host really HestiaCP?');
 	}
 
 	public function getRequestParams(): array {

@@ -31,7 +31,7 @@ class Credentials {
 		return $this;
 	}
 
-	public function getApiKey(): string {
+	public function getApiKey(): ?string {
 		return $this->api_key;
 	}
 
@@ -40,7 +40,7 @@ class Credentials {
 		return $this;
 	}
 
-	public function getUser(): string {
+	public function getUser(): ?string {
 		return $this->user;
 	}
 
@@ -49,12 +49,12 @@ class Credentials {
 		return $this;
 	}
 
-	public function getPassword(): string {
+	public function getPassword(): ?string {
 		return $this->password;
 	}
 
 	public function getRequestParams(): array {
-		if ($this->api_key) {
+		if ($this->api_key !== null) {
 			return [
 				'hash' => $this->getApiKey()
 			];

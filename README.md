@@ -26,13 +26,31 @@ use neto737\HestiaCP\Client;
 
 // Easy way to create Client
 
-// Using API Key
+// Using an access key (HestiaCP 1.6+), written as ACCESS_KEY:SECRET_KEY
+$client = Client::simpleFactory('https://someHost', 'ACCESS_KEY:SECRET_KEY');
+
+// Using a legacy API key
 $client = Client::simpleFactory('https://someHost', 'API_Key');
 
-// Using username and password
-$client = Client::simpleFactory('https://someHost', 'someUser', 'somePass');
+// Using username and password (HestiaCP only accepts the admin/root user)
+$client = Client::simpleFactory('https://someHost', 'admin', 'somePass');
 
 ```
+
+The API has to be enabled in the HestiaCP server settings, and the IP address of the machine that calls it has to be allowed.
+
+Client options can be passed as the last argument of `simpleFactory()` or `new Client()`:
+
+```php
+
+$client = Client::simpleFactory('https://someHost', 'ACCESS_KEY:SECRET_KEY', null, [
+	'timeout' => 30,     // seconds, default 10
+	'verify' => false,   // default true; set to false for a self-signed certificate, or give a path to a CA bundle
+]);
+
+```
+
+> TLS certificates are verified by default. Older versions of this library never checked them. If your panel uses the self-signed certificate created at install, either install a valid certificate (for example with Let's Encrypt) or pass `'verify' => false`.
 
 b) For some reasons (more hosts, etc) you may need create objects alone
 
@@ -60,8 +78,28 @@ $client = new Client($host);
 
 ```php
 
-// verify login
+// verify login (runs v-list-sys-info, so the credentials must be allowed to run it)
 $client->testAuthorization(); // bool
+
+```
+
+Errors are thrown as exceptions. The HestiaCP exit code is available as the exception code (see `\neto737\HestiaCP\Command\ResponseCode`):
+
+```php
+
+use neto737\HestiaCP\AuthorizationException;
+use neto737\HestiaCP\ClientException;
+use neto737\HestiaCP\ProcessException;
+
+try {
+	$client->getModuleUser()->add('other_user', 'pa$$word', 'some@email.com');
+} catch (AuthorizationException $e) {
+	// bad credentials, or not allowed to run the command (exit code 9 or 10)
+} catch (ProcessException $e) {
+	// the command failed, e.g. $e->getCode() === ResponseCode::E_EXISTS
+} catch (ClientException $e) {
+	// connection problem (timeout, DNS, TLS, ...)
+}
 
 ```
 
@@ -212,7 +250,7 @@ f) backup module
 
 $backupModule = $client->getModuleBackup('admin'); // backup module needs user
 
-$backupModule->backup(); // create a new backup
+$backupModule->backup(); // create a new backup (waits until the backup is done, no timeout)
 
 $backupModule->delete('admin.2021-10-13_18-12-53.tar'); // delete an user backup
 

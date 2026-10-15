@@ -106,11 +106,11 @@ class Users extends Module {
 	/**
 	 * This function backups all system users.
 	 * 
-	 * @return string
+	 * @return bool
 	 * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
 	 */
-	public function backup(): string {
+	public function backup(): bool {
 		return $this->client->send(new BackupUsers);
 	}
 }

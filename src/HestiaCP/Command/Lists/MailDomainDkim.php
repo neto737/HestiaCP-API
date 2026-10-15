@@ -23,7 +23,7 @@ class MailDomainDkim extends ListCommand {
 
 	public function getResponseText(): string {
 		// bug, issue 1827 ( https://github.com/serghey-rodin/vesta/issues/1827 )
-		return preg_replace('~\,\s*\}~', '}', parent::getResponseText());
+		return preg_replace('~\,\s*\}~', '}', (string) parent::getResponseText());
 	}
 
 	public function getRequestParams(): array {

@@ -26,11 +26,11 @@ class Backups extends Module {
      * This call is used for backing up user with all its domains and databases.
      * 
      * @param bool  $notify
-     * @return string
+     * @return bool
      * @throws \neto737\HestiaCP\ClientException
 	 * @throws \neto737\HestiaCP\ProcessException
      */
-    public function backup(bool $notify = true): string {
+    public function backup(bool $notify = true): bool {
         return $this->client->send(new BackupUser($this->user, $notify));
     }
 

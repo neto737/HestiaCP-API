@@ -20,10 +20,11 @@ abstract class ProcessCommand extends Command {
 	public function process(): bool {
 		parent::defaultProcess();
 
-		if ($this->getResponseCode() === 0) {
+		$code = $this->getResponseCode();
+		if ($code === ResponseCode::OK) {
 			return true;
 		}
 
-		$this->throwCodeException($this->getResponseCode());
+		throw $this->codeException($code);
 	}
 }

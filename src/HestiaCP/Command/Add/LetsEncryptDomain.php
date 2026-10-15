@@ -29,6 +29,10 @@ class LetsEncryptDomain extends ProcessCommand {
 		return 'v-add-letsencrypt-domain';
 	}
 
+	public function getTimeout(): ?float {
+		return 90;
+	}
+
 	public function getRequestParams(): array {
 		return [
 			self::ARG_1 => $this->user,

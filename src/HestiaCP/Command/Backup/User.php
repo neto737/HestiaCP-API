@@ -2,9 +2,9 @@
 
 namespace neto737\HestiaCP\Command\Backup;
 
-use neto737\HestiaCP\Command\ListCommand;
+use neto737\HestiaCP\Command\ProcessCommand;
 
-class User extends ListCommand {
+class User extends ProcessCommand {
 
     /** @var string */
     private $user;
@@ -19,6 +19,11 @@ class User extends ListCommand {
 
     public function getName(): string {
         return 'v-backup-user';
+    }
+
+    public function getTimeout(): ?float {
+        // the backup runs synchronously and can take a long time
+        return 0;
     }
 
     public function getRequestParams(): array {

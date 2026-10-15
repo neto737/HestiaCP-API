@@ -4,7 +4,7 @@ namespace neto737\HestiaCP;
 
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
-use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
+use neto737\HestiaCP\Command\Command;
 use neto737\HestiaCP\Command\ICommand;
 use neto737\HestiaCP\Command\TestAuthorization;
 use neto737\HestiaCP\Module\Backups;
@@ -26,6 +26,13 @@ class Client {
 
 	/**
 	 * Client constructor.
+	 *
+	 * Options:
+	 *  - timeout (float)       Request timeout in seconds, 0 = no timeout (default 10)
+	 *  - verify  (bool|string) Verify the TLS certificate, or a path to a CA bundle (default true).
+	 *                          Set to false for a server with a self-signed certificate.
+	 *  - handler (callable)    Custom Guzzle handler stack (middleware, testing)
+	 *
 	 * @param Host $host
 	 * @param array|null $options
 	 * @throws ClientException
@@ -36,17 +43,18 @@ class Client {
 	}
 
 	/**
-	 * @param string $hostname	Hostname
-	 * @param string $user		Username or API Key
-	 * @param mixed  $password	Password (must be null if using API Key)
+	 * @param string     $hostname	Hostname
+	 * @param string     $user		Username or API Key
+	 * @param mixed      $password	Password (must be null if using API Key)
+	 * @param array|null $options	See Client::__construct()
 	 * @return Client
 	 * @throws ClientException
 	 */
-	public static function simpleFactory(string $hostname, string $user, string $password = null): Client {
+	public static function simpleFactory(string $hostname, string $user, string $password = null, array $options = null): Client {
 		$credentials = new Credentials($user, $password);
 		$host = new Host($hostname, $credentials);
 
-		return new self($host);
+		return new self($host, $options);
 	}
 
 	public function setHost(Host $host) {
@@ -77,10 +85,6 @@ class Client {
 	public function send(ICommand $command) {
 		$host = $this->getHost();
 		try {
-			$timeout = $this->guzzleClient->getConfig('timeout');
-			if ($command instanceof LetsEncryptDomain) {
-				$timeout = 90;
-			}
 			$response = $this->guzzleClient->post($host->buildUri(), [
 				'form_params' => array_merge(
 					$host->getCredentials()->getRequestParams(),
@@ -90,18 +94,31 @@ class Client {
 						'cmd' => $command->getName()
 					]
 				),
-				'verify' => false,
-				'timeout' => $timeout
+				'timeout' => $this->getTimeout($command)
 			]);
 			$command->setLastResponse($response);
 			return $command->process();
 		} catch (ProcessException $e) {
 			throw $e;
-		} catch (\GuzzleHttp\Exception\ClientException $e) {
-			return $command->processException($e);
+		} catch (\GuzzleHttp\Exception\GuzzleException $e) {
+			throw new ClientException('Connection error (' . $e->getMessage() . ')', 0, $e);
 		} catch (\Exception $e) {
-			throw new ClientException('Fatal processing error (' . $e->getMessage() . ')');
+			throw new ClientException('Fatal processing error (' . $e->getMessage() . ')', 0, $e);
 		}
+	}
+
+	/**
+	 * A command may need a longer timeout than the client default, but never a shorter one.
+	 */
+	private function getTimeout(ICommand $command): float {
+		$timeout = (float) $this->guzzleClient->getConfig('timeout');
+		$commandTimeout = $command instanceof Command ? $command->getTimeout() : null;
+
+		if ($commandTimeout === null || $timeout == 0) {
+			return $timeout;
+		}
+
+		return $commandTimeout == 0 ? 0 : max($timeout, $commandTimeout);
 	}
 
 	/**
@@ -112,7 +129,11 @@ class Client {
 	private function prepareCommunication(array $options = null): Client {
 		try {
 			$this->guzzleClient = new \GuzzleHttp\Client([
-				'timeout' => $options['timeout'] ?? 10.0
+				'timeout' => $options['timeout'] ?? 10.0,
+				'verify' => $options['verify'] ?? true,
+				'handler' => $options['handler'] ?? null,
+				// HestiaCP reports failures with HTTP error codes, the commands handle them
+				'http_errors' => false
 			]);
 		} catch (\Exception $e) {
 			throw new ClientException('Bad Client configuration (' . $e->getMessage() . ')');
