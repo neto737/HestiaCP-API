@@ -2,3 +2,5 @@ composer.lock
 test.php
 /vendor
 /tests/log
+/.phpunit.cache
+coverage.xml
