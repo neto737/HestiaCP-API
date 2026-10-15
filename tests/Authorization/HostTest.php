@@ -8,8 +8,6 @@ use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class HostTest extends \PHPUnit\Framework\TestCase {
 
 	public function testHost(): void {

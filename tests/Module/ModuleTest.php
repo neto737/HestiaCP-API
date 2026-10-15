@@ -11,8 +11,6 @@ use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use neto737\HestiaCP\Module\Mails;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class ModuleTest extends \PHPUnit\Framework\TestCase {
 
 	public function createClient(): Client {

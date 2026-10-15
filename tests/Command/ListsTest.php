@@ -17,8 +17,6 @@ use neto737\HestiaCP\Command\Lists\UserBackupExclusions;
 use neto737\HestiaCP\Command\Lists\Database;
 use neto737\HestiaCP\Command\Lists\Databases;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class ListsTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {

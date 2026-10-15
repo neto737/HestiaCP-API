@@ -6,8 +6,6 @@ namespace neto737\HestiaCP\Tests\Authorization;
 
 use neto737\HestiaCP\Authorization\Credentials;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class CredentialsTest extends \PHPUnit\Framework\TestCase {
 
 	public function testApiKey(): void {

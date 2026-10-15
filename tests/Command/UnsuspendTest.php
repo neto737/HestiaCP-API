@@ -9,8 +9,6 @@ use neto737\HestiaCP\Command\Unsuspend\WebDomain;
 use neto737\HestiaCP\Command\Unsuspend\MailAccount;
 use neto737\HestiaCP\Command\Unsuspend\MailDomain;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {

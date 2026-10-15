@@ -9,8 +9,6 @@ use neto737\HestiaCP\Command\Change\MailAccountPassword;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
 use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class ChangeTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUserPassword(): void {

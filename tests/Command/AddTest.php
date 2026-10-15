@@ -12,8 +12,6 @@ use neto737\HestiaCP\Command\Add\MailAccount;
 use neto737\HestiaCP\Command\Add\MailDomain;
 use neto737\HestiaCP\Command\Add\Database;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class AddTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {

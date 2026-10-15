@@ -18,8 +18,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 /**
  * Calls every module method through a mocked client and checks the request it sends and the value it returns.
  * Arguments use distinct values (and non-default booleans) so a swapped or dropped argument fails here.

@@ -15,8 +15,6 @@ use neto737\HestiaCP\Command\Delete\UserBackupExclusions;
 use neto737\HestiaCP\Command\Delete\Database;
 use neto737\HestiaCP\Command\Delete\Databases;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class DeleteTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {

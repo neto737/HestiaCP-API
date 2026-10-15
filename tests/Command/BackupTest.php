@@ -7,8 +7,6 @@ namespace neto737\HestiaCP\Tests\Command;
 use neto737\HestiaCP\Command\Backup\Users;
 use neto737\HestiaCP\Command\Backup\User;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class BackupTest extends \PHPUnit\Framework\TestCase {
 
 	public function testBackupUsers(): void {
