@@ -1,279 +1,55 @@
-
 # HestiaCP PHP API
 
-  
 [![Name](https://badgen.net/packagist/name/neto737/hestiacp-api)](//packagist.org/packages/neto737/hestiacp-api) [![Latest Stable Version](https://badgen.net/packagist/v/neto737/hestiacp-api/latest)](https://packagist.org/packages/neto737/hestiacp-api) [![Total Downloads](https://badgen.net/packagist/dt/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api)  [![License](https://badgen.net/packagist/license/neto737/hestiacp-api)](https://packagist.org/packages/neto737/hestiacp-api) [![Tests](https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml) [![codecov](https://codecov.io/gh/neto737/HestiaCP-API/branch/main/graph/badge.svg?token=F93I5JQXY6)](https://codecov.io/gh/neto737/HestiaCP-API)
 
-  
+A PHP client for the [HestiaCP](https://hestiacp.com) API. It manages users, web domains, mail, databases and backups on a HestiaCP server.
 
-## How to use
+## Requirements
 
-1) Installation
+- PHP 8.1 or later
+- HestiaCP with the API enabled, and the IP address of the calling machine allowed in the server settings
+
+## Installation
 
 ```sh
-
-$ composer require neto737/hestiacp-api
-
+composer require neto737/hestiacp-api
 ```
 
-2) Create Client
-
-a) Easy way
+## Quick start
 
 ```php
-
 use neto737\HestiaCP\Client;
 
-// Easy way to create Client
+// Access key (HestiaCP 1.6+), written as ACCESS_KEY:SECRET_KEY
+$client = Client::simpleFactory('https://panel.example.com', 'ACCESS_KEY:SECRET_KEY');
 
-// Using an access key (HestiaCP 1.6+), written as ACCESS_KEY:SECRET_KEY
-$client = Client::simpleFactory('https://someHost', 'ACCESS_KEY:SECRET_KEY');
-
-// Using a legacy API key
-$client = Client::simpleFactory('https://someHost', 'API_Key');
-
-// Using username and password (HestiaCP only accepts the admin/root user)
-$client = Client::simpleFactory('https://someHost', 'admin', 'somePass');
-
-```
-
-The hostname must start with `https://` (or `http://`) and contain only the host, for example `https://panel.example.com`. An IP address works too: `https://192.0.2.10`, or `https://[2001:db8::1]` for IPv6 (the brackets are required). A trailing slash is removed. The port is a separate argument of `Host` (default `8083`). An invalid hostname throws `\neto737\HestiaCP\Exceptions\InvalidArgumentException`.
-
-The API has to be enabled in the HestiaCP server settings, and the IP address of the machine that calls it has to be allowed.
-
-Client options can be passed as the last argument of `simpleFactory()` or `new Client()`:
-
-```php
-
-$client = Client::simpleFactory('https://someHost', 'ACCESS_KEY:SECRET_KEY', null, [
-	'timeout' => 30,     // seconds, default 10
-	'verify' => false,   // default true; set to false for a self-signed certificate, or give a path to a CA bundle
-]);
-
-```
-
-> TLS certificates are verified by default. Older versions of this library never checked them. If your panel uses the self-signed certificate created at install, either install a valid certificate (for example with Let's Encrypt) or pass `'verify' => false`.
-
-b) For some reasons (more hosts, etc) you may need create objects alone
-
-```php
-
-use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Authorization\Credentials;
-use neto737\HestiaCP\Authorization\Host;
-
-// You can choose to use an access key, a legacy API key, or username and password
-
-// Access key (HestiaCP 1.6+)
-$credentials = Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
-
-// Legacy API Key
-$credentials = Credentials::legacyHash('API_Key');
-
-// Username and Password (HestiaCP only accepts the admin/root user)
-$credentials = Credentials::password('admin', 'somePassword');
-
-$host = new Host('https://someHost', $credentials);
-
-$client = new Client($host);
-
-```
-
-3) Usage
-
-```php
-
-// verify login (runs v-list-sys-info, so the credentials must be allowed to run it)
+// Check that the credentials work
 $client->testAuthorization(); // bool
 
-```
-
-Errors are thrown as exceptions. The HestiaCP exit code is available as the exception code (see `\neto737\HestiaCP\Command\ResponseCode`):
-
-```php
-
-use neto737\HestiaCP\Exceptions\AuthorizationException;
-use neto737\HestiaCP\Exceptions\ClientException;
-use neto737\HestiaCP\Exceptions\ProcessException;
-
-try {
-	$client->getModuleUser()->add('other_user', 'pa$$word', 'some@email.com');
-} catch (AuthorizationException $e) {
-	// bad credentials, or not allowed to run the command (exit code 9 or 10)
-} catch (ProcessException $e) {
-	// the command failed, e.g. $e->getCode() === ResponseCode::E_EXISTS
-} catch (ClientException $e) {
-	// connection problem (timeout, DNS, TLS, ...)
-}
-
-```
-
-You can simply send one of prepared commands (or you can write own command - must implements `\neto737\HestiaCP\Command\ICommand` )
-
-```php
-
-$command = new SomeCommand();
-
-$response = $client->send($command);
-
-
-echo $response->getResponseText();
-
-```
-
-Or you can use prepared modules
-
-List and detail methods return plain associative arrays decoded from HestiaCP's JSON, keyed by the object name:
-
-```php
-
+// List all users
 $users = $client->getModuleUser()->list(); // ['admin' => ['NAME' => '...', 'CONTACT' => '...', ...], ...]
 
-$admin = $client->getModuleUser()->detail('admin');
-echo $admin['CONTACT'];
-
+// Add a web domain for the admin user
+$client->getModuleWeb('admin')->addDomain('example.com');
 ```
 
-> Before v2.0 these methods returned `Nette\Utils\ArrayHash` objects. To upgrade, replace `$item->FIELD` with `$item['FIELD']`.
-
-a) user module
-
-```php
-
-$userModule = $client->getModuleUser();
-
-
-$userModule->list(); // returns all users with data
-
-$userModule->detail('admin'); // returns selected user with data
-
-$userModule->changePassword('admin', 'otherPa$$word');
-
-$userModule->add('other_user', 'pa$$word', 'some@email.com');
-
-$userModule->add('other_user', 'pa$$word', 'some@email.com', 'default', 'John', 'Doe'); // with package, first name and last name
-
-$userModule->suspend('other_user');
-
-$userModule->unsuspend('other_user');
-
-$userModule->delete('other_user');
-
-```
-
-b) web module
-
-```php
-
-$webModule = $client->getModuleWeb('admin'); // web module needs user
-
-
-$webModule->listDomains();
-
-$webModule->addDomain('domain.com');
-
-$webModule->addDomainLetsEncrypt('domain.com', 'www.domain.com'); // needs longer timeout
-
-$webModule->addDomainLetsEncrypt('domain.com', null, true); // certificate for the mail domain
-
-$webModule->addDomainLetsEncrypt('domain.com', 'www.domain.com', false, 'rsa'); // key algorithm: ecdsa-256 (default), ecdsa-384 or rsa (needs HestiaCP newer than 1.10.5)
-
-$webModule->deleteDomainLetsEncrypt('domain.com');
-
-$webModule->addDomainFtp('domain.com', 'test', 'pa$$word');
-
-$webModule->changeDomainFtpPassword('domain.com', 'admin_test', 'otherPa$$word');
-
-$webModule->changeDomainFtpPath('domain.com', 'admin_test', 'path/other');
-
-$webModule->deleteDomainFtp('domain.com', 'admin_test');
-
-$webModule->suspendDomain('domain.com');
-
-$webModule->unsuspendDomain('domain.com');
-
-$webModule->deleteDomain('domain.com');
-
-```
-
-c) mail module
-
-```php
-
-$mailModule = $client->getModuleMail('admin'); // mail module needs user
-
-
-$mailModule->listDomains(); // returns mail domains from selected user
-
-$mailModule->addDomain('domain.com'); // add domain
-
-$mailModule->listAccounts('domain.com'); // returns accounts from selected user and domain
-
-$mailModule->listDomainDkim('domain.com');
-
-$mailModule->listDomainDkimDns('domain.com');
-
-$mailModule->addAccount('domain.com', 'info', 'pa$$word'); // add info@domain.com account
-
-$mailModule->changeAccountPassword('domain.com', 'info', 'otherPa$$word'); // change info@domain.com password
-
-$mailModule->suspendAccount('domain.com', 'info'); // suspend info@domain.com account
-
-$mailModule->unsuspendAccount('domain.com', 'info'); // unsuspend info@domain.com account
-
-$mailModule->deleteAccount('domain.com', 'info');
-
-$mailModule->suspendDomain('domain.com');
-
-$mailModule->unsuspendDomain('domain.com');
-
-$mailModule->deleteDomain('domain.com');
-
-```
-
-d) db module
-
-```php
-
-$dbModule = $client->getModuleDatabase('admin'); // db module needs user
-
-$dbModule->add('database', 'dbuser', 'dbpass'); // creates admin_database with the user admin_dbuser (type defaults to mysql)
-
-$dbModule->add('database', 'dbuser', 'dbpass', 'pgsql'); // PostgreSQL, if it is installed on the server
-
-$dbModule->listDatabases(); // ['admin_database' => ['DATABASE' => '...', 'DBUSER' => '...', ...], ...]
-
-$dbModule->listDatabase('admin_database'); // returns the database parameters
-
-$dbModule->delete('admin_database'); // delete one database
-
-$dbModule->deleteDatabases(); // delete all databases of the user
-
-```
-
-> HestiaCP prefixes the database name and the database user with the owner's username. `add()` takes the names without the prefix; the other methods take the full name (`admin_database`).
-
-e) backup module
-
-```php
-
-$backupModule = $client->getModuleBackup('admin'); // backup module needs user
-
-$backupModule->backup(); // create a new backup (waits until the backup is done, no timeout)
-
-$backupModule->delete('admin.2021-10-13_18-12-53.tar'); // delete an user backup
-
-$backupModule->deleteExclusions(); // delete all backup exclusions
-
-$backupModule->deleteExclusions('WEB'); // delete only one type of exclusion (WEB, DNS, MAIL, DB, CRON or USER)
-
-$backupModule->listBackups(); // returns the backups list
-
-$backupModule->listBackup('admin.2021-10-13_18-12-53.tar'); // returns backup parameters list
-
-$backupModule->listBackupExclusions(); // returns the backup exclusions list
-
-```
+TLS certificates are verified by default. If your panel still uses the self-signed certificate created at install, see [TLS certificates](docs/authentication.md#tls-certificates).
+
+Failures are thrown as exceptions (`AuthorizationException`, `ProcessException`, `ClientException`). See [Error handling](docs/errors.md).
+
+## Documentation
+
+- [Authentication and client setup](docs/authentication.md): access keys, legacy API keys, passwords, hostname rules, TLS and timeouts
+- [Error handling](docs/errors.md): exception types and HestiaCP exit codes
+- Modules:
+  - [Users](docs/users.md)
+  - [Web domains](docs/web.md)
+  - [Mail](docs/mail.md)
+  - [Databases](docs/databases.md)
+  - [Backups](docs/backups.md)
+- [Sending commands directly](docs/commands.md): using the command classes, and writing your own
+
+Upgrading from v1? Read [UPGRADING.md](UPGRADING.md). All changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## Donate :heart:
 

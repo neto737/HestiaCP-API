@@ -1,0 +1,126 @@
+# Upgrading
+
+## From v1 to v2
+
+v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
+
+### PHP 8.1 or later
+
+v2 requires PHP 8.1. v1 ran on PHP 7.3+.
+
+The `nette/utils` dependency is gone. If your own code uses Nette Utils, require it in your `composer.json` yourself.
+
+### List and detail methods return arrays
+
+List and detail methods (`Users::list()`, `Webs::listDomains()`, `Backups::listBackups()` and so on) now return plain associative arrays instead of `Nette\Utils\ArrayHash` objects.
+
+```php
+// v1
+$admin = $client->getModuleUser()->detail('admin');
+echo $admin->CONTACT;
+
+// v2
+echo $admin['CONTACT'];
+```
+
+Search your code for `->` on results of these methods and replace it with array access. `foreach` over the results works as before.
+
+### Exceptions moved to their own namespace
+
+The exception classes moved from `neto737\HestiaCP` to `neto737\HestiaCP\Exceptions`. The class names are unchanged.
+
+```php
+// v1
+use neto737\HestiaCP\ProcessException;
+
+// v2
+use neto737\HestiaCP\Exceptions\ProcessException;
+```
+
+This applies to `Exception`, `InvalidArgumentException`, `RuntimeException`, `ProcessException`, `ClientException`, `InvalidResponseException` and `AuthorizationException`. A `catch` with the old name doesn't fail with an error: it simply never matches, so the exception goes uncaught. Search for every `use` and `catch` of these classes.
+
+### Exceptions carry the HestiaCP exit code
+
+In v1, a failed command threw a `ProcessException` with Guzzle's HTTP error message and code `0`, and a server error could surface as a `ClientException`. In v2:
+
+- Exit codes 9 and 10 (wrong credentials, access denied) throw `AuthorizationException`.
+- Every other failure throws `ProcessException`, with the HestiaCP exit code as `getCode()` and a readable message.
+- `ClientException` means only that the request didn't complete (timeout, DNS, TLS, connection refused).
+
+If you parsed exception messages, compare `$e->getCode()` with the `ResponseCode` constants instead. See [Error handling](docs/errors.md).
+
+### TLS certificates are verified
+
+v1 never checked the server's TLS certificate. v2 checks it by default, so a panel with a self-signed certificate now fails with a `ClientException`.
+
+Either install a valid certificate (for example with Let's Encrypt), or set the `verify` option:
+
+```php
+$client = Client::simpleFactory('https://panel.example.com', 'ACCESS_KEY:SECRET_KEY', null, [
+	'verify' => '/path/to/ca-bundle.pem', // or false to turn verification off
+]);
+```
+
+See [TLS certificates](docs/authentication.md#tls-certificates).
+
+### The hostname needs a scheme
+
+The hostname must start with `https://` or `http://` and contain only the host. A hostname without a scheme, or with a port, path, query or fragment, now throws `InvalidArgumentException`.
+
+v1 passed the hostname through without checking it.
+
+```php
+// v2 rejects these
+Client::simpleFactory('panel.example.com', ...);
+Client::simpleFactory('https://panel.example.com:8083/', ...);
+
+// use this instead
+Client::simpleFactory('https://panel.example.com', ...);
+new Host('https://panel.example.com', $credentials, 8083); // port as a separate argument
+```
+
+See [Hostname](docs/authentication.md#hostname).
+
+### `addDomainLetsEncrypt()`: the 4th argument is renamed
+
+The 4th argument of `Webs::addDomainLetsEncrypt()` was called `$restart`, but HestiaCP has always read it as the MAIL flag: `true` also requested a certificate for the mail domain. v2 renames it to `$mail` to match. Code that passes it by position behaves the same as before.
+
+```php
+// v1 and v2: certificate for the web and mail domain
+$web->addDomainLetsEncrypt('example.com', 'www.example.com', true);
+
+// named arguments must use the new name
+$web->addDomainLetsEncrypt('example.com', mail: true);
+```
+
+If you passed `true` expecting a service restart, pass `false` instead, unless you also want the mail certificate.
+
+### Backups return `bool`
+
+`Backups::backup()` and `Users::backup()` return `true` when the backup has finished, instead of a string. In v1 these calls failed anyway, because the library tried to parse the backup log as JSON.
+
+### `ResponseCode::E_FORBIDEN` removed
+
+Use the correctly spelled `ResponseCode::E_FORBIDDEN`.
+
+### Custom commands
+
+Only relevant if you wrote your own command classes.
+
+- `getTimeout(): ?float` is now part of `ICommand`. Classes that extend `Command`, `ProcessCommand` or `ListCommand` already have it. Classes that implement `ICommand` directly must add it; return `null` to use the client timeout.
+- `processException()` was removed from `ICommand` and `Command`. The client no longer calls it, because HTTP errors no longer throw in Guzzle. Delete any implementation of it.
+- `Command::throwCodeException()` was removed. It wasn't used.
+
+See [Sending commands directly](docs/commands.md).
+
+### Optional: switch to access keys
+
+Not required, but recommended. HestiaCP 1.6+ supports access keys, and password login works only for the admin/root user. v1 code that passed `ACCESS_KEY:SECRET_KEY` as a single string keeps working. v2 also has named constructors:
+
+```php
+use neto737\HestiaCP\Authorization\Credentials;
+
+$credentials = Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
+```
+
+See [Authentication](docs/authentication.md).

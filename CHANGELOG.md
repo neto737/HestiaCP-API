@@ -27,7 +27,7 @@ This will be released as 2.0.0. It brings the library up to date with HestiaCP 1
 - **BC break:** exceptions moved from `neto737\HestiaCP\*` to `neto737\HestiaCP\Exceptions\*`, one class per file. Autoloading switched from `classmap` to PSR-4.
 - **BC break:** TLS certificates are verified by default. For a self-signed certificate, pass `'verify' => false` or a CA bundle path.
 - **BC break:** the hostname must include an `http://` or `https://` scheme. A port, path, query, fragment or user info in it throws `InvalidArgumentException`. A trailing slash is removed, and the scheme and host are lowercased.
-- **BC break:** the 4th argument of `Webs::addDomainLetsEncrypt()` is now `$mail` instead of the unused `$restart`.
+- **BC break:** the 4th argument of `Webs::addDomainLetsEncrypt()` is renamed from `$restart` to `$mail`, which is how HestiaCP has always read it. Positional calls behave the same; named arguments must use the new name.
 - **BC break:** `getTimeout()` is part of `ICommand`. Classes that implement `ICommand` directly must add it.
 - Errors are read from HestiaCP's HTTP status and `Hestia-Exit-Code` header instead of Guzzle exceptions. Exit codes 9 and 10 throw `AuthorizationException`; other non-zero codes throw `ProcessException`; network and timeout failures throw `ClientException` with the original exception as `previous`.
 - **BC break:** `Backups::backup()` and `Users::backup()` return `bool` instead of `string`. The backup scripts print a plain-text log, not JSON, so the old return value could not be parsed.
