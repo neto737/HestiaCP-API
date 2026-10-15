@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Command;
+
 use neto737\HestiaCP\Command\Add\User;
 use neto737\HestiaCP\Command\Add\WebDomain;
 use neto737\HestiaCP\Command\Add\WebDomainFtp;
@@ -10,9 +12,7 @@ use neto737\HestiaCP\Command\Add\MailAccount;
 use neto737\HestiaCP\Command\Add\MailDomain;
 use neto737\HestiaCP\Command\Add\Database;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-class commandAddTest extends \PHPUnit\Framework\TestCase {
+class AddTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
 		$command = new User('admin', 'pass', 'mail@domain.com');

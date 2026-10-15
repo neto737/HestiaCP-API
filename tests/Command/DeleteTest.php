@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests\Command;
+
 use neto737\HestiaCP\Command\Delete\User;
 use neto737\HestiaCP\Command\Delete\WebDomain;
 use neto737\HestiaCP\Command\Delete\WebDomainFtp;
@@ -13,9 +15,7 @@ use neto737\HestiaCP\Command\Delete\UserBackupExclusions;
 use neto737\HestiaCP\Command\Delete\Database;
 use neto737\HestiaCP\Command\Delete\Databases;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-class commandDeleteTest extends \PHPUnit\Framework\TestCase {
+class DeleteTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
 		$command = new User('admin');

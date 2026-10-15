@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+namespace neto737\HestiaCP\Tests;
+
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Client;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-class clientTest extends \PHPUnit\Framework\TestCase {
+class ClientTest extends \PHPUnit\Framework\TestCase {
 
 	public function testHostWithAPIKey(): void {
 		$credentials = new Credentials('');
