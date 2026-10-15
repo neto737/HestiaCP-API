@@ -2,7 +2,6 @@
 
 namespace neto737\HestiaCP\Command;
 
-use GuzzleHttp\Exception\ClientException;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 use neto737\HestiaCP\Exceptions\ProcessException;
@@ -27,15 +26,6 @@ abstract class Command implements ICommand {
 
 	/** @var int|null */
 	private $lastExitCode;
-
-	/**
-	 * @deprecated The client no longer lets Guzzle throw on HTTP errors, so this is not called anymore.
-	 * @param ClientException $exception
-	 * @throws ProcessException
-	 */
-	public function processException(ClientException $exception): void {
-		throw new ProcessException($exception->getMessage(), 0, $exception);
-	}
 
 	public function setLastResponse(ResponseInterface $response): void {
 		$this->lastResponse = (string) $response->getBody();
@@ -100,15 +90,6 @@ abstract class Command implements ICommand {
 	}
 
 	/**
-	 * @param int $code
-	 * @throws AuthorizationException
-	 * @throws ProcessException
-	 */
-	protected function throwCodeException($code): void {
-		throw $this->codeException((int) $code);
-	}
-
-	/**
 	 * Builds the exception for a non-zero HestiaCP exit code.
 	 */
 	protected function codeException(int $code): ProcessException {
@@ -120,7 +101,7 @@ abstract class Command implements ICommand {
 			$message .= ' (' . $detail . ')';
 		}
 
-		if ($code === ResponseCode::E_PASSWORD || $code === ResponseCode::E_FORBIDEN) {
+		if ($code === ResponseCode::E_PASSWORD || $code === ResponseCode::E_FORBIDDEN) {
 			return new AuthorizationException($message, $code);
 		}
 

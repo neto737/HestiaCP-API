@@ -21,11 +21,6 @@ class MailDomainDkimDns extends ListCommand {
 		return 'v-list-mail-domain-dkim-dns';
 	}
 
-	public function getResponseText(): string {
-		// bug, issue 1620 ( https://github.com/serghey-rodin/vesta/issues/1620 )
-		return preg_replace('~\\n~', '', (string) parent::getResponseText());
-	}
-
 	public function getRequestParams(): array {
 		return [
 			self::ARG_1 => $this->user,

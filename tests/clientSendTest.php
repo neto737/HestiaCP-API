@@ -262,6 +262,42 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['admin_one', 'admin_two'], array_keys($databases));
 	}
 
+	// output of bin/v-list-mail-domain-dkim in HestiaCP 1.10.5, PEM newlines escaped by the script
+	public function testListDomainDkim(): void {
+		$body = <<<'JSON'
+{
+	"domain.com": {
+        "PEM": "-----BEGIN PRIVATE KEY-----\nMIIEvQ\n-----END PRIVATE KEY-----\n",
+        "PUB": "-----BEGIN PUBLIC KEY-----\nMIIBIj\n-----END PUBLIC KEY-----\n"
+	}
+}
+JSON;
+		$client = $this->createClient([new Response(200, [], $body)]);
+
+		$dkim = $client->getModuleMail('admin')->listDomainDkim('domain.com');
+		$this->assertSame("-----BEGIN PRIVATE KEY-----\nMIIEvQ\n-----END PRIVATE KEY-----\n", $dkim['domain.com']['PEM']);
+		$this->assertSame("-----BEGIN PUBLIC KEY-----\nMIIBIj\n-----END PUBLIC KEY-----\n", $dkim['domain.com']['PUB']);
+	}
+
+	// output of bin/v-list-mail-domain-dkim-dns in HestiaCP 1.10.5
+	public function testListDomainDkimDns(): void {
+		$body = <<<'JSON'
+{
+
+	"mail._domainkey": {
+            "TTL": "3600",
+            "TXT": "'v=DKIM1; k=rsa; p=MIIBIj'"
+	}
+}
+JSON;
+		$client = $this->createClient([new Response(200, [], $body)]);
+
+		$this->assertSame(
+			['mail._domainkey' => ['TTL' => '3600', 'TXT' => "'v=DKIM1; k=rsa; p=MIIBIj'"]],
+			$client->getModuleMail('admin')->listDomainDkimDns('domain.com')
+		);
+	}
+
 	public function testBackup(): void {
 		$client = $this->createClient([self::codeResponse(0), self::codeResponse(0)]);
 
@@ -289,7 +325,7 @@ class clientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testAuthorizationInvalid(): void {
 		$client = $this->createClient([
 			self::codeResponse(ResponseCode::E_PASSWORD, 401),
-			self::codeResponse(ResponseCode::E_FORBIDEN, 401)
+			self::codeResponse(ResponseCode::E_FORBIDDEN, 401)
 		]);
 
 		$this->assertFalse($client->testAuthorization());

@@ -4,7 +4,6 @@ namespace neto737\HestiaCP;
 
 use neto737\HestiaCP\Authorization\Credentials;
 use neto737\HestiaCP\Authorization\Host;
-use neto737\HestiaCP\Command\Command;
 use neto737\HestiaCP\Command\ICommand;
 use neto737\HestiaCP\Command\TestAuthorization;
 use neto737\HestiaCP\Exceptions\ClientException;
@@ -116,7 +115,7 @@ class Client {
 	 */
 	private function getTimeout(ICommand $command): float {
 		$timeout = (float) $this->guzzleClient->getConfig('timeout');
-		$commandTimeout = $command instanceof Command ? $command->getTimeout() : null;
+		$commandTimeout = $command->getTimeout();
 
 		if ($commandTimeout === null || $timeout == 0) {
 			return $timeout;

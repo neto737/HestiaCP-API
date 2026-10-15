@@ -14,7 +14,6 @@ class ResponseCode {
 	public const E_INUSE = 7;
 	public const E_LIMIT = 8;
 	public const E_PASSWORD = 9;
-	public const E_FORBIDEN = 10;
 	public const E_FORBIDDEN = 10;
 	public const E_DISABLED = 11;
 	public const E_PARSING = 12;
@@ -41,7 +40,7 @@ class ResponseCode {
 		self::E_INUSE => 'Object can\'t be deleted because is used by the other object',
 		self::E_LIMIT => 'Object cannot be created because of hosting package limits',
 		self::E_PASSWORD => 'Wrong password',
-		self::E_FORBIDEN => 'Object cannot be accessed by the user',
+		self::E_FORBIDDEN => 'Object cannot be accessed by the user',
 		self::E_DISABLED => 'Subsystem is disabled',
 		self::E_PARSING => 'Configuration is broken',
 		self::E_DISK => 'Not enough disk space to complete the action',

@@ -56,14 +56,16 @@ class commandListTest extends \PHPUnit\Framework\TestCase {
 		$command = new MailDomainDkim('admin', 'domain');
 		$this->assertSame('v-list-mail-domain-dkim', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
-		$this->assertSame('', $command->getResponseText());
+
+		$this->assertSame([], $command->process());
 	}
 
 	public function testMailDomainDkimDns(): void {
 		$command = new MailDomainDkimDns('admin', 'domain');
 		$this->assertSame('v-list-mail-domain-dkim-dns', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
-		$this->assertSame('', $command->getResponseText());
+
+		$this->assertSame([], $command->process());
 	}
 
 	public function testMailAccounts(): void {
