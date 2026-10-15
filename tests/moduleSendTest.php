@@ -1,0 +1,350 @@
+<?php
+
+declare(strict_types=1);
+
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use neto737\HestiaCP\Client;
+use neto737\HestiaCP\Module\Backups;
+use neto737\HestiaCP\Module\Databases;
+use neto737\HestiaCP\Module\Mails;
+use neto737\HestiaCP\Module\Users;
+use neto737\HestiaCP\Module\Webs;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+/**
+ * Calls every module method through a mocked client and checks the request it sends and the value it returns.
+ * Arguments use distinct values (and non-default booleans) so a swapped or dropped argument fails here.
+ *
+ * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
+ * @phpstan-type ModuleCall \Closure(Client): mixed
+ */
+class moduleSendTest extends \PHPUnit\Framework\TestCase {
+
+	private const LIST_BODY = '{"first": {"NAME": "First"}, "second": {"NAME": "Second"}}';
+
+	/** @var array<array-key, HistoryEntry> */
+	private array $history = [];
+
+	private function createClient(Response $response): Client {
+		$this->history = [];
+		$stack = HandlerStack::create(new MockHandler([$response]));
+		$stack->push(Middleware::history($this->history));
+
+		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, ['handler' => $stack]);
+	}
+
+	/**
+	 * @param array<string, string> $args
+	 * @param 'yes'|'no' $returnCode
+	 */
+	private function assertRequest(string $cmd, array $args, string $returnCode): void {
+		$this->assertCount(1, $this->history);
+
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame(['hash' => 'ACCESS:SECRET'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
+	}
+
+	/**
+	 * Methods that run a command and return true on success.
+	 *
+	 * @return iterable<string, array{ModuleCall, string, array<string, string>}>
+	 */
+	public static function processProvider(): iterable {
+		yield 'Users::add' => [
+			fn (Client $c) => $c->getModuleUser()->add('bob', 'secret', 'bob@example.com', 'gold', 'Bob', 'Smith'),
+			'v-add-user',
+			['arg1' => 'bob', 'arg2' => 'secret', 'arg3' => 'bob@example.com', 'arg4' => 'gold', 'arg5' => 'Bob', 'arg6' => 'Smith']
+		];
+		yield 'Users::changePassword' => [
+			fn (Client $c) => $c->getModuleUser()->changePassword('bob', 'secret'),
+			'v-change-user-password',
+			['arg1' => 'bob', 'arg2' => 'secret']
+		];
+		yield 'Users::suspend' => [
+			fn (Client $c) => $c->getModuleUser()->suspend('bob', true),
+			'v-suspend-user',
+			['arg1' => 'bob', 'arg2' => 'yes']
+		];
+		yield 'Users::unsuspend' => [
+			fn (Client $c) => $c->getModuleUser()->unsuspend('bob', true),
+			'v-unsuspend-user',
+			['arg1' => 'bob', 'arg2' => 'yes']
+		];
+		yield 'Users::delete' => [
+			fn (Client $c) => $c->getModuleUser()->delete('bob'),
+			'v-delete-user',
+			['arg1' => 'bob']
+		];
+		yield 'Users::backup' => [
+			fn (Client $c) => $c->getModuleUser()->backup(),
+			'v-backup-users',
+			[]
+		];
+
+		yield 'Backups::backup' => [
+			fn (Client $c) => $c->getModuleBackup('alice')->backup(false),
+			'v-backup-user',
+			['arg1' => 'alice', 'arg2' => 'no']
+		];
+		yield 'Backups::delete' => [
+			fn (Client $c) => $c->getModuleBackup('alice')->delete('alice.2026-10-15.tar'),
+			'v-delete-user-backup',
+			['arg1' => 'alice', 'arg2' => 'alice.2026-10-15.tar']
+		];
+		yield 'Backups::deleteExclusions' => [
+			fn (Client $c) => $c->getModuleBackup('alice')->deleteExclusions('web'),
+			'v-delete-user-backup-exclusions',
+			['arg1' => 'alice', 'arg2' => 'web']
+		];
+
+		yield 'Databases::add' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->add('alice_db', 'alice_dbuser', 'secret', 'pgsql'),
+			'v-add-database',
+			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'alice_dbuser', 'arg4' => 'secret', 'arg5' => 'pgsql']
+		];
+		yield 'Databases::delete' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->delete('alice_db'),
+			'v-delete-database',
+			['arg1' => 'alice', 'arg2' => 'alice_db']
+		];
+		yield 'Databases::deleteDatabases' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->deleteDatabases(),
+			'v-delete-databases',
+			['arg1' => 'alice']
+		];
+
+		yield 'Mails::addAccount' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccount('example.com', 'info', 'secret'),
+			'v-add-mail-account',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'secret']
+		];
+		yield 'Mails::changeAccountPassword' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeAccountPassword('example.com', 'info', 'secret'),
+			'v-change-mail-account-password',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'secret']
+		];
+		yield 'Mails::suspendAccount' => [
+			fn (Client $c) => $c->getModuleMail('alice')->suspendAccount('example.com', 'info'),
+			'v-suspend-mail-account',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::unsuspendAccount' => [
+			fn (Client $c) => $c->getModuleMail('alice')->unsuspendAccount('example.com', 'info'),
+			'v-unsuspend-mail-account',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::deleteAccount' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccount('example.com', 'info'),
+			'v-delete-mail-account',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::addDomain' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomain('example.com', false, true, false),
+			'v-add-mail-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'no', 'arg4' => 'yes', 'arg5' => 'no']
+		];
+		yield 'Mails::suspendDomain' => [
+			fn (Client $c) => $c->getModuleMail('alice')->suspendDomain('example.com'),
+			'v-suspend-mail-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Mails::unsuspendDomain' => [
+			fn (Client $c) => $c->getModuleMail('alice')->unsuspendDomain('example.com'),
+			'v-unsuspend-mail-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Mails::deleteDomain' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteDomain('example.com'),
+			'v-delete-mail-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+
+		yield 'Webs::addDomain' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomain('example.com', '10.0.0.1', 'www.example.com', 'jpg,png', true),
+			'v-add-web-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '10.0.0.1', 'arg4' => 'yes', 'arg5' => 'www.example.com', 'arg6' => 'jpg,png']
+		];
+		yield 'Webs::suspendDomain' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->suspendDomain('example.com', true),
+			'v-suspend-web-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::unsuspendDomain' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->unsuspendDomain('example.com', true),
+			'v-unsuspend-web-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::deleteDomain' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomain('example.com'),
+			'v-delete-web-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Webs::addDomainLetsEncrypt' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainLetsEncrypt('example.com', 'www.example.com', true, 'rsa'),
+			'v-add-letsencrypt-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'yes', 'arg5' => 'rsa']
+		];
+		yield 'Webs::deleteDomainLetsEncrypt' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainLetsEncrypt('example.com', true),
+			'v-delete-letsencrypt-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::addDomainFtp' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainFtp('example.com', 'ftpuser', 'secret', '/public_html'),
+			'v-add-web-domain-ftp',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ftpuser', 'arg4' => 'secret', 'arg5' => '/public_html']
+		];
+		yield 'Webs::changeDomainFtpPassword' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainFtpPassword('example.com', 'ftpuser', 'secret'),
+			'v-change-web-domain-ftp-password',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ftpuser', 'arg4' => 'secret']
+		];
+		yield 'Webs::changeDomainFtpPath' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainFtpPath('example.com', 'ftpuser', '/public_html'),
+			'v-change-web-domain-ftp-path',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ftpuser', 'arg4' => '/public_html']
+		];
+		yield 'Webs::deleteDomainFtp' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainFtp('example.com', 'ftpuser'),
+			'v-delete-web-domain-ftp',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ftpuser']
+		];
+	}
+
+	/**
+	 * Methods that return a list, or a single entry of it (detail).
+	 *
+	 * @return iterable<string, array{ModuleCall, string, array<string, string>, bool}>
+	 */
+	public static function listProvider(): iterable {
+		yield 'Users::list' => [
+			fn (Client $c) => $c->getModuleUser()->list(),
+			'v-list-users',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Users::detail' => [
+			fn (Client $c) => $c->getModuleUser()->detail('bob'),
+			'v-list-user',
+			['arg1' => 'bob', 'arg2' => 'json'],
+			true
+		];
+
+		yield 'Backups::listBackups' => [
+			fn (Client $c) => $c->getModuleBackup('alice')->listBackups(),
+			'v-list-user-backups',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Backups::listBackup' => [
+			fn (Client $c) => $c->getModuleBackup('alice')->listBackup('alice.2026-10-15.tar'),
+			'v-list-user-backup',
+			['arg1' => 'alice', 'arg2' => 'alice.2026-10-15.tar', 'arg3' => 'json'],
+			true
+		];
+		yield 'Backups::listBackupExclusions' => [
+			fn (Client $c) => $c->getModuleBackup('alice')->listBackupExclusions(),
+			'v-list-user-backup-exclusions',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+
+		yield 'Databases::listDatabase' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->listDatabase('alice_db'),
+			'v-list-database',
+			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'json'],
+			true
+		];
+		yield 'Databases::listDatabases' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->listDatabases(),
+			'v-list-databases',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+
+		yield 'Mails::listAccounts' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listAccounts('example.com'),
+			'v-list-mail-accounts',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			false
+		];
+		yield 'Mails::listDomainDkim' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomainDkim('example.com'),
+			'v-list-mail-domain-dkim',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			false
+		];
+		yield 'Mails::listDomainDkimDns' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomainDkimDns('example.com'),
+			'v-list-mail-domain-dkim-dns',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			false
+		];
+		yield 'Mails::listDomains' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomains(),
+			'v-list-mail-domains',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+
+		yield 'Webs::listDomains' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listDomains(),
+			'v-list-web-domains',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+	}
+
+	/**
+	 * @param ModuleCall $call
+	 * @param array<string, string> $args
+	 */
+	#[DataProvider('processProvider')]
+	public function testProcessMethod(\Closure $call, string $cmd, array $args): void {
+		$client = $this->createClient(new Response(200, ['Hestia-Exit-Code' => '0'], '0'));
+
+		$this->assertTrue($call($client));
+		$this->assertRequest($cmd, $args, 'yes');
+	}
+
+	/**
+	 * @param ModuleCall $call
+	 * @param array<string, string> $args
+	 */
+	#[DataProvider('listProvider')]
+	public function testListMethod(\Closure $call, string $cmd, array $args, bool $detail): void {
+		$client = $this->createClient(new Response(200, ['Hestia-Exit-Code' => '0'], self::LIST_BODY));
+
+		$expected = ['first' => ['NAME' => 'First'], 'second' => ['NAME' => 'Second']];
+		$this->assertSame($detail ? $expected['first'] : $expected, $call($client));
+		$this->assertRequest($cmd, $args, 'no');
+	}
+
+	/**
+	 * Keeps the providers in sync with the modules, so a new module method can't be added without a test.
+	 */
+	public function testEveryModuleMethodIsCovered(): void {
+		$methods = [];
+		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class] as $module) {
+			$reflection = new \ReflectionClass($module);
+			foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+				if ($method->getDeclaringClass()->getName() === $module && !$method->isConstructor()) {
+					$methods[] = $reflection->getShortName() . '::' . $method->getName();
+				}
+			}
+		}
+
+		$tested = [...array_keys(iterator_to_array(self::processProvider())), ...array_keys(iterator_to_array(self::listProvider()))];
+
+		sort($methods);
+		sort($tested);
+		$this->assertSame($methods, $tested);
+	}
+}
