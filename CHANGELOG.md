@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-This will be released as 2.0.0. It brings the library up to date with HestiaCP 1.10 and contains breaking changes, marked **BC break** below.
+## [2.0.0] - 2026-10-15
+
+This release brings the library up to date with HestiaCP 1.10 and contains breaking changes, marked **BC break** below. See [UPGRADING.md](UPGRADING.md) for how to migrate from v1.
 
 ### Added
 
@@ -79,7 +81,8 @@ This will be released as 2.0.0. It brings the library up to date with HestiaCP 1
 
 First release, with the user, web and mail modules.
 
-[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/neto737/HestiaCP-API/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/neto737/HestiaCP-API/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/neto737/HestiaCP-API/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/neto737/HestiaCP-API/compare/v1.0.0...v1.0.1
