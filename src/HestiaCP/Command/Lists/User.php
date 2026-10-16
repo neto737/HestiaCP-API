@@ -8,11 +8,9 @@ use neto737\HestiaCP\Command\ListCommand;
 
 class User extends ListCommand {
 
-	private string $username;
-
-	public function __construct(string $username) {
-		$this->username = $username;
-	}
+	public function __construct(
+		private readonly string $username
+	) {}
 
 	public function getName(): string {
 		return 'v-list-user';

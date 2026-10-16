@@ -8,14 +8,10 @@ use neto737\HestiaCP\Command\ListCommand;
 
 class Database extends ListCommand {
 
-	private string $username;
-
-	private string $database;
-
-	public function __construct(string $username, string $database) {
-		$this->username = $username;
-		$this->database = $database;
-	}
+	public function __construct(
+		private readonly string $username,
+		private readonly string $database
+	) {}
 
 	public function getName(): string {
 		return 'v-list-database';

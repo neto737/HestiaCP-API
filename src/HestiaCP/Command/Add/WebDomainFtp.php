@@ -8,23 +8,13 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class WebDomainFtp extends ProcessCommand {
 
-	private string $user;
-
-	private string $domain;
-
-	private string $ftpUser;
-
-	private string $ftpPassword;
-
-	private ?string $ftpPath = null;
-
-	public function __construct(string $user, string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null) {
-		$this->user = $user;
-		$this->domain = $domain;
-		$this->ftpUser = $ftpUser;
-		$this->ftpPassword = $ftpPassword;
-		$this->ftpPath = $ftpPath;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain,
+		private readonly string $ftpUser,
+		private readonly string $ftpPassword,
+		private readonly ?string $ftpPath = null
+	) {}
 
 	public function getName(): string {
 		return 'v-add-web-domain-ftp';

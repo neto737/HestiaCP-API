@@ -8,17 +8,11 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class WebDomainFtp extends ProcessCommand {
 
-	private string $user;
-
-	private string $domain;
-
-	private string $ftpUser;
-
-	public function __construct(string $user, string $domain, string $ftpUser) {
-		$this->user = $user;
-		$this->domain = $domain;
-		$this->ftpUser = $ftpUser;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain,
+		private readonly string $ftpUser
+	) {}
 
 	public function getName(): string {
 		return 'v-delete-web-domain-ftp';

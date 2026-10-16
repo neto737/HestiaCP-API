@@ -8,14 +8,10 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-	private string $user;
-
-	private bool $notify;
-
-	public function __construct(string $user, bool $notify = true) {
-		$this->user = $user;
-		$this->notify = $notify;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly bool $notify = true
+	) {}
 
 	public function getName(): string {
 		return 'v-backup-user';

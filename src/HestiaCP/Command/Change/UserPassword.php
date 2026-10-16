@@ -8,14 +8,10 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class UserPassword extends ProcessCommand {
 
-	private string $user;
-
-	private string $password;
-
-	public function __construct(string $user, string $password) {
-		$this->user = $user;
-		$this->password = $password;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $password
+	) {}
 
 	public function getName(): string {
 		return 'v-change-user-password';

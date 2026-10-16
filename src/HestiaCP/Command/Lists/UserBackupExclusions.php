@@ -8,11 +8,9 @@ use neto737\HestiaCP\Command\ListCommand;
 
 class UserBackupExclusions extends ListCommand {
 
-	private string $user;
-
-	public function __construct(string $user) {
-		$this->user = $user;
-	}
+	public function __construct(
+		private readonly string $user
+	) {}
 
 	public function getName(): string {
 		return 'v-list-user-backup-exclusions';

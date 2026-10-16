@@ -8,23 +8,13 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class MailDomain extends ProcessCommand {
 
-	private string $user;
-
-	private string $domain;
-
-	private bool $antispam;
-
-	private bool $antivirus;
-
-	private bool $dkim;
-
-	public function __construct(string $user, string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true) {
-		$this->user = $user;
-		$this->domain = $domain;
-		$this->antispam = $antispam;
-		$this->antivirus = $antivirus;
-		$this->dkim = $dkim;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain,
+		private readonly bool $antispam = true,
+		private readonly bool $antivirus = true,
+		private readonly bool $dkim = true
+	) {}
 
 	public function getName(): string {
 		return 'v-add-mail-domain';

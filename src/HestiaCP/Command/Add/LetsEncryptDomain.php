@@ -15,16 +15,6 @@ class LetsEncryptDomain extends ProcessCommand {
 
 	private const KEY_ALGOS = [self::KEY_ALGO_ECDSA_256, self::KEY_ALGO_ECDSA_384, self::KEY_ALGO_RSA];
 
-	private string $user;
-
-	private string $domain;
-
-	private ?string $aliases = null;
-
-	private bool $mail;
-
-	private ?string $keyAlgo = null;
-
 	/**
 	 * @param string      $user
 	 * @param string      $domain
@@ -34,16 +24,16 @@ class LetsEncryptDomain extends ProcessCommand {
 	 *                             Needs a HestiaCP version newer than 1.10.5.
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct(string $user, string $domain, ?string $aliases = null, bool $mail = false, ?string $keyAlgo = null) {
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain,
+		private readonly ?string $aliases = null,
+		private readonly bool $mail = false,
+		private readonly ?string $keyAlgo = null
+	) {
 		if ($keyAlgo !== null && !in_array($keyAlgo, self::KEY_ALGOS, true)) {
 			throw new InvalidArgumentException("Invalid key algorithm '$keyAlgo', expected one of: " . implode(', ', self::KEY_ALGOS));
 		}
-
-		$this->user = $user;
-		$this->domain = $domain;
-		$this->aliases = $aliases;
-		$this->mail = $mail;
-		$this->keyAlgo = $keyAlgo;
 	}
 
 	public function getName(): string {

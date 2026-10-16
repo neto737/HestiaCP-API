@@ -8,14 +8,10 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class User extends ProcessCommand {
 
-	private string $user;
-
-	private bool $restart;
-
-	public function __construct(string $user, bool $restart = false) {
-		$this->user = $user;
-		$this->restart = $restart;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly bool $restart = false
+	) {}
 
 	public function getName(): string {
 		return 'v-suspend-user';

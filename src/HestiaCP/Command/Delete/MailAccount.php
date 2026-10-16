@@ -8,17 +8,11 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class MailAccount extends ProcessCommand {
 
-	private string $user;
-
-	private string $domain;
-
-	private string $account;
-
-	public function __construct(string $user, string $domain, string $account) {
-		$this->user = $user;
-		$this->domain = $domain;
-		$this->account = $account;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain,
+		private readonly string $account
+	) {}
 
 	public function getName(): string {
 		return 'v-delete-mail-account';
