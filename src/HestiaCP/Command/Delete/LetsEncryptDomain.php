@@ -4,21 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Delete;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\DeleteLetsEncryptDomain;
 
-class LetsEncryptDomain extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $domain,
-		private readonly bool $restart = false
-	) {}
-
-	public function getName(): string {
-		return 'v-delete-letsencrypt-domain';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->domain, $this->convertBool($this->restart)]);
-	}
-}
+/**
+ * @deprecated Use {@see DeleteLetsEncryptDomain} instead. Will be removed in 3.0.
+ */
+class LetsEncryptDomain extends DeleteLetsEncryptDomain {}

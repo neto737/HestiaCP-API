@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\Change\UserPassword;
-use neto737\HestiaCP\Command\Change\MailAccountPassword;
-use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
-use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
+use neto737\HestiaCP\Command\ChangeUserPassword;
+use neto737\HestiaCP\Command\ChangeMailAccountPassword;
+use neto737\HestiaCP\Command\ChangeWebDomainFtpPassword;
+use neto737\HestiaCP\Command\ChangeWebDomainFtpPath;
 
 class ChangeTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUserPassword(): void {
-		$command = new UserPassword('admin', 'pass');
+		$command = new ChangeUserPassword('admin', 'pass');
 		$this->assertSame('v-change-user-password', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass'], $command->getRequestParams());
 
@@ -23,7 +23,7 @@ class ChangeTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailAccountPassword(): void {
-		$command = new MailAccountPassword('admin', 'domain', 'account', 'pass');
+		$command = new ChangeMailAccountPassword('admin', 'domain', 'account', 'pass');
 		$this->assertSame('v-change-mail-account-password', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -39,7 +39,7 @@ class ChangeTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomainFtpPassword(): void {
-		$command = new WebDomainFtpPassword('admin', 'domain', 'account', 'pass');
+		$command = new ChangeWebDomainFtpPassword('admin', 'domain', 'account', 'pass');
 		$this->assertSame('v-change-web-domain-ftp-password', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -55,7 +55,7 @@ class ChangeTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomainFtpPath(): void {
-		$command = new WebDomainFtpPath('admin', 'domain', 'account', 'path');
+		$command = new ChangeWebDomainFtpPath('admin', 'domain', 'account', 'path');
 		$this->assertSame('v-change-web-domain-ftp-path', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',

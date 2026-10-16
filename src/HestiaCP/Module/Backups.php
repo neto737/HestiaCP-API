@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\Backup\User as BackupUser;
-use neto737\HestiaCP\Command\Delete\UserBackup as DeleteUserBackup;
-use neto737\HestiaCP\Command\Delete\UserBackupExclusions as DeleteUserBackupExclusions;
-use neto737\HestiaCP\Command\Lists\UserBackup as ListsUserBackup;
-use neto737\HestiaCP\Command\Lists\UserBackups;
-use neto737\HestiaCP\Command\Lists\UserBackupExclusions as ListsUserBackupExclusions;
+use neto737\HestiaCP\Command\BackupUser;
+use neto737\HestiaCP\Command\DeleteUserBackup;
+use neto737\HestiaCP\Command\DeleteUserBackupExclusions;
+use neto737\HestiaCP\Command\ListUserBackup;
+use neto737\HestiaCP\Command\ListUserBackups;
+use neto737\HestiaCP\Command\ListUserBackupExclusions;
 
 class Backups extends Module {
 
@@ -65,7 +65,7 @@ class Backups extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listBackups(): array {
-		return $this->client->send(new UserBackups($this->user));
+		return $this->client->send(new ListUserBackups($this->user));
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Backups extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listBackup(string $backup): array {
-		return $this->client->send(new ListsUserBackup($this->user, $backup));
+		return $this->client->send(new ListUserBackup($this->user, $backup));
 	}
 
 	/**
@@ -88,6 +88,6 @@ class Backups extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listBackupExclusions(): array {
-		return $this->client->send(new ListsUserBackupExclusions($this->user));
+		return $this->client->send(new ListUserBackupExclusions($this->user));
 	}
 }

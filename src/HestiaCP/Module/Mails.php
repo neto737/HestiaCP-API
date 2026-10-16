@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\Add\MailAccount;
-use neto737\HestiaCP\Command\Add\MailDomain;
-use neto737\HestiaCP\Command\Change\MailAccountPassword;
-use neto737\HestiaCP\Command\Suspend\MailAccount as SuspendMailAccount;
-use neto737\HestiaCP\Command\Suspend\MailDomain as SuspendMailDomain;
-use neto737\HestiaCP\Command\Unsuspend\MailAccount as UnsuspendMailAccount;
-use neto737\HestiaCP\Command\Unsuspend\MailDomain as UnsuspendMailDomain;
-use neto737\HestiaCP\Command\Delete\MailAccount as DeleteMailAccount;
-use neto737\HestiaCP\Command\Delete\MailDomain as DeleteMailDomain;
-use neto737\HestiaCP\Command\Lists\MailAccounts;
-use neto737\HestiaCP\Command\Lists\MailDomainDkim;
-use neto737\HestiaCP\Command\Lists\MailDomainDkimDns;
-use neto737\HestiaCP\Command\Lists\MailDomains;
+use neto737\HestiaCP\Command\AddMailAccount;
+use neto737\HestiaCP\Command\AddMailDomain;
+use neto737\HestiaCP\Command\ChangeMailAccountPassword;
+use neto737\HestiaCP\Command\SuspendMailAccount;
+use neto737\HestiaCP\Command\SuspendMailDomain;
+use neto737\HestiaCP\Command\UnsuspendMailAccount;
+use neto737\HestiaCP\Command\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\DeleteMailAccount;
+use neto737\HestiaCP\Command\DeleteMailDomain;
+use neto737\HestiaCP\Command\ListMailAccounts;
+use neto737\HestiaCP\Command\ListMailDomainDkim;
+use neto737\HestiaCP\Command\ListMailDomainDkimDns;
+use neto737\HestiaCP\Command\ListMailDomains;
 
 class Mails extends Module {
 
@@ -37,7 +37,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listAccounts(string $domain): array {
-		return $this->client->send(new MailAccounts($this->user, $domain));
+		return $this->client->send(new ListMailAccounts($this->user, $domain));
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function addAccount(string $domain, string $account, string $password): bool {
-		return $this->client->send(new MailAccount($this->user, $domain, $account, $password));
+		return $this->client->send(new AddMailAccount($this->user, $domain, $account, $password));
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changeAccountPassword(string $domain, string $account, string $password): bool {
-		return $this->client->send(new MailAccountPassword($this->user, $domain, $account, $password));
+		return $this->client->send(new ChangeMailAccountPassword($this->user, $domain, $account, $password));
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true): bool {
-		return $this->client->send(new MailDomain($this->user, $domain, $antispam, $antivirus, $dkim));
+		return $this->client->send(new AddMailDomain($this->user, $domain, $antispam, $antivirus, $dkim));
 	}
 
 	/**
@@ -167,7 +167,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomainDkim(string $domain): array {
-		return $this->client->send(new MailDomainDkim($this->user, $domain));
+		return $this->client->send(new ListMailDomainDkim($this->user, $domain));
 	}
 
 	/**
@@ -179,7 +179,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomainDkimDns(string $domain): array {
-		return $this->client->send(new MailDomainDkimDns($this->user, $domain));
+		return $this->client->send(new ListMailDomainDkimDns($this->user, $domain));
 	}
 
 	/**
@@ -190,6 +190,6 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomains(): array {
-		return $this->client->send(new MailDomains($this->user));
+		return $this->client->send(new ListMailDomains($this->user));
 	}
 }

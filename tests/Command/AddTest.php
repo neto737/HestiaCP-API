@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\Add\User;
-use neto737\HestiaCP\Command\Add\WebDomain;
-use neto737\HestiaCP\Command\Add\WebDomainFtp;
-use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
-use neto737\HestiaCP\Command\Add\MailAccount;
-use neto737\HestiaCP\Command\Add\MailDomain;
-use neto737\HestiaCP\Command\Add\Database;
+use neto737\HestiaCP\Command\AddUser;
+use neto737\HestiaCP\Command\AddWebDomain;
+use neto737\HestiaCP\Command\AddWebDomainFtp;
+use neto737\HestiaCP\Command\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\AddMailAccount;
+use neto737\HestiaCP\Command\AddMailDomain;
+use neto737\HestiaCP\Command\AddDatabase;
 
 class AddTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
-		$command = new User('admin', 'pass', 'mail@domain.com');
+		$command = new AddUser('admin', 'pass', 'mail@domain.com');
 		$this->assertSame('v-add-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'pass', 'arg3' => 'mail@domain.com', 'arg4' => 'default'], $command->getRequestParams());
 
@@ -26,7 +26,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testUserWithName(): void {
-		$command = new User('admin', 'pass', 'mail@domain.com', null, 'John', 'Doe');
+		$command = new AddUser('admin', 'pass', 'mail@domain.com', null, 'John', 'Doe');
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'pass',
@@ -36,7 +36,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 			'arg6' => 'Doe'
 		], $command->getRequestParams());
 
-		$command = new User('admin', 'pass', 'mail@domain.com', 'custom', 'John');
+		$command = new AddUser('admin', 'pass', 'mail@domain.com', 'custom', 'John');
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'pass',
@@ -45,7 +45,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 			'arg5' => 'John'
 		], $command->getRequestParams());
 
-		$command = new User('admin', 'pass', 'mail@domain.com', null, null, 'Doe');
+		$command = new AddUser('admin', 'pass', 'mail@domain.com', null, null, 'Doe');
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'pass',
@@ -57,7 +57,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomain(): void {
-		$command = new WebDomain('admin', 'domain.com');
+		$command = new AddWebDomain('admin', 'domain.com');
 		$this->assertSame('v-add-web-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -74,7 +74,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomainWithIpAndProxyExtensions(): void {
-		$command = new WebDomain('admin', 'domain.com', null, null, 'jpg,png');
+		$command = new AddWebDomain('admin', 'domain.com', null, null, 'jpg,png');
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
@@ -84,7 +84,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 			'arg6' => 'jpg,png'
 		], $command->getRequestParams());
 
-		$command = new WebDomain('admin', 'domain.com', '127.0.0.1', 'www.domain.com', null, true);
+		$command = new AddWebDomain('admin', 'domain.com', '127.0.0.1', 'www.domain.com', null, true);
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
@@ -95,7 +95,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomainFtp(): void {
-		$command = new WebDomainFtp('admin', 'domain.com', 'account', 'pass');
+		$command = new AddWebDomainFtp('admin', 'domain.com', 'account', 'pass');
 		$this->assertSame('v-add-web-domain-ftp', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -111,7 +111,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testLEDomain(): void {
-		$command = new LetsEncryptDomain('admin', 'domain.com');
+		$command = new AddLetsEncryptDomain('admin', 'domain.com');
 		$this->assertSame('v-add-letsencrypt-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -127,7 +127,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testLEDomainMailAndKeyAlgo(): void {
-		$command = new LetsEncryptDomain('admin', 'domain.com', 'www.domain.com', true, LetsEncryptDomain::KEY_ALGO_RSA);
+		$command = new AddLetsEncryptDomain('admin', 'domain.com', 'www.domain.com', true, AddLetsEncryptDomain::KEY_ALGO_RSA);
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
@@ -139,11 +139,11 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 
 	public function testLEDomainInvalidKeyAlgo(): void {
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidArgumentException::class);
-		new LetsEncryptDomain('admin', 'domain.com', null, false, 'dsa');
+		new AddLetsEncryptDomain('admin', 'domain.com', null, false, 'dsa');
 	}
 
 	public function testMailAccount(): void {
-		$command = new MailAccount('admin', 'domain.com', 'account', 'pass');
+		$command = new AddMailAccount('admin', 'domain.com', 'account', 'pass');
 		$this->assertSame('v-add-mail-account', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -159,7 +159,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailDomain(): void {
-		$command = new MailDomain('admin', 'domain.com');
+		$command = new AddMailDomain('admin', 'domain.com');
 		$this->assertSame('v-add-mail-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -176,7 +176,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testDatabase(): void {
-		$command = new Database('admin', 'database', 'user', 'pass', 'mysql');
+		$command = new AddDatabase('admin', 'database', 'user', 'pass', 'mysql');
 		$this->assertSame('v-add-database', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',

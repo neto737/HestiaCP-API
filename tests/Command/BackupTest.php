@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\Backup\Users;
-use neto737\HestiaCP\Command\Backup\User;
+use neto737\HestiaCP\Command\BackupUsers;
+use neto737\HestiaCP\Command\BackupUser;
 
 class BackupTest extends \PHPUnit\Framework\TestCase {
 
 	public function testBackupUsers(): void {
-		$command = new Users();
+		$command = new BackupUsers();
 		$this->assertSame('v-backup-users', $command->getName());
 		$this->assertSame([], $command->getRequestParams());
 
@@ -19,7 +19,7 @@ class BackupTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testBackupUser(): void {
-		$command = new User('admin');
+		$command = new BackupUser('admin');
 		$this->assertSame('v-backup-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'yes'], $command->getRequestParams());
 

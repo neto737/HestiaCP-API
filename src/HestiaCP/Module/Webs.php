@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
-use neto737\HestiaCP\Command\Add\WebDomain;
-use neto737\HestiaCP\Command\Add\WebDomainFtp;
-use neto737\HestiaCP\Command\Change\WebDomainFtpPassword;
-use neto737\HestiaCP\Command\Change\WebDomainFtpPath;
-use neto737\HestiaCP\Command\Suspend\WebDomain as SuspendWebDomain;
-use neto737\HestiaCP\Command\Unsuspend\WebDomain as UnsuspendWebDomain;
-use neto737\HestiaCP\Command\Delete\LetsEncryptDomain as DeleteLetsEncryptDomain;
-use neto737\HestiaCP\Command\Delete\WebDomain as DeleteWebDomain;
-use neto737\HestiaCP\Command\Delete\WebDomainFtp as DeleteWebDomainFtp;
-use neto737\HestiaCP\Command\Lists\WebDomains;
+use neto737\HestiaCP\Command\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\AddWebDomain;
+use neto737\HestiaCP\Command\AddWebDomainFtp;
+use neto737\HestiaCP\Command\ChangeWebDomainFtpPassword;
+use neto737\HestiaCP\Command\ChangeWebDomainFtpPath;
+use neto737\HestiaCP\Command\SuspendWebDomain;
+use neto737\HestiaCP\Command\UnsuspendWebDomain;
+use neto737\HestiaCP\Command\DeleteLetsEncryptDomain;
+use neto737\HestiaCP\Command\DeleteWebDomain;
+use neto737\HestiaCP\Command\DeleteWebDomainFtp;
+use neto737\HestiaCP\Command\ListWebDomains;
 
 class Webs extends Module {
 
@@ -39,7 +39,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function addDomain(string $domain, ?string $ip = null, ?string $aliases = null, ?string $proxyExtensions = null, bool $restart = false): bool {
-		return $this->client->send(new WebDomain($this->user, $domain, $ip, $aliases, $proxyExtensions, $restart));
+		return $this->client->send(new AddWebDomain($this->user, $domain, $ip, $aliases, $proxyExtensions, $restart));
 	}
 
 	/**
@@ -86,14 +86,14 @@ class Webs extends Module {
 	 * @param string      $domain
 	 * @param string|null $aliases
 	 * @param bool        $mail    Issue the certificate for the mail domain instead of the web domain
-	 * @param string|null $keyAlgo One of the LetsEncryptDomain::KEY_ALGO_* constants. Needs a HestiaCP version newer than 1.10.5.
+	 * @param string|null $keyAlgo One of the AddLetsEncryptDomain::KEY_ALGO_* constants. Needs a HestiaCP version newer than 1.10.5.
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 * @throws \neto737\HestiaCP\Exceptions\InvalidArgumentException
 	 */
 	public function addDomainLetsEncrypt(string $domain, ?string $aliases = null, bool $mail = false, ?string $keyAlgo = null): bool {
-		return $this->client->send(new LetsEncryptDomain($this->user, $domain, $aliases, $mail, $keyAlgo));
+		return $this->client->send(new AddLetsEncryptDomain($this->user, $domain, $aliases, $mail, $keyAlgo));
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function addDomainFtp(string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null): bool {
-		return $this->client->send(new WebDomainFtp($this->user, $domain, $ftpUser, $ftpPassword, $ftpPath));
+		return $this->client->send(new AddWebDomainFtp($this->user, $domain, $ftpUser, $ftpPassword, $ftpPath));
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changeDomainFtpPassword(string $domain, string $ftpUser, string $ftpPassword): bool {
-		return $this->client->send(new WebDomainFtpPassword($this->user, $domain, $ftpUser, $ftpPassword));
+		return $this->client->send(new ChangeWebDomainFtpPassword($this->user, $domain, $ftpUser, $ftpPassword));
 	}
 
 	/**
@@ -149,7 +149,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changeDomainFtpPath(string $domain, string $ftpUser, string $ftpPath): bool {
-		return $this->client->send(new WebDomainFtpPath($this->user, $domain, $ftpUser, $ftpPath));
+		return $this->client->send(new ChangeWebDomainFtpPath($this->user, $domain, $ftpUser, $ftpPath));
 	}
 
 	/**
@@ -173,6 +173,6 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function listDomains(): array {
-		return $this->client->send(new WebDomains($this->user));
+		return $this->client->send(new ListWebDomains($this->user));
 	}
 }

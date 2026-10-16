@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\Delete\User;
-use neto737\HestiaCP\Command\Delete\WebDomain;
-use neto737\HestiaCP\Command\Delete\WebDomainFtp;
-use neto737\HestiaCP\Command\Delete\LetsEncryptDomain;
-use neto737\HestiaCP\Command\Delete\MailAccount;
-use neto737\HestiaCP\Command\Delete\MailDomain;
-use neto737\HestiaCP\Command\Delete\UserBackup;
-use neto737\HestiaCP\Command\Delete\UserBackupExclusions;
-use neto737\HestiaCP\Command\Delete\Database;
-use neto737\HestiaCP\Command\Delete\Databases;
+use neto737\HestiaCP\Command\DeleteUser;
+use neto737\HestiaCP\Command\DeleteWebDomain;
+use neto737\HestiaCP\Command\DeleteWebDomainFtp;
+use neto737\HestiaCP\Command\DeleteLetsEncryptDomain;
+use neto737\HestiaCP\Command\DeleteMailAccount;
+use neto737\HestiaCP\Command\DeleteMailDomain;
+use neto737\HestiaCP\Command\DeleteUserBackup;
+use neto737\HestiaCP\Command\DeleteUserBackupExclusions;
+use neto737\HestiaCP\Command\DeleteDatabase;
+use neto737\HestiaCP\Command\DeleteDatabases;
 
 class DeleteTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
-		$command = new User('admin');
+		$command = new DeleteUser('admin');
 		$this->assertSame('v-delete-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin'], $command->getRequestParams());
 
@@ -29,7 +29,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomain(): void {
-		$command = new WebDomain('admin', 'domain.com');
+		$command = new DeleteWebDomain('admin', 'domain.com');
 		$this->assertSame('v-delete-web-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -43,7 +43,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomainFtp(): void {
-		$command = new WebDomainFtp('admin', 'domain.com', 'account');
+		$command = new DeleteWebDomainFtp('admin', 'domain.com', 'account');
 		$this->assertSame('v-delete-web-domain-ftp', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -58,7 +58,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testLEDomain(): void {
-		$command = new LetsEncryptDomain('admin', 'domain.com');
+		$command = new DeleteLetsEncryptDomain('admin', 'domain.com');
 		$this->assertSame('v-delete-letsencrypt-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -73,7 +73,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailAccount(): void {
-		$command = new MailAccount('admin', 'domain.com', 'account');
+		$command = new DeleteMailAccount('admin', 'domain.com', 'account');
 		$this->assertSame('v-delete-mail-account', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -88,7 +88,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailDomain(): void {
-		$command = new MailDomain('admin', 'domain.com');
+		$command = new DeleteMailDomain('admin', 'domain.com');
 		$this->assertSame('v-delete-mail-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -102,7 +102,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testUserBackup(): void {
-		$command = new UserBackup('admin', 'admin.2021-10-07_05-15-09.tar');
+		$command = new DeleteUserBackup('admin', 'admin.2021-10-07_05-15-09.tar');
 		$this->assertSame('v-delete-user-backup', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -116,7 +116,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testUserBackupExclusions(): void {
-		$command = new UserBackupExclusions('admin');
+		$command = new DeleteUserBackupExclusions('admin');
 		$this->assertSame('v-delete-user-backup-exclusions', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin'
@@ -125,7 +125,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'WEB'
-		], (new UserBackupExclusions('admin', 'WEB'))->getRequestParams());
+		], (new DeleteUserBackupExclusions('admin', 'WEB'))->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 
@@ -134,7 +134,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testDatabase(): void {
-		$command = new Database('admin', 'admin_test');
+		$command = new DeleteDatabase('admin', 'admin_test');
 		$this->assertSame('v-delete-database', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -148,7 +148,7 @@ class DeleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testDatabases(): void {
-		$command = new Databases('admin');
+		$command = new DeleteDatabases('admin');
 		$this->assertSame('v-delete-databases', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin'

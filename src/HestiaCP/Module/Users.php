@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Module;
 
-use neto737\HestiaCP\Command\Add\User as AddUser;
-use neto737\HestiaCP\Command\Change\UserPassword;
-use neto737\HestiaCP\Command\Suspend\User as SuspendUser;
-use neto737\HestiaCP\Command\Unsuspend\User as UnsuspendUser;
-use neto737\HestiaCP\Command\Delete\User as DeleteUser;
-use neto737\HestiaCP\Command\Lists\User;
-use neto737\HestiaCP\Command\Lists\Users as ListsUsers;
-use neto737\HestiaCP\Command\Backup\Users as BackupUsers;
+use neto737\HestiaCP\Command\AddUser;
+use neto737\HestiaCP\Command\ChangeUserPassword;
+use neto737\HestiaCP\Command\SuspendUser;
+use neto737\HestiaCP\Command\UnsuspendUser;
+use neto737\HestiaCP\Command\DeleteUser;
+use neto737\HestiaCP\Command\ListUser;
+use neto737\HestiaCP\Command\ListUsers;
+use neto737\HestiaCP\Command\BackupUsers;
 
 class Users extends Module {
 
@@ -23,7 +23,7 @@ class Users extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function list(): array {
-		return $this->client->send(new ListsUsers());
+		return $this->client->send(new ListUsers());
 	}
 
 	/**
@@ -35,7 +35,7 @@ class Users extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function detail(string $user): array {
-		return $this->client->send(new User($user));
+		return $this->client->send(new ListUser($user));
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Users extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
 	public function changePassword(string $user, string $password): bool {
-		return $this->client->send(new UserPassword($user, $password));
+		return $this->client->send(new ChangeUserPassword($user, $password));
 	}
 
 	/**

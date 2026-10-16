@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\Unsuspend\User;
-use neto737\HestiaCP\Command\Unsuspend\WebDomain;
-use neto737\HestiaCP\Command\Unsuspend\MailAccount;
-use neto737\HestiaCP\Command\Unsuspend\MailDomain;
+use neto737\HestiaCP\Command\UnsuspendUser;
+use neto737\HestiaCP\Command\UnsuspendWebDomain;
+use neto737\HestiaCP\Command\UnsuspendMailAccount;
+use neto737\HestiaCP\Command\UnsuspendMailDomain;
 
 class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
-		$command = new User('admin');
+		$command = new UnsuspendUser('admin');
 		$this->assertSame('v-unsuspend-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'no'], $command->getRequestParams());
 
@@ -23,7 +23,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomain(): void {
-		$command = new WebDomain('admin', 'domain.com');
+		$command = new UnsuspendWebDomain('admin', 'domain.com');
 		$this->assertSame('v-unsuspend-web-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -38,7 +38,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailAccount(): void {
-		$command = new MailAccount('admin', 'domain.com', 'account');
+		$command = new UnsuspendMailAccount('admin', 'domain.com', 'account');
 		$this->assertSame('v-unsuspend-mail-account', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -53,7 +53,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailDomain(): void {
-		$command = new MailDomain('admin', 'domain.com');
+		$command = new UnsuspendMailDomain('admin', 'domain.com');
 		$this->assertSame('v-unsuspend-mail-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',

@@ -4,21 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Suspend;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\SuspendMailAccount;
 
-class MailAccount extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $domain,
-		private readonly string $account
-	) {}
-
-	public function getName(): string {
-		return 'v-suspend-mail-account';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->domain, $this->account]);
-	}
-}
+/**
+ * @deprecated Use {@see SuspendMailAccount} instead. Will be removed in 3.0.
+ */
+class MailAccount extends SuspendMailAccount {}

@@ -4,20 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Delete;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\DeleteDatabase;
 
-class Database extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $database
-	) {}
-
-	public function getName(): string {
-		return 'v-delete-database';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->database]);
-	}
-}
+/**
+ * @deprecated Use {@see DeleteDatabase} instead. Will be removed in 3.0.
+ */
+class Database extends DeleteDatabase {}

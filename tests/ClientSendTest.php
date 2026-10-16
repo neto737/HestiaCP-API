@@ -15,10 +15,10 @@ use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Exceptions\ClientException;
-use neto737\HestiaCP\Command\Add\LetsEncryptDomain;
-use neto737\HestiaCP\Command\Add\User as AddUser;
-use neto737\HestiaCP\Command\Lists\User;
-use neto737\HestiaCP\Command\Lists\Users;
+use neto737\HestiaCP\Command\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\AddUser;
+use neto737\HestiaCP\Command\ListUser;
+use neto737\HestiaCP\Command\ListUsers;
 use neto737\HestiaCP\Command\ProcessCommand;
 use neto737\HestiaCP\Command\ResponseCode;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
@@ -114,16 +114,16 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
 		$this->assertEquals(10, $this->history[0]['options']['timeout']);
 
-		$client->send(new LetsEncryptDomain('user', 'domain.com'));
+		$client->send(new AddLetsEncryptDomain('user', 'domain.com'));
 		$this->assertEquals(90, $this->history[1]['options']['timeout']);
 
-		$client->send(new \neto737\HestiaCP\Command\Backup\User('user'));
+		$client->send(new \neto737\HestiaCP\Command\BackupUser('user'));
 		$this->assertEquals(0, $this->history[2]['options']['timeout']);
 	}
 
 	public function testCommandTimeoutNeverShortensClientTimeout(): void {
 		$client = $this->createClient([self::codeResponse(0)], ['timeout' => 120]);
-		$client->send(new LetsEncryptDomain('user', 'domain.com'));
+		$client->send(new AddLetsEncryptDomain('user', 'domain.com'));
 		$this->assertEquals(120, $this->history[0]['options']['timeout']);
 	}
 
@@ -180,7 +180,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		]);
 
 		$this->expectException(AuthorizationException::class);
-		$client->send(new Users());
+		$client->send(new ListUsers());
 	}
 
 	public function testListErrorKeepsHestiaMessage(): void {
@@ -190,14 +190,14 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 
 		$this->expectException(ProcessException::class);
 		$this->expectExceptionMessage("Object doesn't exist (Error: user someone doesn't exist)");
-		$client->send(new User('someone'));
+		$client->send(new ListUser('someone'));
 	}
 
 	public function testUnexpectedHttpStatus(): void {
 		$client = $this->createClient([new Response(502, [], '<html>Bad Gateway</html>')]);
 
 		$this->expectException(InvalidResponseException::class);
-		$client->send(new Users());
+		$client->send(new ListUsers());
 	}
 
 	public function testNotHestiaResponse(): void {
@@ -211,7 +211,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$client = $this->createClient([new ConnectException('Connection refused', new Request('POST', 'test'))]);
 
 		try {
-			$client->send(new Users());
+			$client->send(new ListUsers());
 			$this->fail('ClientException expected');
 		} catch (ClientException $e) {
 			$this->assertInstanceOf(ConnectException::class, $e->getPrevious());
@@ -249,7 +249,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 			new Response(200, ['Hestia-Exit-Code' => '0'], '{"admin": {"NAME": "System Administrator"}, "user": {"NAME": "User"}}')
 		]);
 
-		$users = $client->send(new Users());
+		$users = $client->send(new ListUsers());
 		$this->assertSame([
 			'admin' => ['NAME' => 'System Administrator'],
 			'user' => ['NAME' => 'User']
@@ -259,7 +259,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testListDetail(): void {
 		$client = $this->createClient([new Response(200, [], '{"admin": {"NAME": "System Administrator"}}')]);
 
-		$user = $client->send(new User('admin'));
+		$user = $client->send(new ListUser('admin'));
 		$this->assertSame(['NAME' => 'System Administrator'], $user);
 	}
 
@@ -267,19 +267,19 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$client = $this->createClient([new Response(200, [], '{"admin": "System Administrator"}')]);
 
 		$this->expectException(InvalidResponseException::class);
-		$client->send(new User('admin'));
+		$client->send(new ListUser('admin'));
 	}
 
 	public function testListNotList(): void {
 		$client = $this->createClient([new Response(200, [], '"OK"')]);
 
 		$this->expectException(ProcessException::class);
-		$client->send(new Users());
+		$client->send(new ListUsers());
 	}
 
 	public function testListEmpty(): void {
 		$client = $this->createClient([new Response(204, ['Hestia-Exit-Code' => '0'], '')]);
-		$this->assertSame([], $client->send(new Users()));
+		$this->assertSame([], $client->send(new ListUsers()));
 	}
 
 	public function testListInvalidJson(): void {
@@ -287,7 +287,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 
 		$this->expectException(ProcessException::class);
 		$this->expectExceptionMessage('not json');
-		$client->send(new Users());
+		$client->send(new ListUsers());
 	}
 
 	public function testListDatabasesReturnsAll(): void {

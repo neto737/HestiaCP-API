@@ -4,20 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Delete;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\DeleteUserBackup;
 
-class UserBackup extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $backup
-	) {}
-
-	public function getName(): string {
-		return 'v-delete-user-backup';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->backup]);
-	}
-}
+/**
+ * @deprecated Use {@see DeleteUserBackup} instead. Will be removed in 3.0.
+ */
+class UserBackup extends DeleteUserBackup {}

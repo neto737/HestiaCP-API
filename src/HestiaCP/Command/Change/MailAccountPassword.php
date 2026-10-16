@@ -4,27 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Change;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\ChangeMailAccountPassword;
 
-class MailAccountPassword extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $domain,
-		private readonly string $account,
-		private readonly string $password
-	) {}
-
-	public function getName(): string {
-		return 'v-change-mail-account-password';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([
-			$this->user,
-			$this->domain,
-			$this->account,
-			$this->password
-		]);
-	}
-}
+/**
+ * @deprecated Use {@see ChangeMailAccountPassword} instead. Will be removed in 3.0.
+ */
+class MailAccountPassword extends ChangeMailAccountPassword {}

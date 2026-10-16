@@ -4,19 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Delete;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\DeleteUser;
 
-class User extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user
-	) {}
-
-	public function getName(): string {
-		return 'v-delete-user';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user]);
-	}
-}
+/**
+ * @deprecated Use {@see DeleteUser} instead. Will be removed in 3.0.
+ */
+class User extends DeleteUser {}

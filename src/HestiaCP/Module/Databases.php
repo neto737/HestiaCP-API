@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\Add\Database as AddDatabase;
-use neto737\HestiaCP\Command\Delete\Database as DeleteDatabase;
-use neto737\HestiaCP\Command\Delete\Databases as DeleteDatabases;
-use neto737\HestiaCP\Command\Lists\Database as ListDatabase;
-use neto737\HestiaCP\Command\Lists\Databases as ListDatabases;
+use neto737\HestiaCP\Command\AddDatabase;
+use neto737\HestiaCP\Command\DeleteDatabase;
+use neto737\HestiaCP\Command\DeleteDatabases;
+use neto737\HestiaCP\Command\ListDatabase;
+use neto737\HestiaCP\Command\ListDatabases;
 
 class Databases extends Module {
 
