@@ -50,15 +50,23 @@ class Client {
 
 	/**
 	 * @param string      $hostname	Scheme and host, e.g. https://panel.example.com
-	 * @param string      $user		Username or API Key
-	 * @param string|null $password	Password (must be null if using API Key)
+	 * @param string      $user		Username, legacy API key, or access key written as ACCESS_KEY:SECRET_KEY
+	 * @param string|null $password	Password (must be null if using an API key or access key)
 	 * @param ClientOptions|null $options	See Client::__construct()
 	 * @return Client
 	 * @throws ClientException
 	 * @throws InvalidArgumentException
 	 */
 	public static function simpleFactory(string $hostname, string $user, ?string $password = null, ?array $options = null): Client {
-		$credentials = new Credentials($user, $password);
+		if (!is_null($password)) {
+			$credentials = Credentials::password($user, $password);
+		} elseif (substr_count($user, ':') === 1) {
+			// Same split HestiaCP applies to a `hash` that holds an access key
+			[$accessKey, $secretKey] = explode(':', $user);
+			$credentials = Credentials::accessKey($accessKey, $secretKey);
+		} else {
+			$credentials = Credentials::legacyHash($user);
+		}
 		$host = new Host($hostname, $credentials);
 
 		return new self($host, $options);
@@ -84,8 +92,9 @@ class Client {
 	}
 
 	/**
-	 * @param ICommand $command
-	 * @return mixed
+	 * @template T
+	 * @param ICommand<T> $command
+	 * @return T
 	 * @throws ClientException
 	 * @throws ProcessException
 	 */
@@ -116,6 +125,8 @@ class Client {
 
 	/**
 	 * A command may need a longer timeout than the client default, but never a shorter one.
+	 *
+	 * @param ICommand<mixed> $command
 	 */
 	private function getTimeout(ICommand $command): float {
 		$timeout = (float) $this->guzzleClient->getConfig('timeout');

@@ -7,6 +7,9 @@ namespace neto737\HestiaCP\Command;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Exceptions\ProcessException;
 
+/**
+ * @extends Command<bool>
+ */
 abstract class ProcessCommand extends Command {
 
 	public function needReturnCode(): bool {

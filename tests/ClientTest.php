@@ -11,7 +11,7 @@ use neto737\HestiaCP\Client;
 class ClientTest extends \PHPUnit\Framework\TestCase {
 
 	public function testHostWithAPIKey(): void {
-		$credentials = new Credentials('');
+		$credentials = Credentials::legacyHash('');
 		$host = new Host('https://someHost', $credentials);
 		$client = new Client($host);
 
@@ -24,7 +24,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testHost(): void {
-		$credentials = new Credentials('', '');
+		$credentials = Credentials::password('', '');
 		$host = new Host('https://someHost', $credentials);
 		$client = new Client($host);
 
@@ -44,6 +44,28 @@ class ClientTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertSame('https://somehost', $host->getHostname());
 		$this->assertSame('ApiKey', $credentials->getApiKey());
+	}
+
+	public function testSimpleFactoryWithAccessKey(): void {
+		$credentials = Client::simpleFactory('https://someHost', 'ACCESS:SECRET')->getHost()->getCredentials();
+
+		$this->assertSame('ACCESS', $credentials->getAccessKey());
+		$this->assertSame('SECRET', $credentials->getSecretKey());
+		$this->assertNull($credentials->getApiKey());
+	}
+
+	public function testSimpleFactoryWithMoreThanOneColonIsALegacyHash(): void {
+		$credentials = Client::simpleFactory('https://someHost', 'a:b:c')->getHost()->getCredentials();
+
+		$this->assertSame('a:b:c', $credentials->getApiKey());
+		$this->assertNull($credentials->getAccessKey());
+	}
+
+	public function testSimpleFactoryWithPasswordDoesNotSplitTheUser(): void {
+		$credentials = Client::simpleFactory('https://someHost', 'us:er', 'pass')->getHost()->getCredentials();
+
+		$this->assertSame('us:er', $credentials->getUser());
+		$this->assertNull($credentials->getAccessKey());
 	}
 
 	public function testSimpleFactory(): void {

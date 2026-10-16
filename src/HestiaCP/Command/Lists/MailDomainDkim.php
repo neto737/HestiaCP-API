@@ -8,24 +8,16 @@ use neto737\HestiaCP\Command\ListCommand;
 
 class MailDomainDkim extends ListCommand {
 
-	private string $user;
-
-	private string $domain;
-
-	public function __construct(string $user, string $domain) {
-		$this->user = $user;
-		$this->domain = $domain;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain
+	) {}
 
 	public function getName(): string {
 		return 'v-list-mail-domain-dkim';
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => self::FORMAT_JSON
-		];
+		return $this->positional([$this->user, $this->domain, self::FORMAT_JSON]);
 	}
 }

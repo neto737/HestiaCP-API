@@ -8,39 +8,27 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class WebDomain extends ProcessCommand {
 
-	private string $user;
-
-	private string $domain;
-
-	private ?string $ip = null;
-
-	private ?string $aliases = null;
-
-	private ?string $proxyExtensions = null;
-
-	private bool $restart;
-
-	public function __construct(string $user, string $domain, ?string $ip = null, ?string $aliases = null, ?string $proxyExtensions = null, bool $restart = false) {
-		$this->user = $user;
-		$this->domain = $domain;
-		$this->ip = $ip;
-		$this->aliases = $aliases;
-		$this->proxyExtensions = $proxyExtensions;
-		$this->restart = $restart;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $domain,
+		private readonly ?string $ip = null,
+		private readonly ?string $aliases = null,
+		private readonly ?string $proxyExtensions = null,
+		private readonly bool $restart = false
+	) {}
 
 	public function getName(): string {
 		return 'v-add-web-domain';
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => $this->ip ?: '',
-			self::ARG_4 => $this->convertBool($this->restart),
-			self::ARG_5 => $this->aliases ?: 'none',
-			self::ARG_6 => $this->proxyExtensions ?: ''
-		];
+		return $this->positional([
+			$this->user,
+			$this->domain,
+			$this->ip,
+			$this->convertBool($this->restart),
+			$this->aliases ?: 'none',
+			$this->proxyExtensions
+		]);
 	}
 }

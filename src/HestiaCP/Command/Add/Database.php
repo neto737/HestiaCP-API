@@ -8,35 +8,25 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class Database extends ProcessCommand {
 
-	private string $user;
-
-	private string $database;
-
-	private string $dbuser;
-
-	private string $dbpass;
-
-	private string $type;
-
-	public function __construct(string $user, string $database, string $dbuser, string $dbpass, string $type = 'mysql') {
-		$this->user = $user;
-		$this->database = $database;
-		$this->dbuser = $dbuser;
-		$this->dbpass = $dbpass;
-		$this->type = $type;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $database,
+		private readonly string $dbuser,
+		private readonly string $dbpass,
+		private readonly string $type = 'mysql'
+	) {}
 
 	public function getName(): string {
 		return 'v-add-database';
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->database,
-			self::ARG_3 => $this->dbuser,
-			self::ARG_4 => $this->dbpass,
-			self::ARG_5 => $this->type
-		];
+		return $this->positional([
+			$this->user,
+			$this->database,
+			$this->dbuser,
+			$this->dbpass,
+			$this->type
+		]);
 	}
 }

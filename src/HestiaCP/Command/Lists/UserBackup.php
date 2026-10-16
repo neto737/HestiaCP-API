@@ -8,14 +8,10 @@ use neto737\HestiaCP\Command\ListCommand;
 
 class UserBackup extends ListCommand {
 
-	private string $user;
-
-	private string $backup;
-
-	public function __construct(string $user, string $backup) {
-		$this->user = $user;
-		$this->backup = $backup;
-	}
+	public function __construct(
+		private readonly string $user,
+		private readonly string $backup
+	) {}
 
 	public function getName(): string {
 		return 'v-list-user-backup';
@@ -26,10 +22,6 @@ class UserBackup extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->backup,
-			self::ARG_3 => self::FORMAT_JSON
-		];
+		return $this->positional([$this->user, $this->backup, self::FORMAT_JSON]);
 	}
 }

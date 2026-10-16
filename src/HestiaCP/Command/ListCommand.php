@@ -8,6 +8,9 @@ use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 use neto737\HestiaCP\Exceptions\ProcessException;
 
+/**
+ * @extends Command<array<mixed>>
+ */
 abstract class ListCommand extends Command {
 
 	public function needReturnCode(): bool {

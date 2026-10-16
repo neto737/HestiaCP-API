@@ -8,19 +8,15 @@ use neto737\HestiaCP\Command\ProcessCommand;
 
 class Databases extends ProcessCommand {
 
-	private string $user;
-
-	public function __construct(string $user) {
-		$this->user = $user;
-	}
+	public function __construct(
+		private readonly string $user
+	) {}
 
 	public function getName(): string {
 		return 'v-delete-databases';
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user
-		];
+		return $this->positional([$this->user]);
 	}
 }

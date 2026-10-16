@@ -48,7 +48,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertCount(1, $this->history);
 
 		parse_str((string) $this->history[0]['request']->getBody(), $params);
-		$this->assertSame(['hash' => 'ACCESS:SECRET'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
+		$this->assertSame(['access_key' => 'ACCESS', 'secret_key' => 'SECRET'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
 	}
 
 	/**
