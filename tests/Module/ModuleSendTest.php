@@ -10,6 +10,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
+use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Mails;
 use neto737\HestiaCP\Module\Packages;
@@ -144,6 +145,32 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleDatabase('alice')->deleteDatabases(),
 			'v-delete-databases',
 			['arg1' => 'alice']
+		];
+
+		yield 'Crons::addJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->addJob('0', '3', '1', '2', '1-5', 'uptime', 12, true),
+			'v-add-cron-job',
+			['arg1' => 'alice', 'arg2' => '0', 'arg3' => '3', 'arg4' => '1', 'arg5' => '2', 'arg6' => '1-5', 'arg7' => 'uptime', 'arg8' => '12', 'arg9' => 'yes']
+		];
+		yield 'Crons::changeJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->changeJob(12, '0', '3', '1', '2', '1-5', 'uptime'),
+			'v-change-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => '0', 'arg4' => '3', 'arg5' => '1', 'arg6' => '2', 'arg7' => '1-5', 'arg8' => 'uptime']
+		];
+		yield 'Crons::suspendJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->suspendJob(12, true),
+			'v-suspend-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'yes']
+		];
+		yield 'Crons::unsuspendJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->unsuspendJob(12, false),
+			'v-unsuspend-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'no']
+		];
+		yield 'Crons::deleteJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->deleteJob(12, true),
+			'v-delete-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'yes']
 		];
 
 		yield 'Mails::addAccount' => [
@@ -314,6 +341,19 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			false
 		];
 
+		yield 'Crons::listJobs' => [
+			fn (Client $c) => $c->getModuleCron('alice')->listJobs(),
+			'v-list-cron-jobs',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Crons::listJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->listJob(12),
+			'v-list-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'json'],
+			true
+		];
+
 		yield 'Mails::listAccounts' => [
 			fn (Client $c) => $c->getModuleMail('alice')->listAccounts('example.com'),
 			'v-list-mail-accounts',
@@ -377,7 +417,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testEveryModuleMethodIsCovered(): void {
 		$methods = [];
-		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class, Packages::class] as $module) {
+		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class, Packages::class, Crons::class] as $module) {
 			$reflection = new \ReflectionClass($module);
 			foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
 				if ($method->getDeclaringClass()->getName() === $module && !$method->isConstructor()) {

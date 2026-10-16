@@ -79,6 +79,7 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 | [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. Change passwords, suspend and unsuspend. |
 | [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
 | [Packages](docs/packages.md) | `getModulePackage()` | List and show hosting packages. |
+| [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
 
 Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md).
 

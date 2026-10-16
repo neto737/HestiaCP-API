@@ -8,10 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- `RawCommand` and `RawListCommand` run any HestiaCP script by name, for scripts with no command class: `new RawCommand('v-suspend-database', ['admin', 'admin_db'])` returns `true`, and `new RawListCommand('v-list-cron-jobs', ['admin', 'json'])` returns the decoded JSON. A name that isn't a HestiaCP script name throws an `InvalidArgumentException`.
+- `RawCommand` and `RawListCommand` run any HestiaCP script by name, for scripts with no command class: `new RawCommand('v-add-firewall-rule', ['DROP', '203.0.113.7', '25'])` returns `true`, and `new RawListCommand('v-list-firewall', ['json'])` returns the decoded JSON. A name that isn't a HestiaCP script name throws an `InvalidArgumentException`.
 - Databases: `changePassword()`, `suspend()` and `unsuspend()`, with the command classes `ChangeDatabasePassword`, `SuspendDatabase` and `UnsuspendDatabase` (`v-change-database-password`, `v-suspend-database`, `v-unsuspend-database`).
 - Users: `changeContact()`, `changePackage()` and `stats()`, with the command classes `ChangeUserContact`, `ChangeUserPackage` and `ListUserStats` (`v-change-user-contact`, `v-change-user-package`, `v-list-user-stats`).
 - Package module, `Client::getModulePackage()`: `list()` and `detail()`, with the command classes `Package\ListUserPackages` and `Package\ListUserPackage` (`v-list-user-packages`, `v-list-user-package`).
+- Cron module, `Client::getModuleCron($user)`: `listJobs()`, `listJob()`, `addJob()`, `changeJob()`, `suspendJob()`, `unsuspendJob()` and `deleteJob()`, with the command classes in `Command\Cron` (`v-list-cron-jobs`, `v-list-cron-job`, `v-add-cron-job`, `v-change-cron-job`, `v-suspend-cron-job`, `v-unsuspend-cron-job`, `v-delete-cron-job`). The optional `$restart` argument is only sent when set, so each script keeps HestiaCP's own default.
 - `Command::positional()` builds the `arg1`, `arg2`, … request parameters from a list of arguments. A `null` argument is left out when nothing after it is set and sent as an empty string otherwise. Every built-in command uses it, and it has no limit on the number of arguments.
 - `ICommand` is generic for static analysis (`ICommand<T>`, `process()` returns `T`), and `Client::send()` returns the command's result type. `ProcessCommand` is an `ICommand<bool>` and `ListCommand` an `ICommand<array<mixed>>`. Custom commands that extend `Command` directly can declare theirs with `@extends Command<...>`. Docblocks only, nothing changes at runtime.
 

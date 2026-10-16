@@ -6,6 +6,7 @@ namespace neto737\HestiaCP\Tests\Module;
 
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
+use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
@@ -48,6 +49,11 @@ class ModuleTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(Packages::class, get_class($client->getModulePackage()));
 	}
 
+	public function testModuleCron(): void {
+		$client = $this->createClient();
+		$this->assertSame(Crons::class, get_class($client->getModuleCron('test')));
+	}
+
 	public function testModuleCachedPerUser(): void {
 		$client = $this->createClient();
 
@@ -59,5 +65,6 @@ class ModuleTest extends \PHPUnit\Framework\TestCase {
 		$this->assertNotSame($client->getModuleWeb('alice'), $client->getModuleWeb('bob'));
 		$this->assertNotSame($client->getModuleBackup('alice'), $client->getModuleBackup('bob'));
 		$this->assertNotSame($client->getModuleDatabase('alice'), $client->getModuleDatabase('bob'));
+		$this->assertNotSame($client->getModuleCron('alice'), $client->getModuleCron('bob'));
 	}
 }
