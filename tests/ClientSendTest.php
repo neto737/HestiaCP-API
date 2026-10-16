@@ -64,7 +64,8 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 
 		parse_str((string) $request->getBody(), $params);
 		$this->assertSame([
-			'hash' => 'ACCESS:SECRET',
+			'access_key' => 'ACCESS',
+			'secret_key' => 'SECRET',
 			'arg1' => 'user',
 			'arg2' => 'pass',
 			'arg3' => 'mail@domain.com',
@@ -74,19 +75,18 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		], $params);
 	}
 
-	public function testRequestFormatWithAccessKey(): void {
+	public function testRequestFormatWithLegacyHash(): void {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler([self::codeResponse(0)]));
 		$stack->push(Middleware::history($this->history));
 
-		$host = new Host('https://someHost', Credentials::accessKey('ACCESS', 'SECRET'));
+		$host = new Host('https://someHost', Credentials::legacyHash('API_KEY'));
 		$client = new Client($host, ['handler' => $stack]);
 		$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
 
 		parse_str((string) $this->history[0]['request']->getBody(), $params);
 		$this->assertSame([
-			'access_key' => 'ACCESS',
-			'secret_key' => 'SECRET',
+			'hash' => 'API_KEY',
 			'arg1' => 'user',
 			'arg2' => 'pass',
 			'arg3' => 'mail@domain.com',

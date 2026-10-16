@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - `Add\WebDomain` and `Add\WebDomainFtp` no longer send an empty last argument when `proxyExtensions` or `ftpPath` isn't set. HestiaCP treats both the same way.
+- `Client::simpleFactory()` splits `ACCESS_KEY:SECRET_KEY` into an access key and secret key, so the credentials report access-key mode and the request sends `access_key` and `secret_key` instead of `hash`. HestiaCP already handled both forms the same way. A value with no colon, or more than one, is still a legacy API key.
 - `TestAuthorization` now extends `ProcessCommand` instead of `Command`. Its behaviour is unchanged.
 - The command classes use constructor property promotion with `readonly` properties. Their constructors take the same arguments as before.
 - `Credentials` stores its mode (access key, legacy hash or password) explicitly instead of inferring it from which fields are `null`. The named constructors no longer go through the public constructor. `setApiKey()` and `setAccessKey()` now also clear the user and password, so `getUser()` and `getPassword()` return `null` after switching away from password mode. Request parameters are unchanged.
@@ -21,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Deprecated
 
 - `Command::ARG_1` … `ARG_6`. Use `positional()` instead.
+- The `Credentials` constructor, where a `null` password means a legacy API key, and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`). Use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()` instead. `Client::simpleFactory()` uses the named constructors and takes the same arguments as before.
 
 ## [2.0.0] - 2026-10-15
 

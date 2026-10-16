@@ -52,6 +52,8 @@ $host = new Host('https://panel.example.com', $credentials, 443); // a different
 $client = new Client($host);
 ```
 
+`new Credentials($user, $password)` and the `Credentials` setters are deprecated and will be removed in 3.0. Use the named constructors above instead. To change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`.
+
 ## Hostname
 
 The hostname must start with `https://` (or `http://`) and contain only the host:

@@ -27,6 +27,7 @@ class Credentials {
 	/**
 	 * @param string $user		Username or Api Key
 	 * @param string $password	Password (must be null if using API Key)
+	 * @deprecated Use Credentials::legacyHash() or Credentials::password() instead. Will be removed in 3.0.
 	 */
 	public function __construct(string $user, ?string $password = null) {
 		if (is_null($password)) {
@@ -80,6 +81,7 @@ class Credentials {
 		$this->secret_key = $mode === self::MODE_ACCESS_KEY ? $second : null;
 	}
 
+	/** @deprecated Use Credentials::accessKey() instead. Will be removed in 3.0. */
 	public function setAccessKey(string $accessKey, string $secretKey): static {
 		$this->init(self::MODE_ACCESS_KEY, $accessKey, $secretKey);
 		return $this;
@@ -93,6 +95,7 @@ class Credentials {
 		return $this->secret_key;
 	}
 
+	/** @deprecated Use Credentials::legacyHash() instead. Will be removed in 3.0. */
 	public function setApiKey(string $key): static {
 		$this->init(self::MODE_LEGACY_HASH, $key);
 		return $this;
@@ -102,6 +105,7 @@ class Credentials {
 		return $this->api_key;
 	}
 
+	/** @deprecated Use Credentials::password() instead. Will be removed in 3.0. */
 	public function setUser(string $user): static {
 		$this->user = $user;
 		return $this;
@@ -111,6 +115,7 @@ class Credentials {
 		return $this->user;
 	}
 
+	/** @deprecated Use Credentials::password() instead. Will be removed in 3.0. */
 	public function setPassword(string $password): static {
 		$this->password = $password;
 		return $this;
