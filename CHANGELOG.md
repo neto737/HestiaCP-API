@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- `Command::positional()` builds the `arg1`, `arg2`, … request parameters from a list of arguments. A `null` argument is left out when nothing after it is set and sent as an empty string otherwise. Every built-in command uses it, and it has no limit on the number of arguments.
+- `Command::positional()` builds the `arg1`, `arg2`, â€¦ request parameters from a list of arguments. A `null` argument is left out when nothing after it is set and sent as an empty string otherwise. Every built-in command uses it, and it has no limit on the number of arguments.
 
 ### Changed
 
@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Deprecated
 
-- `Command::ARG_1` … `ARG_6`. Use `positional()` instead.
+- `Command::ARG_1` â€¦ `ARG_6`. Use `positional()` instead.
 
 ## [2.0.0] - 2026-10-15
 
