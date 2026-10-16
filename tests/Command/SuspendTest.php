@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\Suspend\User;
-use neto737\HestiaCP\Command\Suspend\WebDomain;
-use neto737\HestiaCP\Command\Suspend\MailAccount;
-use neto737\HestiaCP\Command\Suspend\MailDomain;
+use neto737\HestiaCP\Command\User\SuspendUser;
+use neto737\HestiaCP\Command\Web\SuspendWebDomain;
+use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
+use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
 
 class SuspendTest extends \PHPUnit\Framework\TestCase {
 
 	public function testUser(): void {
-		$command = new User('admin');
+		$command = new SuspendUser('admin');
 		$this->assertSame('v-suspend-user', $command->getName());
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'no'], $command->getRequestParams());
 
@@ -23,7 +23,7 @@ class SuspendTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testWebDomain(): void {
-		$command = new WebDomain('admin', 'domain.com');
+		$command = new SuspendWebDomain('admin', 'domain.com');
 		$this->assertSame('v-suspend-web-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -38,7 +38,7 @@ class SuspendTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailAccount(): void {
-		$command = new MailAccount('admin', 'domain.com', 'account');
+		$command = new SuspendMailAccount('admin', 'domain.com', 'account');
 		$this->assertSame('v-suspend-mail-account', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',
@@ -53,7 +53,7 @@ class SuspendTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testMailDomain(): void {
-		$command = new MailDomain('admin', 'domain.com');
+		$command = new SuspendMailDomain('admin', 'domain.com');
 		$this->assertSame('v-suspend-mail-domain', $command->getName());
 		$this->assertSame([
 			'arg1' => 'admin',

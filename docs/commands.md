@@ -1,22 +1,28 @@
 # Sending commands directly
 
-The modules are a convenience layer. Each method creates a command object and passes it to `Client::send()`. You can do the same yourself, with the command classes in `neto737\HestiaCP\Command\*`, or with a command class of your own.
+The modules are a convenience layer. Each method creates a command object and passes it to `Client::send()`. You can do the same yourself, with the command classes in `neto737\HestiaCP\Command`, or with a command class of your own.
 
 ## Using a command class
 
+Each class is named after the HestiaCP script it runs: drop the `v-` prefix and PascalCase the rest. `v-list-users` is `ListUsers`, `v-change-user-password` is `ChangeUserPassword`, and `v-add-letsencrypt-domain` is `AddLetsEncryptDomain`.
+
+The classes are grouped by the module that sends them: `Command\User`, `Command\Web`, `Command\Mail`, `Command\Database` and `Command\Backup`. For example, `v-add-letsencrypt-domain` is sent by the web module, so its class is `Command\Web\AddLetsEncryptDomain`.
+
 ```php
-use neto737\HestiaCP\Command\Lists\Users;
-use neto737\HestiaCP\Command\Change\UserPassword;
+use neto737\HestiaCP\Command\User\ChangeUserPassword;
+use neto737\HestiaCP\Command\User\ListUsers;
 
-$users = $client->send(new Users()); // array
+$users = $client->send(new ListUsers()); // array
 
-$client->send(new UserPassword('admin', 'otherPa$$word')); // true
+$client->send(new ChangeUserPassword('admin', 'otherPa$$word')); // true
 ```
+
+The names grouped by verb from 2.0 (`Lists\Users`, `Change\UserPassword`, …) still work, but are deprecated and will be removed in 3.0.
 
 `send()` returns whatever the command's `process()` method returns. The raw response body is kept on the command object:
 
 ```php
-$command = new Users();
+$command = new ListUsers();
 $client->send($command);
 
 echo $command->getResponseText(); // the JSON returned by HestiaCP

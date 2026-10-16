@@ -4,15 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Lists;
 
-use neto737\HestiaCP\Command\ListCommand;
+use neto737\HestiaCP\Command\User\ListUsers;
 
-class Users extends ListCommand {
-
-	public function getName(): string {
-		return 'v-list-users';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([self::FORMAT_JSON]);
-	}
-}
+/**
+ * @deprecated Use {@see ListUsers} instead. Will be removed in 3.0.
+ */
+class Users extends ListUsers {}

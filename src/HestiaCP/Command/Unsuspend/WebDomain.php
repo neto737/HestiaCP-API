@@ -4,21 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Unsuspend;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
 
-class WebDomain extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $domain,
-		private readonly bool $restart = false
-	) {}
-
-	public function getName(): string {
-		return 'v-unsuspend-web-domain';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->domain, $this->convertBool($this->restart)]);
-	}
-}
+/**
+ * @deprecated Use {@see UnsuspendWebDomain} instead. Will be removed in 3.0.
+ */
+class WebDomain extends UnsuspendWebDomain {}

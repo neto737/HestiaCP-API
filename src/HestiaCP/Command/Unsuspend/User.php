@@ -4,20 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Unsuspend;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\User\UnsuspendUser;
 
-class User extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly bool $restart = false
-	) {}
-
-	public function getName(): string {
-		return 'v-unsuspend-user';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->convertBool($this->restart)]);
-	}
-}
+/**
+ * @deprecated Use {@see UnsuspendUser} instead. Will be removed in 3.0.
+ */
+class User extends UnsuspendUser {}

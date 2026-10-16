@@ -4,20 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Unsuspend;
 
-use neto737\HestiaCP\Command\ProcessCommand;
+use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
 
-class MailDomain extends ProcessCommand {
-
-	public function __construct(
-		private readonly string $user,
-		private readonly string $domain
-	) {}
-
-	public function getName(): string {
-		return 'v-unsuspend-mail-domain';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->user, $this->domain]);
-	}
-}
+/**
+ * @deprecated Use {@see UnsuspendMailDomain} instead. Will be removed in 3.0.
+ */
+class MailDomain extends UnsuspendMailDomain {}

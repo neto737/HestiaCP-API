@@ -4,19 +4,9 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Lists;
 
-use neto737\HestiaCP\Command\ListCommand;
+use neto737\HestiaCP\Command\Database\ListDatabases;
 
-class Databases extends ListCommand {
-
-	public function __construct(
-		private readonly string $username
-	) {}
-
-	public function getName(): string {
-		return 'v-list-databases';
-	}
-
-	public function getRequestParams(): array {
-		return $this->positional([$this->username, self::FORMAT_JSON]);
-	}
-}
+/**
+ * @deprecated Use {@see ListDatabases} instead. Will be removed in 3.0.
+ */
+class Databases extends ListDatabases {}
