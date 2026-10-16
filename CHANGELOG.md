@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `Add\WebDomain` and `Add\WebDomainFtp` no longer send an empty last argument when `proxyExtensions` or `ftpPath` isn't set. HestiaCP treats both the same way.
 - `TestAuthorization` now extends `ProcessCommand` instead of `Command`. Its behaviour is unchanged.
 - The command classes use constructor property promotion with `readonly` properties. Their constructors take the same arguments as before.
+- `Credentials` stores its mode (access key, legacy hash or password) explicitly instead of inferring it from which fields are `null`. The named constructors no longer go through the public constructor. `setApiKey()` and `setAccessKey()` now also clear the user and password, so `getUser()` and `getPassword()` return `null` after switching away from password mode. Request parameters are unchanged.
 
 ### Deprecated
 
