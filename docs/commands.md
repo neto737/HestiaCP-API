@@ -29,6 +29,24 @@ echo $command->getResponseText(); // the JSON returned by HestiaCP
 echo $command->getStatusCode();   // the HTTP status code
 ```
 
+## Running any script
+
+For a script that has no command class, use `RawCommand` or `RawListCommand` with the script name and its arguments, in order:
+
+```php
+use neto737\HestiaCP\Command\RawCommand;
+use neto737\HestiaCP\Command\RawListCommand;
+
+$client->send(new RawCommand('v-add-cron-job', ['admin', '0', '3', '*', '*', '*', '/usr/bin/php /home/admin/cron.php'])); // true
+
+$jobs = $client->send(new RawListCommand('v-list-cron-jobs', ['admin', 'json'])); // array
+```
+
+- `RawCommand` is for scripts that change something. Like `ProcessCommand`, it returns `true` on exit code 0 and throws an exception otherwise.
+- `RawListCommand` is for scripts that print JSON. Like `ListCommand`, it returns the decoded array. Most list scripts print JSON only when you pass `json` as their format argument, so include it in the arguments.
+
+The arguments go through `positional()` (see below), so `null` works the same way for optional arguments. A name that isn't a HestiaCP script name (`v-` followed by lowercase words joined by dashes) throws an `InvalidArgumentException` before anything is sent.
+
 ## Writing your own command
 
 Extend one of the two base classes:

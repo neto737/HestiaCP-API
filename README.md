@@ -76,7 +76,7 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 | [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, suspend and unsuspend, back up all users. |
 | [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Let's Encrypt certificates and FTP accounts. |
 | [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, DKIM keys and DNS records. |
-| [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. |
+| [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. Change passwords, suspend and unsuspend. |
 | [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
 
 Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md).

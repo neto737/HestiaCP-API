@@ -8,6 +8,7 @@ use neto737\HestiaCP\Command\User\ChangeUserPassword;
 use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPassword;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPath;
+use neto737\HestiaCP\Command\Database\ChangeDatabasePassword;
 
 class ChangeTest extends \PHPUnit\Framework\TestCase {
 
@@ -62,6 +63,21 @@ class ChangeTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain',
 			'arg3' => 'account',
 			'arg4' => 'path'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
+	}
+
+	public function testDatabasePassword(): void {
+		$command = new ChangeDatabasePassword('admin', 'admin_db', 'pass');
+		$this->assertSame('v-change-database-password', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'admin_db',
+			'arg3' => 'pass'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
