@@ -9,6 +9,10 @@ use neto737\HestiaCP\Exceptions\InvalidResponseException;
 use neto737\HestiaCP\Exceptions\ProcessException;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @template-covariant T
+ * @implements ICommand<T>
+ */
 abstract class Command implements ICommand {
 
 	/** @deprecated Use positional() instead. Will be removed in 3.0. */

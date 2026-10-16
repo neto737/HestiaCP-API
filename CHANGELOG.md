@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - `Command::positional()` builds the `arg1`, `arg2`, … request parameters from a list of arguments. A `null` argument is left out when nothing after it is set and sent as an empty string otherwise. Every built-in command uses it, and it has no limit on the number of arguments.
+- `ICommand` is generic for static analysis (`ICommand<T>`, `process()` returns `T`), and `Client::send()` returns the command's result type. `ProcessCommand` is an `ICommand<bool>` and `ListCommand` an `ICommand<array<mixed>>`. Custom commands that extend `Command` directly can declare theirs with `@extends Command<...>`. Docblocks only, nothing changes at runtime.
 
 ### Changed
 

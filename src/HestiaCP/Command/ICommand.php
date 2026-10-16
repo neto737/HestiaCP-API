@@ -6,6 +6,9 @@ namespace neto737\HestiaCP\Command;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @template-covariant T
+ */
 interface ICommand {
 
 	public function setLastResponse(ResponseInterface $response): void;
@@ -14,6 +17,9 @@ interface ICommand {
 
 	public function needReturnCode(): bool;
 
+	/**
+	 * @return T
+	 */
 	public function process(): mixed;
 
 	/**

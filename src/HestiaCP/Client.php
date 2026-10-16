@@ -84,8 +84,9 @@ class Client {
 	}
 
 	/**
-	 * @param ICommand $command
-	 * @return mixed
+	 * @template T
+	 * @param ICommand<T> $command
+	 * @return T
 	 * @throws ClientException
 	 * @throws ProcessException
 	 */
@@ -116,6 +117,8 @@ class Client {
 
 	/**
 	 * A command may need a longer timeout than the client default, but never a shorter one.
+	 *
+	 * @param ICommand<mixed> $command
 	 */
 	private function getTimeout(ICommand $command): float {
 		$timeout = (float) $this->guzzleClient->getConfig('timeout');
