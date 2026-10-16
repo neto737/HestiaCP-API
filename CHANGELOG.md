@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - `Add\WebDomain` and `Add\WebDomainFtp` no longer send an empty last argument when `proxyExtensions` or `ftpPath` isn't set. HestiaCP treats both the same way.
+- `TestAuthorization` now extends `ProcessCommand` instead of `Command`. Its behaviour is unchanged.
 
 ### Deprecated
 
