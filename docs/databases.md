@@ -24,6 +24,19 @@ $db->listDatabases(); // ['admin_database' => ['DATABASE' => '...', 'DBUSER' => 
 $db->listDatabase('admin_database'); // the fields of one database
 ```
 
+## Changing the password
+
+```php
+$db->changePassword('admin_database', 'newPa$$word'); // the password of the database user
+```
+
+## Suspending
+
+```php
+$db->suspend('admin_database');
+$db->unsuspend('admin_database');
+```
+
 ## Deleting
 
 ```php

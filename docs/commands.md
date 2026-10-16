@@ -6,7 +6,7 @@ The modules are a convenience layer. Each method creates a command object and pa
 
 Each class is named after the HestiaCP script it runs: drop the `v-` prefix and PascalCase the rest. `v-list-users` is `ListUsers`, `v-change-user-password` is `ChangeUserPassword`, and `v-add-letsencrypt-domain` is `AddLetsEncryptDomain`.
 
-The classes are grouped by the module that sends them: `Command\User`, `Command\Web`, `Command\Mail`, `Command\Database` and `Command\Backup`. For example, `v-add-letsencrypt-domain` is sent by the web module, so its class is `Command\Web\AddLetsEncryptDomain`.
+The classes are grouped by the module that sends them: `Command\User`, `Command\Web`, `Command\Mail`, `Command\Database`, `Command\Backup`, `Command\Package` and `Command\Cron`. For example, `v-add-letsencrypt-domain` is sent by the web module, so its class is `Command\Web\AddLetsEncryptDomain`.
 
 ```php
 use neto737\HestiaCP\Command\User\ChangeUserPassword;
@@ -29,6 +29,24 @@ echo $command->getResponseText(); // the JSON returned by HestiaCP
 echo $command->getStatusCode();   // the HTTP status code
 ```
 
+## Running any script
+
+For a script that has no command class, use `RawCommand` or `RawListCommand` with the script name and its arguments, in order:
+
+```php
+use neto737\HestiaCP\Command\RawCommand;
+use neto737\HestiaCP\Command\RawListCommand;
+
+$client->send(new RawCommand('v-add-firewall-rule', ['DROP', '203.0.113.7', '25'])); // true
+
+$rules = $client->send(new RawListCommand('v-list-firewall', ['json'])); // array
+```
+
+- `RawCommand` is for scripts that change something. Like `ProcessCommand`, it returns `true` on exit code 0 and throws an exception otherwise.
+- `RawListCommand` is for scripts that print JSON. Like `ListCommand`, it returns the decoded array. Most list scripts print JSON only when you pass `json` as their format argument, so include it in the arguments.
+
+The arguments go through `positional()` (see below), so `null` works the same way for optional arguments. A name that isn't a HestiaCP script name (`v-` followed by lowercase words joined by dashes) throws an `InvalidArgumentException` before anything is sent.
+
 ## Writing your own command
 
 Extend one of the two base classes:
@@ -41,55 +59,49 @@ Implement `getName()` (the HestiaCP script name) and `getRequestParams()` (the s
 ```php
 use neto737\HestiaCP\Command\ProcessCommand;
 
-class AddCronJob extends ProcessCommand {
+class AddFirewallRule extends ProcessCommand {
 
 	public function __construct(
-		private string $user,
-		private string $min,
-		private string $hour,
-		private string $day,
-		private string $month,
-		private string $weekday,
-		private string $command
+		private string $action,
+		private string $ip,
+		private string $port,
+		private ?string $protocol = null,
+		private ?string $comment = null
 	) {}
 
 	public function getName(): string {
-		return 'v-add-cron-job';
+		return 'v-add-firewall-rule';
 	}
 
 	public function getRequestParams(): array {
 		return $this->positional([
-			$this->user,
-			$this->min,
-			$this->hour,
-			$this->day,
-			$this->month,
-			$this->weekday,
-			$this->command,
+			$this->action,
+			$this->ip,
+			$this->port,
+			$this->protocol,
+			$this->comment,
 		]);
 	}
 }
 
-$client->send(new AddCronJob('admin', '0', '3', '*', '*', '*', '/usr/bin/php /home/admin/cron.php'));
+$client->send(new AddFirewallRule('DROP', '203.0.113.7', '25'));
 ```
 
 ```php
 use neto737\HestiaCP\Command\ListCommand;
 
-class ListCronJobs extends ListCommand {
-
-	public function __construct(private string $user) {}
+class ListFirewall extends ListCommand {
 
 	public function getName(): string {
-		return 'v-list-cron-jobs';
+		return 'v-list-firewall';
 	}
 
 	public function getRequestParams(): array {
-		return $this->positional([$this->user, 'json']);
+		return $this->positional(['json']);
 	}
 }
 
-$jobs = $client->send(new ListCronJobs('admin'));
+$rules = $client->send(new ListFirewall());
 ```
 
 Most HestiaCP list scripts print JSON only when you pass `json` as their format argument.

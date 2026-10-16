@@ -12,9 +12,11 @@ use neto737\HestiaCP\Exceptions\ClientException;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 use neto737\HestiaCP\Exceptions\ProcessException;
 use neto737\HestiaCP\Module\Backups;
+use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Mails;
 use neto737\HestiaCP\Module\Module;
+use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 
@@ -198,5 +200,13 @@ class Client {
 
 	public function getModuleDatabase(string $user): Databases {
 		return $this->loadModule(Databases::class, $user);
+	}
+
+	public function getModulePackage(): Packages {
+		return $this->loadModule(Packages::class);
+	}
+
+	public function getModuleCron(string $user): Crons {
+		return $this->loadModule(Crons::class, $user);
 	}
 }

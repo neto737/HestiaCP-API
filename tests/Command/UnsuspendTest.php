@@ -8,6 +8,7 @@ use neto737\HestiaCP\Command\User\UnsuspendUser;
 use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\Database\UnsuspendDatabase;
 
 class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 
@@ -58,6 +59,20 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
+	}
+
+	public function testDatabase(): void {
+		$command = new UnsuspendDatabase('admin', 'admin_db');
+		$this->assertSame('v-unsuspend-database', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'admin_db'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());

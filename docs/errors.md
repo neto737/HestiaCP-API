@@ -33,7 +33,7 @@ All classes are in the `neto737\HestiaCP\Exceptions` namespace.
 | `InvalidResponseException` | `ProcessException` | The response isn't what HestiaCP sends, for example when the hostname points to another server. |
 | `ProcessException` | `RuntimeException` | HestiaCP ran the command and it failed with any other exit code, or a list command returned invalid JSON. |
 | `ClientException` | `RuntimeException` | The request didn't complete: timeout, DNS failure, TLS error, refused connection. The original Guzzle exception is available with `getPrevious()`. |
-| `InvalidArgumentException` | `Exception` | An argument is invalid before anything is sent, for example a malformed hostname. |
+| `InvalidArgumentException` | `Exception` | An argument is invalid before anything is sent, for example a malformed hostname or a `RawCommand` name that isn't a HestiaCP script name. |
 
 ## Exit codes
 

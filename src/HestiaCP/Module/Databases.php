@@ -6,10 +6,13 @@ namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Command\Database\AddDatabase;
+use neto737\HestiaCP\Command\Database\ChangeDatabasePassword;
 use neto737\HestiaCP\Command\Database\DeleteDatabase;
 use neto737\HestiaCP\Command\Database\DeleteDatabases;
 use neto737\HestiaCP\Command\Database\ListDatabase;
 use neto737\HestiaCP\Command\Database\ListDatabases;
+use neto737\HestiaCP\Command\Database\SuspendDatabase;
+use neto737\HestiaCP\Command\Database\UnsuspendDatabase;
 
 class Databases extends Module {
 
@@ -33,6 +36,43 @@ class Databases extends Module {
 	 */
 	public function add(string $database, string $dbuser, string $dbpass, string $type = 'mysql'): bool {
 		return $this->client->send(new AddDatabase($this->user, $database, $dbuser, $dbpass, $type));
+	}
+
+	/**
+	 * This function changes the password of a database's user.
+	 *
+	 * @param string    $database
+	 * @param string    $dbpass
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changePassword(string $database, string $dbpass): bool {
+		return $this->client->send(new ChangeDatabasePassword($this->user, $database, $dbpass));
+	}
+
+	/**
+	 * This function suspends a database.
+	 *
+	 * @param string    $database
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function suspend(string $database): bool {
+		return $this->client->send(new SuspendDatabase($this->user, $database));
+	}
+
+	/**
+	 * This function unsuspends a database.
+	 *
+	 * @param string    $database
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function unsuspend(string $database): bool {
+		return $this->client->send(new UnsuspendDatabase($this->user, $database));
 	}
 
 	/**
