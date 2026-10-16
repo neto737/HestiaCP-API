@@ -19,8 +19,6 @@ class User extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user
-		];
+		return $this->positional([$this->user]);
 	}
 }

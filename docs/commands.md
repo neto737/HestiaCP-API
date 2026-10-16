@@ -52,15 +52,15 @@ class AddCronJob extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			'arg1' => $this->user,
-			'arg2' => $this->min,
-			'arg3' => $this->hour,
-			'arg4' => $this->day,
-			'arg5' => $this->month,
-			'arg6' => $this->weekday,
-			'arg7' => $this->command,
-		];
+		return $this->positional([
+			$this->user,
+			$this->min,
+			$this->hour,
+			$this->day,
+			$this->month,
+			$this->weekday,
+			$this->command,
+		]);
 	}
 }
 
@@ -79,10 +79,7 @@ class ListCronJobs extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			'arg1' => $this->user,
-			'arg2' => 'json',
-		];
+		return $this->positional([$this->user, 'json']);
 	}
 }
 
@@ -90,6 +87,15 @@ $jobs = $client->send(new ListCronJobs('admin'));
 ```
 
 Most HestiaCP list scripts print JSON only when you pass `json` as their format argument.
+
+`positional()` turns the list into the `arg1`, `arg2`, … parameters HestiaCP expects. HestiaCP reads the arguments by position, so use `null` for an optional argument that isn't set: it is left out when nothing after it is set, and sent as an empty string otherwise, so the arguments after it keep their positions.
+
+```php
+$this->positional(['admin', null, 'yes']); // ['arg1' => 'admin', 'arg2' => '', 'arg3' => 'yes']
+$this->positional(['admin', 'yes', null]); // ['arg1' => 'admin', 'arg2' => 'yes']
+```
+
+The `ARG_1` … `ARG_6` constants are deprecated and will be removed in 3.0.
 
 ### Timeouts
 

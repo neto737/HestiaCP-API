@@ -22,9 +22,6 @@ class MailDomain extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain
-		];
+		return $this->positional([$this->user, $this->domain]);
 	}
 }

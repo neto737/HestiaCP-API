@@ -19,9 +19,6 @@ class Databases extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->username,
-			self::ARG_2 => self::FORMAT_JSON
-		];
+		return $this->positional([$this->username, self::FORMAT_JSON]);
 	}
 }

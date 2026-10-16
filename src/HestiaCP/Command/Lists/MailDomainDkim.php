@@ -22,10 +22,6 @@ class MailDomainDkim extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => self::FORMAT_JSON
-		];
+		return $this->positional([$this->user, $this->domain, self::FORMAT_JSON]);
 	}
 }

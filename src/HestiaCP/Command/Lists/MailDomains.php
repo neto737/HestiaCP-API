@@ -19,9 +19,6 @@ class MailDomains extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => self::FORMAT_JSON
-		];
+		return $this->positional([$this->user, self::FORMAT_JSON]);
 	}
 }

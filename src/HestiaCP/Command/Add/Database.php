@@ -31,12 +31,12 @@ class Database extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->database,
-			self::ARG_3 => $this->dbuser,
-			self::ARG_4 => $this->dbpass,
-			self::ARG_5 => $this->type
-		];
+		return $this->positional([
+			$this->user,
+			$this->database,
+			$this->dbuser,
+			$this->dbpass,
+			$this->type
+		]);
 	}
 }

@@ -25,10 +25,6 @@ class MailAccount extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => $this->account
-		];
+		return $this->positional([$this->user, $this->domain, $this->account]);
 	}
 }

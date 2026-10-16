@@ -26,10 +26,6 @@ class UserBackup extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->backup,
-			self::ARG_3 => self::FORMAT_JSON
-		];
+		return $this->positional([$this->user, $this->backup, self::FORMAT_JSON]);
 	}
 }

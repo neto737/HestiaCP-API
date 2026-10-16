@@ -34,22 +34,13 @@ class User extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		// HestiaCP passes the arguments by position, so every argument before the last one set has to be sent
-		$params = [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->password,
-			self::ARG_3 => $this->email,
-			self::ARG_4 => $this->package ?? 'default'
-		];
-
-		if ($this->name !== null || $this->lastname !== null) {
-			$params[self::ARG_5] = $this->name ?? '';
-		}
-
-		if ($this->lastname !== null) {
-			$params[self::ARG_6] = $this->lastname;
-		}
-
-		return $params;
+		return $this->positional([
+			$this->user,
+			$this->password,
+			$this->email,
+			$this->package ?? 'default',
+			$this->name,
+			$this->lastname
+		]);
 	}
 }

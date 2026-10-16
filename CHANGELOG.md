@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `Command::positional()` builds the `arg1`, `arg2`, … request parameters from a list of arguments. A `null` argument is left out when nothing after it is set and sent as an empty string otherwise. Every built-in command uses it, and it has no limit on the number of arguments.
+
+### Changed
+
+- `Add\WebDomain` and `Add\WebDomainFtp` no longer send an empty last argument when `proxyExtensions` or `ftpPath` isn't set. HestiaCP treats both the same way.
+
+### Deprecated
+
+- `Command::ARG_1` … `ARG_6`. Use `positional()` instead.
+
 ## [2.0.0] - 2026-10-15
 
 This release brings the library up to date with HestiaCP 1.10 and contains breaking changes, marked **BC break** below. See [UPGRADING.md](UPGRADING.md) for how to migrate from v1.

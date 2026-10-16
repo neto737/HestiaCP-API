@@ -64,14 +64,34 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain.com',
 			'arg3' => '',
 			'arg4' => 'no',
-			'arg5' => 'none',
-			'arg6' => ''
+			'arg5' => 'none'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process();
+	}
+
+	public function testWebDomainWithIpAndProxyExtensions(): void {
+		$command = new WebDomain('admin', 'domain.com', null, null, 'jpg,png');
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => '',
+			'arg4' => 'no',
+			'arg5' => 'none',
+			'arg6' => 'jpg,png'
+		], $command->getRequestParams());
+
+		$command = new WebDomain('admin', 'domain.com', '127.0.0.1', 'www.domain.com', null, true);
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => '127.0.0.1',
+			'arg4' => 'yes',
+			'arg5' => 'www.domain.com'
+		], $command->getRequestParams());
 	}
 
 	public function testWebDomainFtp(): void {
@@ -81,8 +101,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
 			'arg3' => 'account',
-			'arg4' => 'pass',
-			'arg5' => ''
+			'arg4' => 'pass'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());

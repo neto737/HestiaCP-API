@@ -31,12 +31,12 @@ class MailDomain extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => $this->convertBool($this->antispam),
-			self::ARG_4 => $this->convertBool($this->antivirus),
-			self::ARG_5 => $this->convertBool($this->dkim)
-		];
+		return $this->positional([
+			$this->user,
+			$this->domain,
+			$this->convertBool($this->antispam),
+			$this->convertBool($this->antivirus),
+			$this->convertBool($this->dkim)
+		]);
 	}
 }

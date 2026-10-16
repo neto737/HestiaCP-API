@@ -31,12 +31,12 @@ class WebDomainFtp extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => $this->ftpUser,
-			self::ARG_4 => $this->ftpPassword,
-			self::ARG_5 => $this->ftpPath ?: '',
-		];
+		return $this->positional([
+			$this->user,
+			$this->domain,
+			$this->ftpUser,
+			$this->ftpPassword,
+			$this->ftpPath
+		]);
 	}
 }

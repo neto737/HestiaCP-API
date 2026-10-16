@@ -34,13 +34,13 @@ class WebDomain extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => $this->ip ?: '',
-			self::ARG_4 => $this->convertBool($this->restart),
-			self::ARG_5 => $this->aliases ?: 'none',
-			self::ARG_6 => $this->proxyExtensions ?: ''
-		];
+		return $this->positional([
+			$this->user,
+			$this->domain,
+			$this->ip,
+			$this->convertBool($this->restart),
+			$this->aliases ?: 'none',
+			$this->proxyExtensions
+		]);
 	}
 }

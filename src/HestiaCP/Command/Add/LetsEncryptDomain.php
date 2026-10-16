@@ -55,17 +55,12 @@ class LetsEncryptDomain extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		$params = [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->domain,
-			self::ARG_3 => $this->aliases ?: '',
-			self::ARG_4 => $this->convertBool($this->mail),
-		];
-
-		if ($this->keyAlgo !== null) {
-			$params[self::ARG_5] = $this->keyAlgo;
-		}
-
-		return $params;
+		return $this->positional([
+			$this->user,
+			$this->domain,
+			$this->aliases,
+			$this->convertBool($this->mail),
+			$this->keyAlgo
+		]);
 	}
 }

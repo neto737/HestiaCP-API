@@ -22,9 +22,6 @@ class UserPassword extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->password
-		];
+		return $this->positional([$this->user, $this->password]);
 	}
 }

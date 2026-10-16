@@ -22,9 +22,6 @@ class Database extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => $this->user,
-			self::ARG_2 => $this->database
-		];
+		return $this->positional([$this->user, $this->database]);
 	}
 }

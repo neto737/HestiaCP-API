@@ -26,14 +26,6 @@ class UserBackupExclusions extends ProcessCommand {
 	}
 
 	public function getRequestParams(): array {
-		$params = [
-			self::ARG_1 => $this->user
-		];
-
-		if ($this->system !== null) {
-			$params[self::ARG_2] = $this->system;
-		}
-
-		return $params;
+		return $this->positional([$this->user, $this->system]);
 	}
 }

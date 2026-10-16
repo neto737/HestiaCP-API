@@ -13,8 +13,6 @@ class Users extends ListCommand {
 	}
 
 	public function getRequestParams(): array {
-		return [
-			self::ARG_1 => self::FORMAT_JSON
-		];
+		return $this->positional([self::FORMAT_JSON]);
 	}
 }
