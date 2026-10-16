@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\BackupUser;
-use neto737\HestiaCP\Command\DeleteUserBackup;
-use neto737\HestiaCP\Command\DeleteUserBackupExclusions;
-use neto737\HestiaCP\Command\ListUserBackup;
-use neto737\HestiaCP\Command\ListUserBackups;
-use neto737\HestiaCP\Command\ListUserBackupExclusions;
+use neto737\HestiaCP\Command\Backup\BackupUser;
+use neto737\HestiaCP\Command\Backup\DeleteUserBackup;
+use neto737\HestiaCP\Command\Backup\DeleteUserBackupExclusions;
+use neto737\HestiaCP\Command\Backup\ListUserBackup;
+use neto737\HestiaCP\Command\Backup\ListUserBackups;
+use neto737\HestiaCP\Command\Backup\ListUserBackupExclusions;
 
 class Backups extends Module {
 

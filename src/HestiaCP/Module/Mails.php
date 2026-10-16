@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\AddMailAccount;
-use neto737\HestiaCP\Command\AddMailDomain;
-use neto737\HestiaCP\Command\ChangeMailAccountPassword;
-use neto737\HestiaCP\Command\SuspendMailAccount;
-use neto737\HestiaCP\Command\SuspendMailDomain;
-use neto737\HestiaCP\Command\UnsuspendMailAccount;
-use neto737\HestiaCP\Command\UnsuspendMailDomain;
-use neto737\HestiaCP\Command\DeleteMailAccount;
-use neto737\HestiaCP\Command\DeleteMailDomain;
-use neto737\HestiaCP\Command\ListMailAccounts;
-use neto737\HestiaCP\Command\ListMailDomainDkim;
-use neto737\HestiaCP\Command\ListMailDomainDkimDns;
-use neto737\HestiaCP\Command\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\AddMailAccount;
+use neto737\HestiaCP\Command\Mail\AddMailDomain;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
+use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
+use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
+use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\DeleteMailAccount;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomain;
+use neto737\HestiaCP\Command\Mail\ListMailAccounts;
+use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
+use neto737\HestiaCP\Command\Mail\ListMailDomains;
 
 class Mails extends Module {
 

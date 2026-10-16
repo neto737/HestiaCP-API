@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\BackupUsers;
-use neto737\HestiaCP\Command\BackupUser;
+use neto737\HestiaCP\Command\User\BackupUsers;
+use neto737\HestiaCP\Command\Backup\BackupUser;
 
 class BackupTest extends \PHPUnit\Framework\TestCase {
 

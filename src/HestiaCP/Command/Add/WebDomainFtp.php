@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Add;
 
-use neto737\HestiaCP\Command\AddWebDomainFtp;
+use neto737\HestiaCP\Command\Web\AddWebDomainFtp;
 
 /**
  * @deprecated Use {@see AddWebDomainFtp} instead. Will be removed in 3.0.

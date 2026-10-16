@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\ChangeUserPassword;
-use neto737\HestiaCP\Command\ChangeMailAccountPassword;
-use neto737\HestiaCP\Command\ChangeWebDomainFtpPassword;
-use neto737\HestiaCP\Command\ChangeWebDomainFtpPath;
+use neto737\HestiaCP\Command\User\ChangeUserPassword;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPassword;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPath;
 
 class ChangeTest extends \PHPUnit\Framework\TestCase {
 

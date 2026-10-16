@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Add;
 
-use neto737\HestiaCP\Command\AddDatabase;
+use neto737\HestiaCP\Command\Database\AddDatabase;
 
 /**
  * @deprecated Use {@see AddDatabase} instead. Will be removed in 3.0.

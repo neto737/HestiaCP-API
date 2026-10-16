@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\ListUser;
-use neto737\HestiaCP\Command\ListUsers;
-use neto737\HestiaCP\Command\ListWebDomains;
-use neto737\HestiaCP\Command\ListMailDomains;
-use neto737\HestiaCP\Command\ListMailDomainDkim;
-use neto737\HestiaCP\Command\ListMailDomainDkimDns;
-use neto737\HestiaCP\Command\ListMailAccounts;
-use neto737\HestiaCP\Command\ListUserBackups;
-use neto737\HestiaCP\Command\ListUserBackup;
-use neto737\HestiaCP\Command\ListUserBackupExclusions;
-use neto737\HestiaCP\Command\ListDatabase;
-use neto737\HestiaCP\Command\ListDatabases;
+use neto737\HestiaCP\Command\User\ListUser;
+use neto737\HestiaCP\Command\User\ListUsers;
+use neto737\HestiaCP\Command\Web\ListWebDomains;
+use neto737\HestiaCP\Command\Mail\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
+use neto737\HestiaCP\Command\Mail\ListMailAccounts;
+use neto737\HestiaCP\Command\Backup\ListUserBackups;
+use neto737\HestiaCP\Command\Backup\ListUserBackup;
+use neto737\HestiaCP\Command\Backup\ListUserBackupExclusions;
+use neto737\HestiaCP\Command\Database\ListDatabase;
+use neto737\HestiaCP\Command\Database\ListDatabases;
 
 class ListsTest extends \PHPUnit\Framework\TestCase {
 

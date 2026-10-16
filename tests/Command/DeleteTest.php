@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\DeleteUser;
-use neto737\HestiaCP\Command\DeleteWebDomain;
-use neto737\HestiaCP\Command\DeleteWebDomainFtp;
-use neto737\HestiaCP\Command\DeleteLetsEncryptDomain;
-use neto737\HestiaCP\Command\DeleteMailAccount;
-use neto737\HestiaCP\Command\DeleteMailDomain;
-use neto737\HestiaCP\Command\DeleteUserBackup;
-use neto737\HestiaCP\Command\DeleteUserBackupExclusions;
-use neto737\HestiaCP\Command\DeleteDatabase;
-use neto737\HestiaCP\Command\DeleteDatabases;
+use neto737\HestiaCP\Command\User\DeleteUser;
+use neto737\HestiaCP\Command\Web\DeleteWebDomain;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainFtp;
+use neto737\HestiaCP\Command\Web\DeleteLetsEncryptDomain;
+use neto737\HestiaCP\Command\Mail\DeleteMailAccount;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomain;
+use neto737\HestiaCP\Command\Backup\DeleteUserBackup;
+use neto737\HestiaCP\Command\Backup\DeleteUserBackupExclusions;
+use neto737\HestiaCP\Command\Database\DeleteDatabase;
+use neto737\HestiaCP\Command\Database\DeleteDatabases;
 
 class DeleteTest extends \PHPUnit\Framework\TestCase {
 

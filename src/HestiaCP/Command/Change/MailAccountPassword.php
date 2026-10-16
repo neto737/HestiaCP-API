@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Change;
 
-use neto737\HestiaCP\Command\ChangeMailAccountPassword;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
 
 /**
  * @deprecated Use {@see ChangeMailAccountPassword} instead. Will be removed in 3.0.

@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
-use neto737\HestiaCP\Command\AddLetsEncryptDomain;
-use neto737\HestiaCP\Command\AddWebDomain;
-use neto737\HestiaCP\Command\AddWebDomainFtp;
-use neto737\HestiaCP\Command\ChangeWebDomainFtpPassword;
-use neto737\HestiaCP\Command\ChangeWebDomainFtpPath;
-use neto737\HestiaCP\Command\SuspendWebDomain;
-use neto737\HestiaCP\Command\UnsuspendWebDomain;
-use neto737\HestiaCP\Command\DeleteLetsEncryptDomain;
-use neto737\HestiaCP\Command\DeleteWebDomain;
-use neto737\HestiaCP\Command\DeleteWebDomainFtp;
-use neto737\HestiaCP\Command\ListWebDomains;
+use neto737\HestiaCP\Command\Web\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\Web\AddWebDomain;
+use neto737\HestiaCP\Command\Web\AddWebDomainFtp;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPassword;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPath;
+use neto737\HestiaCP\Command\Web\SuspendWebDomain;
+use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
+use neto737\HestiaCP\Command\Web\DeleteLetsEncryptDomain;
+use neto737\HestiaCP\Command\Web\DeleteWebDomain;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainFtp;
+use neto737\HestiaCP\Command\Web\ListWebDomains;
 
 class Webs extends Module {
 

@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-- The command classes are named after the HestiaCP script they run, in the `neto737\HestiaCP\Command` namespace: `v-add-user` is `AddUser`, `v-list-users` is `ListUsers`, `v-suspend-mail-account` is `SuspendMailAccount`. Class names no longer collide across namespaces, and the script gives the class name. The constructors are unchanged.
+- The command classes are named after the HestiaCP script they run, and grouped by the module that sends them: `v-add-user` is `Command\User\AddUser`, `v-list-mail-accounts` is `Command\Mail\ListMailAccounts`, `v-add-letsencrypt-domain` is `Command\Web\AddLetsEncryptDomain`. Class names no longer collide across namespaces, and the script gives the class name. The constructors are unchanged.
 - `AddWebDomain` and `AddWebDomainFtp` no longer send an empty last argument when `proxyExtensions` or `ftpPath` isn't set. HestiaCP treats both the same way.
 - `Client::simpleFactory()` splits `ACCESS_KEY:SECRET_KEY` into an access key and secret key, so the credentials report access-key mode and the request sends `access_key` and `secret_key` instead of `hash`. HestiaCP already handled both forms the same way. A value with no colon, or more than one, is still a legacy API key.
 - `TestAuthorization` now extends `ProcessCommand` instead of `Command`. Its behaviour is unchanged.
@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Deprecated
 
-- The command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …). Each is now an empty subclass of its new name, so existing code keeps working and IDEs and static analysis flag the old name. Replace `Verb\Object` with `VerbObject` (`Lists\Users` becomes `ListUsers`).
+- The command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …). Each is now an empty subclass of its new name, so existing code keeps working and IDEs and static analysis flag the old name. Each old file names its replacement (`Lists\Users` becomes `User\ListUsers`).
 - `Command::ARG_1` … `ARG_6`. Use `positional()` instead.
 - The `Credentials` constructor, where a `null` password means a legacy API key, and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`). Use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()` instead. `Client::simpleFactory()` uses the named constructors and takes the same arguments as before.
 

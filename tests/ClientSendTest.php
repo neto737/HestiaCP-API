@@ -15,10 +15,10 @@ use neto737\HestiaCP\Authorization\Host;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Exceptions\ClientException;
-use neto737\HestiaCP\Command\AddLetsEncryptDomain;
-use neto737\HestiaCP\Command\AddUser;
-use neto737\HestiaCP\Command\ListUser;
-use neto737\HestiaCP\Command\ListUsers;
+use neto737\HestiaCP\Command\Web\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\User\AddUser;
+use neto737\HestiaCP\Command\User\ListUser;
+use neto737\HestiaCP\Command\User\ListUsers;
 use neto737\HestiaCP\Command\ProcessCommand;
 use neto737\HestiaCP\Command\ResponseCode;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
@@ -117,7 +117,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$client->send(new AddLetsEncryptDomain('user', 'domain.com'));
 		$this->assertEquals(90, $this->history[1]['options']['timeout']);
 
-		$client->send(new \neto737\HestiaCP\Command\BackupUser('user'));
+		$client->send(new \neto737\HestiaCP\Command\Backup\BackupUser('user'));
 		$this->assertEquals(0, $this->history[2]['options']['timeout']);
 	}
 

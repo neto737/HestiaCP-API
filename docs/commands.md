@@ -6,9 +6,11 @@ The modules are a convenience layer. Each method creates a command object and pa
 
 Each class is named after the HestiaCP script it runs: drop the `v-` prefix and PascalCase the rest. `v-list-users` is `ListUsers`, `v-change-user-password` is `ChangeUserPassword`, and `v-add-letsencrypt-domain` is `AddLetsEncryptDomain`.
 
+The classes are grouped by the module that sends them: `Command\User`, `Command\Web`, `Command\Mail`, `Command\Database` and `Command\Backup`. For example, `v-add-letsencrypt-domain` is sent by the web module, so its class is `Command\Web\AddLetsEncryptDomain`.
+
 ```php
-use neto737\HestiaCP\Command\ChangeUserPassword;
-use neto737\HestiaCP\Command\ListUsers;
+use neto737\HestiaCP\Command\User\ChangeUserPassword;
+use neto737\HestiaCP\Command\User\ListUsers;
 
 $users = $client->send(new ListUsers()); // array
 

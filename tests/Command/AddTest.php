@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\AddUser;
-use neto737\HestiaCP\Command\AddWebDomain;
-use neto737\HestiaCP\Command\AddWebDomainFtp;
-use neto737\HestiaCP\Command\AddLetsEncryptDomain;
-use neto737\HestiaCP\Command\AddMailAccount;
-use neto737\HestiaCP\Command\AddMailDomain;
-use neto737\HestiaCP\Command\AddDatabase;
+use neto737\HestiaCP\Command\User\AddUser;
+use neto737\HestiaCP\Command\Web\AddWebDomain;
+use neto737\HestiaCP\Command\Web\AddWebDomainFtp;
+use neto737\HestiaCP\Command\Web\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\Mail\AddMailAccount;
+use neto737\HestiaCP\Command\Mail\AddMailDomain;
+use neto737\HestiaCP\Command\Database\AddDatabase;
 
 class AddTest extends \PHPUnit\Framework\TestCase {
 

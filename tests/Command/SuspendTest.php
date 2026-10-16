@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
-use neto737\HestiaCP\Command\SuspendUser;
-use neto737\HestiaCP\Command\SuspendWebDomain;
-use neto737\HestiaCP\Command\SuspendMailAccount;
-use neto737\HestiaCP\Command\SuspendMailDomain;
+use neto737\HestiaCP\Command\User\SuspendUser;
+use neto737\HestiaCP\Command\Web\SuspendWebDomain;
+use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
+use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
 
 class SuspendTest extends \PHPUnit\Framework\TestCase {
 

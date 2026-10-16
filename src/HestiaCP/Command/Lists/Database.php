@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Command\Lists;
 
-use neto737\HestiaCP\Command\ListDatabase;
+use neto737\HestiaCP\Command\Database\ListDatabase;
 
 /**
  * @deprecated Use {@see ListDatabase} instead. Will be removed in 3.0.

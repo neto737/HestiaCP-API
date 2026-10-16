@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Module;
 
-use neto737\HestiaCP\Command\AddUser;
-use neto737\HestiaCP\Command\ChangeUserPassword;
-use neto737\HestiaCP\Command\SuspendUser;
-use neto737\HestiaCP\Command\UnsuspendUser;
-use neto737\HestiaCP\Command\DeleteUser;
-use neto737\HestiaCP\Command\ListUser;
-use neto737\HestiaCP\Command\ListUsers;
-use neto737\HestiaCP\Command\BackupUsers;
+use neto737\HestiaCP\Command\User\AddUser;
+use neto737\HestiaCP\Command\User\ChangeUserPassword;
+use neto737\HestiaCP\Command\User\SuspendUser;
+use neto737\HestiaCP\Command\User\UnsuspendUser;
+use neto737\HestiaCP\Command\User\DeleteUser;
+use neto737\HestiaCP\Command\User\ListUser;
+use neto737\HestiaCP\Command\User\ListUsers;
+use neto737\HestiaCP\Command\User\BackupUsers;
 
 class Users extends Module {
 
