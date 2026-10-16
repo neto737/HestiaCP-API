@@ -269,6 +269,81 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-web-domain-ftp',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ftpuser']
 		];
+		yield 'Webs::addDomainAlias' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainAlias('example.com', 'www.example.com,shop.example.com', true),
+			'v-add-web-domain-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com,shop.example.com', 'arg4' => 'yes']
+		];
+		yield 'Webs::deleteDomainAlias' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainAlias('example.com', 'www.example.com', false),
+			'v-delete-web-domain-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'no']
+		];
+		yield 'Webs::addDomainSsl' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainSsl('example.com', '/tmp/ssl', 'single', true),
+			'v-add-web-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp/ssl', 'arg4' => 'single', 'arg5' => 'yes']
+		];
+		yield 'Webs::changeDomainSslCert' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainSslCert('example.com', '/tmp/ssl', true),
+			'v-change-web-domain-sslcert',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp/ssl', 'arg4' => 'yes']
+		];
+		yield 'Webs::changeDomainSslHome' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainSslHome('example.com', 'single', true),
+			'v-change-web-domain-sslhome',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'single', 'arg4' => 'yes']
+		];
+		yield 'Webs::deleteDomainSsl' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainSsl('example.com', true),
+			'v-delete-web-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::addDomainSslForce' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainSslForce('example.com', true),
+			'v-add-web-domain-ssl-force',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::deleteDomainSslForce' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainSslForce('example.com', true),
+			'v-delete-web-domain-ssl-force',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::addDomainSslHsts' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainSslHsts('example.com', true),
+			'v-add-web-domain-ssl-hsts',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::deleteDomainSslHsts' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainSslHsts('example.com', true),
+			'v-delete-web-domain-ssl-hsts',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::changeDomainTemplate' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainTemplate('example.com', 'hosting', true),
+			'v-change-web-domain-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'hosting', 'arg4' => 'yes']
+		];
+		yield 'Webs::changeDomainBackendTemplate' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainBackendTemplate('example.com', 'PHP-8_3', true),
+			'v-change-web-domain-backend-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'PHP-8_3', 'arg4' => 'yes']
+		];
+		yield 'Webs::changeDomainProxyTemplate' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainProxyTemplate('example.com', 'caching', 'jpg,png', true),
+			'v-change-web-domain-proxy-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'caching', 'arg4' => 'jpg,png', 'arg5' => 'yes']
+		];
+		yield 'Webs::addDomainProxy' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainProxy('example.com', 'caching', 'jpg,png', true),
+			'v-add-web-domain-proxy',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'caching', 'arg4' => 'jpg,png', 'arg5' => 'yes']
+		];
+		yield 'Webs::deleteDomainProxy' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainProxy('example.com', true),
+			'v-delete-web-domain-proxy',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
 	}
 
 	/**
@@ -383,6 +458,36 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleWeb('alice')->listDomains(),
 			'v-list-web-domains',
 			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Webs::listDomain' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listDomain('example.com'),
+			'v-list-web-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Webs::listDomainSsl' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listDomainSsl('example.com'),
+			'v-list-web-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Webs::listTemplates' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listTemplates(),
+			'v-list-web-templates',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Webs::listBackendTemplates' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listBackendTemplates(),
+			'v-list-web-templates-backend',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Webs::listProxyTemplates' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listProxyTemplates(),
+			'v-list-web-templates-proxy',
+			['arg1' => 'json'],
 			false
 		];
 	}
