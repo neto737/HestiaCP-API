@@ -12,6 +12,7 @@ use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Mails;
+use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -66,6 +67,16 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleUser()->changePassword('bob', 'secret'),
 			'v-change-user-password',
 			['arg1' => 'bob', 'arg2' => 'secret']
+		];
+		yield 'Users::changeContact' => [
+			fn (Client $c) => $c->getModuleUser()->changeContact('bob', 'bob@example.com'),
+			'v-change-user-contact',
+			['arg1' => 'bob', 'arg2' => 'bob@example.com']
+		];
+		yield 'Users::changePackage' => [
+			fn (Client $c) => $c->getModuleUser()->changePackage('bob', 'gold', true),
+			'v-change-user-package',
+			['arg1' => 'bob', 'arg2' => 'gold', 'arg3' => 'yes']
 		];
 		yield 'Users::suspend' => [
 			fn (Client $c) => $c->getModuleUser()->suspend('bob', true),
@@ -251,6 +262,25 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'bob', 'arg2' => 'json'],
 			true
 		];
+		yield 'Users::stats' => [
+			fn (Client $c) => $c->getModuleUser()->stats('bob'),
+			'v-list-user-stats',
+			['arg1' => 'bob', 'arg2' => 'json'],
+			false
+		];
+
+		yield 'Packages::list' => [
+			fn (Client $c) => $c->getModulePackage()->list(),
+			'v-list-user-packages',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Packages::detail' => [
+			fn (Client $c) => $c->getModulePackage()->detail('gold'),
+			'v-list-user-package',
+			['arg1' => 'gold', 'arg2' => 'json'],
+			true
+		];
 
 		yield 'Backups::listBackups' => [
 			fn (Client $c) => $c->getModuleBackup('alice')->listBackups(),
@@ -347,7 +377,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testEveryModuleMethodIsCovered(): void {
 		$methods = [];
-		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class] as $module) {
+		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class, Packages::class] as $module) {
 			$reflection = new \ReflectionClass($module);
 			foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
 				if ($method->getDeclaringClass()->getName() === $module && !$method->isConstructor()) {

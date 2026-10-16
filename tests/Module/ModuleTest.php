@@ -7,6 +7,7 @@ namespace neto737\HestiaCP\Tests\Module;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Databases;
+use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use neto737\HestiaCP\Module\Mails;
@@ -42,10 +43,16 @@ class ModuleTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(Databases::class, get_class($client->getModuleDatabase('test')));
 	}
 
+	public function testModulePackage(): void {
+		$client = $this->createClient();
+		$this->assertSame(Packages::class, get_class($client->getModulePackage()));
+	}
+
 	public function testModuleCachedPerUser(): void {
 		$client = $this->createClient();
 
 		$this->assertSame($client->getModuleUser(), $client->getModuleUser());
+		$this->assertSame($client->getModulePackage(), $client->getModulePackage());
 
 		$this->assertSame($client->getModuleMail('alice'), $client->getModuleMail('alice'));
 		$this->assertNotSame($client->getModuleMail('alice'), $client->getModuleMail('bob'));

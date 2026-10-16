@@ -16,6 +16,9 @@ use neto737\HestiaCP\Command\Backup\ListUserBackup;
 use neto737\HestiaCP\Command\Backup\ListUserBackupExclusions;
 use neto737\HestiaCP\Command\Database\ListDatabase;
 use neto737\HestiaCP\Command\Database\ListDatabases;
+use neto737\HestiaCP\Command\User\ListUserStats;
+use neto737\HestiaCP\Command\Package\ListUserPackage;
+use neto737\HestiaCP\Command\Package\ListUserPackages;
 
 class ListsTest extends \PHPUnit\Framework\TestCase {
 
@@ -118,5 +121,30 @@ class ListsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
 		$this->assertSame([], $command->process());
+	}
+
+	public function testUserStats(): void {
+		$command = new ListUserStats('admin');
+		$this->assertSame('v-list-user-stats', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process());
+	}
+
+	public function testUserPackages(): void {
+		$command = new ListUserPackages();
+		$this->assertSame('v-list-user-packages', $command->getName());
+		$this->assertSame(['arg1' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process());
+	}
+
+	public function testUserPackage(): void {
+		$command = new ListUserPackage('default');
+		$this->assertSame('v-list-user-package', $command->getName());
+		$this->assertSame(['arg1' => 'default', 'arg2' => 'json'], $command->getRequestParams());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
 	}
 }
