@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Command\User\AddUser;
+use neto737\HestiaCP\Command\User\ChangeUserContact;
+use neto737\HestiaCP\Command\User\ChangeUserPackage;
 use neto737\HestiaCP\Command\User\ChangeUserPassword;
 use neto737\HestiaCP\Command\User\SuspendUser;
 use neto737\HestiaCP\Command\User\UnsuspendUser;
 use neto737\HestiaCP\Command\User\DeleteUser;
 use neto737\HestiaCP\Command\User\ListUser;
 use neto737\HestiaCP\Command\User\ListUsers;
+use neto737\HestiaCP\Command\User\ListUserStats;
 use neto737\HestiaCP\Command\User\BackupUsers;
 
 class Users extends Module {
@@ -39,6 +42,18 @@ class Users extends Module {
 	}
 
 	/**
+	 * This function obtains the monthly usage statistics of a user, keyed by date.
+	 *
+	 * @param string $user
+	 * @return array<mixed>
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function stats(string $user): array {
+		return $this->client->send(new ListUserStats($user));
+	}
+
+	/**
 	 * This function changes user's password and updates RKEY value.
 	 *
 	 * @param string $user
@@ -49,6 +64,33 @@ class Users extends Module {
 	 */
 	public function changePassword(string $user, string $password): bool {
 		return $this->client->send(new ChangeUserPassword($user, $password));
+	}
+
+	/**
+	 * This function changes user's contact email.
+	 *
+	 * @param string $user
+	 * @param string $email
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeContact(string $user, string $email): bool {
+		return $this->client->send(new ChangeUserContact($user, $email));
+	}
+
+	/**
+	 * This function changes user's hosting package.
+	 *
+	 * @param string $user
+	 * @param string $package
+	 * @param bool   $force   Change the package even if the user's current usage exceeds its limits
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changePackage(string $user, string $package, bool $force = false): bool {
+		return $this->client->send(new ChangeUserPackage($user, $package, $force));
 	}
 
 	/**

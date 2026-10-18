@@ -23,11 +23,11 @@
 ## Features
 
 - **Every HestiaCP login method:** access keys (HestiaCP 1.6+), legacy API keys, and admin username and password.
-- **Ready-made modules** for users, web domains, mail, databases and backups.
+- **Ready-made modules** for users, web domains, mail, DNS, databases, backups, cron jobs and packages.
 - **Errors as exceptions:** each failure is a typed exception that carries HestiaCP's exit code, so you can tell "already exists" apart from "bad credentials".
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
-- **Lower-level access:** send any of the bundled command classes directly, or write your own.
+- **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
 - Tested on PHP 8.2 to 8.5 and checked against HestiaCP 1.10.
 
 ## Requirements
@@ -73,13 +73,16 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 
 | Module | Get it with | What it covers |
 | --- | --- | --- |
-| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, suspend and unsuspend, back up all users. |
-| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Let's Encrypt certificates and FTP accounts. |
-| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, DKIM keys and DNS records. |
-| [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. |
+| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, contact emails and packages, suspend and unsuspend, list usage stats, back up all users. |
+| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Aliases, SSL certificates, Let's Encrypt, templates, proxy and FTP accounts. |
+| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, aliases, forwarding, autoreplies, DKIM keys and DNS records. |
+| [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. Change passwords, suspend and unsuspend. |
 | [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
+| [Packages](docs/packages.md) | `getModulePackage()` | List and show hosting packages. |
+| [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
+| [DNS](docs/dns.md) | `getModuleDns($user)` | DNS domains and records: add, change, suspend, unsuspend and delete. TTL, SOA, templates and DNSSEC. |
 
-Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md).
+Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md), or [run any script by name](docs/commands.md#running-any-script) when no command class exists for it.
 
 ## Error handling
 

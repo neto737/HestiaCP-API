@@ -10,8 +10,11 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
+use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
+use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Mails;
+use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -67,6 +70,16 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-change-user-password',
 			['arg1' => 'bob', 'arg2' => 'secret']
 		];
+		yield 'Users::changeContact' => [
+			fn (Client $c) => $c->getModuleUser()->changeContact('bob', 'bob@example.com'),
+			'v-change-user-contact',
+			['arg1' => 'bob', 'arg2' => 'bob@example.com']
+		];
+		yield 'Users::changePackage' => [
+			fn (Client $c) => $c->getModuleUser()->changePackage('bob', 'gold', true),
+			'v-change-user-package',
+			['arg1' => 'bob', 'arg2' => 'gold', 'arg3' => 'yes']
+		];
 		yield 'Users::suspend' => [
 			fn (Client $c) => $c->getModuleUser()->suspend('bob', true),
 			'v-suspend-user',
@@ -109,6 +122,21 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-add-database',
 			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'alice_dbuser', 'arg4' => 'secret', 'arg5' => 'pgsql']
 		];
+		yield 'Databases::changePassword' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->changePassword('alice_db', 'secret'),
+			'v-change-database-password',
+			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'secret']
+		];
+		yield 'Databases::suspend' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->suspend('alice_db'),
+			'v-suspend-database',
+			['arg1' => 'alice', 'arg2' => 'alice_db']
+		];
+		yield 'Databases::unsuspend' => [
+			fn (Client $c) => $c->getModuleDatabase('alice')->unsuspend('alice_db'),
+			'v-unsuspend-database',
+			['arg1' => 'alice', 'arg2' => 'alice_db']
+		];
 		yield 'Databases::delete' => [
 			fn (Client $c) => $c->getModuleDatabase('alice')->delete('alice_db'),
 			'v-delete-database',
@@ -118,6 +146,113 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleDatabase('alice')->deleteDatabases(),
 			'v-delete-databases',
 			['arg1' => 'alice']
+		];
+
+		yield 'Crons::addJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->addJob('0', '3', '1', '2', '1-5', 'uptime', 12, true),
+			'v-add-cron-job',
+			['arg1' => 'alice', 'arg2' => '0', 'arg3' => '3', 'arg4' => '1', 'arg5' => '2', 'arg6' => '1-5', 'arg7' => 'uptime', 'arg8' => '12', 'arg9' => 'yes']
+		];
+		yield 'Crons::changeJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->changeJob(12, '0', '3', '1', '2', '1-5', 'uptime'),
+			'v-change-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => '0', 'arg4' => '3', 'arg5' => '1', 'arg6' => '2', 'arg7' => '1-5', 'arg8' => 'uptime']
+		];
+		yield 'Crons::suspendJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->suspendJob(12, true),
+			'v-suspend-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'yes']
+		];
+		yield 'Crons::unsuspendJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->unsuspendJob(12, false),
+			'v-unsuspend-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'no']
+		];
+		yield 'Crons::deleteJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->deleteJob(12, true),
+			'v-delete-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'yes']
+		];
+
+		yield 'Dns::addDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->addDomain('example.com', '192.0.2.10', ['ns1.example.org', 'ns2.example.org', 'ns3.example.org'], true, true),
+			'v-add-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.10', 'arg4' => 'ns1.example.org', 'arg5' => 'ns2.example.org', 'arg6' => 'ns3.example.org', 'arg7' => '', 'arg8' => '', 'arg9' => '', 'arg10' => '', 'arg11' => '', 'arg12' => 'yes', 'arg13' => 'yes']
+		];
+		yield 'Dns::deleteDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->deleteDomain('example.com', true),
+			'v-delete-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Dns::suspendDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->suspendDomain('example.com'),
+			'v-suspend-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Dns::unsuspendDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->unsuspendDomain('example.com'),
+			'v-unsuspend-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Dns::changeDomainIp' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainIp('example.com', '192.0.2.20', true),
+			'v-change-dns-domain-ip',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.20', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainTtl' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainTtl('example.com', 3600, true),
+			'v-change-dns-domain-ttl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '3600', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainExpiration' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainExpiration('example.com', '2027-10-18'),
+			'v-change-dns-domain-exp',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '2027-10-18']
+		];
+		yield 'Dns::changeDomainSoa' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainSoa('example.com', 'ns1.example.org', true),
+			'v-change-dns-domain-soa',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ns1.example.org', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainTemplate' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainTemplate('example.com', 'gmail', true),
+			'v-change-dns-domain-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'gmail', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainDnssec' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainDnssec('example.com', true),
+			'v-change-dns-domain-dnssec',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Dns::addRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->addRecord('example.com', '@', 'MX', 'mail.example.com', 20, 30, true, 300),
+			'v-add-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '@', 'arg4' => 'MX', 'arg5' => 'mail.example.com', 'arg6' => '20', 'arg7' => '30', 'arg8' => 'yes', 'arg9' => '300']
+		];
+		yield 'Dns::changeRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeRecord('example.com', 30, '@', 'MX', 'mail.example.com', 20, true, 300),
+			'v-change-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30', 'arg4' => '@', 'arg5' => 'MX', 'arg6' => 'mail.example.com', 'arg7' => '20', 'arg8' => 'yes', 'arg9' => '300']
+		];
+		yield 'Dns::changeRecordId' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeRecordId('example.com', 30, 31, true),
+			'v-change-dns-record-id',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30', 'arg4' => '31', 'arg5' => 'yes']
+		];
+		yield 'Dns::suspendRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->suspendRecord('example.com', 30),
+			'v-suspend-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30']
+		];
+		yield 'Dns::unsuspendRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->unsuspendRecord('example.com', 30),
+			'v-unsuspend-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30']
+		];
+		yield 'Dns::deleteRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->deleteRecord('example.com', 30, true),
+			'v-delete-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30', 'arg4' => 'yes']
 		];
 
 		yield 'Mails::addAccount' => [
@@ -164,6 +299,46 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleMail('alice')->deleteDomain('example.com'),
 			'v-delete-mail-domain',
 			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Mails::addAccountAlias' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountAlias('example.com', 'info', 'sales'),
+			'v-add-mail-account-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'sales']
+		];
+		yield 'Mails::deleteAccountAlias' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountAlias('example.com', 'info', 'sales'),
+			'v-delete-mail-account-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'sales']
+		];
+		yield 'Mails::addAccountForward' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountForward('example.com', 'info', 'bob@example.org'),
+			'v-add-mail-account-forward',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'bob@example.org']
+		];
+		yield 'Mails::deleteAccountForward' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountForward('example.com', 'info', 'bob@example.org'),
+			'v-delete-mail-account-forward',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'bob@example.org']
+		];
+		yield 'Mails::addAccountForwardOnly' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountForwardOnly('example.com', 'info'),
+			'v-add-mail-account-fwd-only',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::deleteAccountForwardOnly' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountForwardOnly('example.com', 'info'),
+			'v-delete-mail-account-fwd-only',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::addAccountAutoreply' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountAutoreply('example.com', 'info', 'Away until Monday.'),
+			'v-add-mail-account-autoreply',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'Away until Monday.']
+		];
+		yield 'Mails::deleteAccountAutoreply' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountAutoreply('example.com', 'info'),
+			'v-delete-mail-account-autoreply',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
 		];
 
 		yield 'Webs::addDomain' => [
@@ -216,6 +391,81 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-web-domain-ftp',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ftpuser']
 		];
+		yield 'Webs::addDomainAlias' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainAlias('example.com', 'www.example.com,shop.example.com', true),
+			'v-add-web-domain-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com,shop.example.com', 'arg4' => 'yes']
+		];
+		yield 'Webs::deleteDomainAlias' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainAlias('example.com', 'www.example.com', false),
+			'v-delete-web-domain-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'no']
+		];
+		yield 'Webs::addDomainSsl' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainSsl('example.com', '/tmp/ssl', 'single', true),
+			'v-add-web-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp/ssl', 'arg4' => 'single', 'arg5' => 'yes']
+		];
+		yield 'Webs::changeDomainSslCert' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainSslCert('example.com', '/tmp/ssl', true),
+			'v-change-web-domain-sslcert',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp/ssl', 'arg4' => 'yes']
+		];
+		yield 'Webs::changeDomainSslHome' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainSslHome('example.com', 'single', true),
+			'v-change-web-domain-sslhome',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'single', 'arg4' => 'yes']
+		];
+		yield 'Webs::deleteDomainSsl' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainSsl('example.com', true),
+			'v-delete-web-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::addDomainSslForce' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainSslForce('example.com', true),
+			'v-add-web-domain-ssl-force',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::deleteDomainSslForce' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainSslForce('example.com', true),
+			'v-delete-web-domain-ssl-force',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::addDomainSslHsts' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainSslHsts('example.com', true),
+			'v-add-web-domain-ssl-hsts',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::deleteDomainSslHsts' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainSslHsts('example.com', true),
+			'v-delete-web-domain-ssl-hsts',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::changeDomainTemplate' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainTemplate('example.com', 'hosting', true),
+			'v-change-web-domain-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'hosting', 'arg4' => 'yes']
+		];
+		yield 'Webs::changeDomainBackendTemplate' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainBackendTemplate('example.com', 'PHP-8_3', true),
+			'v-change-web-domain-backend-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'PHP-8_3', 'arg4' => 'yes']
+		];
+		yield 'Webs::changeDomainProxyTemplate' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainProxyTemplate('example.com', 'caching', 'jpg,png', true),
+			'v-change-web-domain-proxy-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'caching', 'arg4' => 'jpg,png', 'arg5' => 'yes']
+		];
+		yield 'Webs::addDomainProxy' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainProxy('example.com', 'caching', 'jpg,png', true),
+			'v-add-web-domain-proxy',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'caching', 'arg4' => 'jpg,png', 'arg5' => 'yes']
+		];
+		yield 'Webs::deleteDomainProxy' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainProxy('example.com', true),
+			'v-delete-web-domain-proxy',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
 	}
 
 	/**
@@ -234,6 +484,25 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleUser()->detail('bob'),
 			'v-list-user',
 			['arg1' => 'bob', 'arg2' => 'json'],
+			true
+		];
+		yield 'Users::stats' => [
+			fn (Client $c) => $c->getModuleUser()->stats('bob'),
+			'v-list-user-stats',
+			['arg1' => 'bob', 'arg2' => 'json'],
+			false
+		];
+
+		yield 'Packages::list' => [
+			fn (Client $c) => $c->getModulePackage()->list(),
+			'v-list-user-packages',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Packages::detail' => [
+			fn (Client $c) => $c->getModulePackage()->detail('gold'),
+			'v-list-user-package',
+			['arg1' => 'gold', 'arg2' => 'json'],
 			true
 		];
 
@@ -269,6 +538,56 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			false
 		];
 
+		yield 'Crons::listJobs' => [
+			fn (Client $c) => $c->getModuleCron('alice')->listJobs(),
+			'v-list-cron-jobs',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Crons::listJob' => [
+			fn (Client $c) => $c->getModuleCron('alice')->listJob(12),
+			'v-list-cron-job',
+			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'json'],
+			true
+		];
+
+		yield 'Dns::listDomains' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listDomains(),
+			'v-list-dns-domains',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Dns::listDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listDomain('example.com'),
+			'v-list-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Dns::listDnssecPublicKey' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listDnssecPublicKey('example.com'),
+			'v-list-dnssec-public-key',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Dns::listRecords' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listRecords('example.com'),
+			'v-list-dns-records',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			false
+		];
+		yield 'Dns::listTemplates' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listTemplates(),
+			'v-list-dns-templates',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Dns::listTemplate' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listTemplate('gmail'),
+			'v-list-dns-template',
+			['arg1' => 'gmail', 'arg2' => 'json'],
+			false
+		];
+
 		yield 'Mails::listAccounts' => [
 			fn (Client $c) => $c->getModuleMail('alice')->listAccounts('example.com'),
 			'v-list-mail-accounts',
@@ -293,11 +612,59 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'json'],
 			false
 		];
+		yield 'Mails::listDomain' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomain('example.com'),
+			'v-list-mail-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Mails::listAccount' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listAccount('example.com', 'info'),
+			'v-list-mail-account',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'json'],
+			true
+		];
+		yield 'Mails::listAccountAutoreply' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listAccountAutoreply('example.com', 'info'),
+			'v-list-mail-account-autoreply',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'json'],
+			true
+		];
 
 		yield 'Webs::listDomains' => [
 			fn (Client $c) => $c->getModuleWeb('alice')->listDomains(),
 			'v-list-web-domains',
 			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Webs::listDomain' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listDomain('example.com'),
+			'v-list-web-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Webs::listDomainSsl' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listDomainSsl('example.com'),
+			'v-list-web-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Webs::listTemplates' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listTemplates(),
+			'v-list-web-templates',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Webs::listBackendTemplates' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listBackendTemplates(),
+			'v-list-web-templates-backend',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Webs::listProxyTemplates' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->listProxyTemplates(),
+			'v-list-web-templates-proxy',
+			['arg1' => 'json'],
 			false
 		];
 	}
@@ -332,7 +699,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testEveryModuleMethodIsCovered(): void {
 		$methods = [];
-		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class] as $module) {
+		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class, Packages::class, Crons::class, Dns::class] as $module) {
 			$reflection = new \ReflectionClass($module);
 			foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
 				if ($method->getDeclaringClass()->getName() === $module && !$method->isConstructor()) {

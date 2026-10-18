@@ -8,6 +8,9 @@ use neto737\HestiaCP\Command\User\ChangeUserPassword;
 use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPassword;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPath;
+use neto737\HestiaCP\Command\Database\ChangeDatabasePassword;
+use neto737\HestiaCP\Command\User\ChangeUserContact;
+use neto737\HestiaCP\Command\User\ChangeUserPackage;
 
 class ChangeTest extends \PHPUnit\Framework\TestCase {
 
@@ -62,6 +65,47 @@ class ChangeTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'domain',
 			'arg3' => 'account',
 			'arg4' => 'path'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
+	}
+
+	public function testDatabasePassword(): void {
+		$command = new ChangeDatabasePassword('admin', 'admin_db', 'pass');
+		$this->assertSame('v-change-database-password', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'admin_db',
+			'arg3' => 'pass'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
+	}
+
+	public function testUserContact(): void {
+		$command = new ChangeUserContact('admin', 'admin@example.com');
+		$this->assertSame('v-change-user-contact', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'admin@example.com'], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
+	}
+
+	public function testUserPackage(): void {
+		$command = new ChangeUserPackage('admin', 'gold');
+		$this->assertSame('v-change-user-package', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'gold',
+			'arg3' => 'no'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());

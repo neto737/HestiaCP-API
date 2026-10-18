@@ -8,6 +8,7 @@ use neto737\HestiaCP\Command\User\SuspendUser;
 use neto737\HestiaCP\Command\Web\SuspendWebDomain;
 use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
+use neto737\HestiaCP\Command\Database\SuspendDatabase;
 
 class SuspendTest extends \PHPUnit\Framework\TestCase {
 
@@ -58,6 +59,20 @@ class SuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process();
+	}
+
+	public function testDatabase(): void {
+		$command = new SuspendDatabase('admin', 'admin_db');
+		$this->assertSame('v-suspend-database', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'admin_db'
 		], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());

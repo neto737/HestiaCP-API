@@ -1,6 +1,6 @@
 {
     "name": "neto737/hestiacp-api",
-    "description": "PHP client for the HestiaCP API: users, web domains, mail, databases and backups",
+    "description": "PHP client for the HestiaCP API: users, web domains, mail, DNS, databases, backups, cron jobs and packages",
     "type": "library",
     "keywords": [
         "hestiacp",
