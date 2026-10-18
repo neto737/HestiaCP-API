@@ -218,6 +218,46 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-mail-domain',
 			['arg1' => 'alice', 'arg2' => 'example.com']
 		];
+		yield 'Mails::addAccountAlias' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountAlias('example.com', 'info', 'sales'),
+			'v-add-mail-account-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'sales']
+		];
+		yield 'Mails::deleteAccountAlias' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountAlias('example.com', 'info', 'sales'),
+			'v-delete-mail-account-alias',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'sales']
+		];
+		yield 'Mails::addAccountForward' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountForward('example.com', 'info', 'bob@example.org'),
+			'v-add-mail-account-forward',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'bob@example.org']
+		];
+		yield 'Mails::deleteAccountForward' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountForward('example.com', 'info', 'bob@example.org'),
+			'v-delete-mail-account-forward',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'bob@example.org']
+		];
+		yield 'Mails::addAccountForwardOnly' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountForwardOnly('example.com', 'info'),
+			'v-add-mail-account-fwd-only',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::deleteAccountForwardOnly' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountForwardOnly('example.com', 'info'),
+			'v-delete-mail-account-fwd-only',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
+		yield 'Mails::addAccountAutoreply' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addAccountAutoreply('example.com', 'info', 'Away until Monday.'),
+			'v-add-mail-account-autoreply',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'Away until Monday.']
+		];
+		yield 'Mails::deleteAccountAutoreply' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteAccountAutoreply('example.com', 'info'),
+			'v-delete-mail-account-autoreply',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
+		];
 
 		yield 'Webs::addDomain' => [
 			fn (Client $c) => $c->getModuleWeb('alice')->addDomain('example.com', '10.0.0.1', 'www.example.com', 'jpg,png', true),
@@ -452,6 +492,24 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-list-mail-domains',
 			['arg1' => 'alice', 'arg2' => 'json'],
 			false
+		];
+		yield 'Mails::listDomain' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomain('example.com'),
+			'v-list-mail-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Mails::listAccount' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listAccount('example.com', 'info'),
+			'v-list-mail-account',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'json'],
+			true
+		];
+		yield 'Mails::listAccountAutoreply' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listAccountAutoreply('example.com', 'info'),
+			'v-list-mail-account-autoreply',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'json'],
+			true
 		];
 
 		yield 'Webs::listDomains' => [

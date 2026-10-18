@@ -75,7 +75,7 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 | --- | --- | --- |
 | [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, contact emails and packages, suspend and unsuspend, list usage stats, back up all users. |
 | [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Aliases, SSL certificates, Let's Encrypt, templates, proxy and FTP accounts. |
-| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, DKIM keys and DNS records. |
+| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, aliases, forwarding, autoreplies, DKIM keys and DNS records. |
 | [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. Change passwords, suspend and unsuspend. |
 | [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
 | [Packages](docs/packages.md) | `getModulePackage()` | List and show hosting packages. |
