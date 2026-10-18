@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-10-18
+
 ### Added
 
 - `RawCommand` and `RawListCommand` run any HestiaCP script by name, for scripts with no command class: `new RawCommand('v-add-firewall-rule', ['DROP', '203.0.113.7', '25'])` returns `true`, and `new RawListCommand('v-list-firewall', ['json'])` returns the decoded JSON. A name that isn't a HestiaCP script name throws an `InvalidArgumentException`.
@@ -109,7 +111,8 @@ This release brings the library up to date with HestiaCP 1.10 and contains break
 
 First release, with the user, web and mail modules.
 
-[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/neto737/HestiaCP-API/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/neto737/HestiaCP-API/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/neto737/HestiaCP-API/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/neto737/HestiaCP-API/compare/v1.0.1...v1.1.0

@@ -23,11 +23,11 @@
 ## Features
 
 - **Every HestiaCP login method:** access keys (HestiaCP 1.6+), legacy API keys, and admin username and password.
-- **Ready-made modules** for users, web domains, mail, databases and backups.
+- **Ready-made modules** for users, web domains, mail, DNS, databases, backups, cron jobs and packages.
 - **Errors as exceptions:** each failure is a typed exception that carries HestiaCP's exit code, so you can tell "already exists" apart from "bad credentials".
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
-- **Lower-level access:** send any of the bundled command classes directly, or write your own.
+- **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
 - Tested on PHP 8.2 to 8.5 and checked against HestiaCP 1.10.
 
 ## Requirements
@@ -82,7 +82,7 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 | [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
 | [DNS](docs/dns.md) | `getModuleDns($user)` | DNS domains and records: add, change, suspend, unsuspend and delete. TTL, SOA, templates and DNSSEC. |
 
-Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md).
+Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md), or [run any script by name](docs/commands.md#running-any-script) when no command class exists for it.
 
 ## Error handling
 
