@@ -8,6 +8,7 @@ use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
+use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
@@ -54,6 +55,11 @@ class ModuleTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(Crons::class, get_class($client->getModuleCron('test')));
 	}
 
+	public function testModuleDns(): void {
+		$client = $this->createClient();
+		$this->assertSame(Dns::class, get_class($client->getModuleDns('test')));
+	}
+
 	public function testModuleCachedPerUser(): void {
 		$client = $this->createClient();
 
@@ -66,5 +72,6 @@ class ModuleTest extends \PHPUnit\Framework\TestCase {
 		$this->assertNotSame($client->getModuleBackup('alice'), $client->getModuleBackup('bob'));
 		$this->assertNotSame($client->getModuleDatabase('alice'), $client->getModuleDatabase('bob'));
 		$this->assertNotSame($client->getModuleCron('alice'), $client->getModuleCron('bob'));
+		$this->assertNotSame($client->getModuleDns('alice'), $client->getModuleDns('bob'));
 	}
 }

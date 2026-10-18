@@ -12,6 +12,7 @@ use neto737\HestiaCP\Client;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
+use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Mails;
 use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
@@ -171,6 +172,87 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleCron('alice')->deleteJob(12, true),
 			'v-delete-cron-job',
 			['arg1' => 'alice', 'arg2' => '12', 'arg3' => 'yes']
+		];
+
+		yield 'Dns::addDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->addDomain('example.com', '192.0.2.10', ['ns1.example.org', 'ns2.example.org', 'ns3.example.org'], true, true),
+			'v-add-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.10', 'arg4' => 'ns1.example.org', 'arg5' => 'ns2.example.org', 'arg6' => 'ns3.example.org', 'arg7' => '', 'arg8' => '', 'arg9' => '', 'arg10' => '', 'arg11' => '', 'arg12' => 'yes', 'arg13' => 'yes']
+		];
+		yield 'Dns::deleteDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->deleteDomain('example.com', true),
+			'v-delete-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Dns::suspendDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->suspendDomain('example.com'),
+			'v-suspend-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Dns::unsuspendDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->unsuspendDomain('example.com'),
+			'v-unsuspend-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Dns::changeDomainIp' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainIp('example.com', '192.0.2.20', true),
+			'v-change-dns-domain-ip',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.20', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainTtl' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainTtl('example.com', 3600, true),
+			'v-change-dns-domain-ttl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '3600', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainExpiration' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainExpiration('example.com', '2027-10-18'),
+			'v-change-dns-domain-exp',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '2027-10-18']
+		];
+		yield 'Dns::changeDomainSoa' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainSoa('example.com', 'ns1.example.org', true),
+			'v-change-dns-domain-soa',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'ns1.example.org', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainTemplate' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainTemplate('example.com', 'gmail', true),
+			'v-change-dns-domain-tpl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'gmail', 'arg4' => 'yes']
+		];
+		yield 'Dns::changeDomainDnssec' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeDomainDnssec('example.com', true),
+			'v-change-dns-domain-dnssec',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Dns::addRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->addRecord('example.com', '@', 'MX', 'mail.example.com', 20, 30, true, 300),
+			'v-add-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '@', 'arg4' => 'MX', 'arg5' => 'mail.example.com', 'arg6' => '20', 'arg7' => '30', 'arg8' => 'yes', 'arg9' => '300']
+		];
+		yield 'Dns::changeRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeRecord('example.com', 30, '@', 'MX', 'mail.example.com', 20, true, 300),
+			'v-change-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30', 'arg4' => '@', 'arg5' => 'MX', 'arg6' => 'mail.example.com', 'arg7' => '20', 'arg8' => 'yes', 'arg9' => '300']
+		];
+		yield 'Dns::changeRecordId' => [
+			fn (Client $c) => $c->getModuleDns('alice')->changeRecordId('example.com', 30, 31, true),
+			'v-change-dns-record-id',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30', 'arg4' => '31', 'arg5' => 'yes']
+		];
+		yield 'Dns::suspendRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->suspendRecord('example.com', 30),
+			'v-suspend-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30']
+		];
+		yield 'Dns::unsuspendRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->unsuspendRecord('example.com', 30),
+			'v-unsuspend-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30']
+		];
+		yield 'Dns::deleteRecord' => [
+			fn (Client $c) => $c->getModuleDns('alice')->deleteRecord('example.com', 30, true),
+			'v-delete-dns-record',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '30', 'arg4' => 'yes']
 		];
 
 		yield 'Mails::addAccount' => [
@@ -469,6 +551,43 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			true
 		];
 
+		yield 'Dns::listDomains' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listDomains(),
+			'v-list-dns-domains',
+			['arg1' => 'alice', 'arg2' => 'json'],
+			false
+		];
+		yield 'Dns::listDomain' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listDomain('example.com'),
+			'v-list-dns-domain',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Dns::listDnssecPublicKey' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listDnssecPublicKey('example.com'),
+			'v-list-dnssec-public-key',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
+		yield 'Dns::listRecords' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listRecords('example.com'),
+			'v-list-dns-records',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			false
+		];
+		yield 'Dns::listTemplates' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listTemplates(),
+			'v-list-dns-templates',
+			['arg1' => 'json'],
+			false
+		];
+		yield 'Dns::listTemplate' => [
+			fn (Client $c) => $c->getModuleDns('alice')->listTemplate('gmail'),
+			'v-list-dns-template',
+			['arg1' => 'gmail', 'arg2' => 'json'],
+			false
+		];
+
 		yield 'Mails::listAccounts' => [
 			fn (Client $c) => $c->getModuleMail('alice')->listAccounts('example.com'),
 			'v-list-mail-accounts',
@@ -580,7 +699,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testEveryModuleMethodIsCovered(): void {
 		$methods = [];
-		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class, Packages::class, Crons::class] as $module) {
+		foreach ([Users::class, Backups::class, Databases::class, Mails::class, Webs::class, Packages::class, Crons::class, Dns::class] as $module) {
 			$reflection = new \ReflectionClass($module);
 			foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
 				if ($method->getDeclaringClass()->getName() === $module && !$method->isConstructor()) {

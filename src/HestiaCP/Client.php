@@ -14,6 +14,7 @@ use neto737\HestiaCP\Exceptions\ProcessException;
 use neto737\HestiaCP\Module\Backups;
 use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
+use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Mails;
 use neto737\HestiaCP\Module\Module;
 use neto737\HestiaCP\Module\Packages;
@@ -208,5 +209,9 @@ class Client {
 
 	public function getModuleCron(string $user): Crons {
 		return $this->loadModule(Crons::class, $user);
+	}
+
+	public function getModuleDns(string $user): Dns {
+		return $this->loadModule(Dns::class, $user);
 	}
 }

@@ -80,6 +80,7 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 | [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
 | [Packages](docs/packages.md) | `getModulePackage()` | List and show hosting packages. |
 | [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
+| [DNS](docs/dns.md) | `getModuleDns($user)` | DNS domains and records: add, change, suspend, unsuspend and delete. TTL, SOA, templates and DNSSEC. |
 
 Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md).
 
