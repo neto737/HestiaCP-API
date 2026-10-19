@@ -17,8 +17,6 @@ $users = $client->send(new ListUsers()); // array
 $client->send(new ChangeUserPassword('admin', 'otherPa$$word')); // true
 ```
 
-The names grouped by verb from 2.0 (`Lists\Users`, `Change\UserPassword`, …) still work, but are deprecated and will be removed in 3.0.
-
 `send()` returns whatever the command's `process()` method returns. A command object only describes the request and keeps nothing from the response, so you can send the same instance more than once. To work with the raw response, override `process()` (see [Processing the response](#processing-the-response)).
 
 ## Running any script

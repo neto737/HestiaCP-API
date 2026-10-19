@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Removed
 
+- **BC break:** the command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …), deprecated since 2.1.0. The `Add`, `Change`, `Delete`, `Lists`, `Suspend` and `Unsuspend` namespaces are gone, as are `Backup\User` and `Backup\Users`. Use the names grouped by module (`User\AddUser`, `User\ListUsers`, `Mail\SuspendMailAccount`, …); [UPGRADING.md](UPGRADING.md) lists each replacement.
+
 - **BC break:** `ICommand::setLastResponse()`, and `Command::getResponseText()` and `Command::getStatusCode()`. A command no longer keeps the response; override `process()` to read it.
 
 - **BC break:** the `Credentials` constructor and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`), deprecated since 2.1.0. The constructor is private: use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()`. `Credentials` is immutable; to change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`.

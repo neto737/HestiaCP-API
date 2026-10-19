@@ -47,6 +47,66 @@ A class that implements `ICommand` directly must drop `setLastResponse()` and de
 
 If you read the raw response with `getResponseText()` or `getStatusCode()` after `send()`, override `process()` in your own command class instead: the body is `(string) $response->getBody()` and the status is `$response->getStatusCode()`. See [Processing the response](docs/commands.md#processing-the-response).
 
+### Command classes grouped by verb removed
+
+The command class names from 2.0, grouped by verb (`Add\User`, `Lists\Users`, …), are gone. Code that only uses the modules needs no change. If you create command objects yourself, switch to the names grouped by module, which have been available since 2.1.0. All classes are in `neto737\HestiaCP\Command`:
+
+```php
+// v2
+use neto737\HestiaCP\Command\Lists\Users;
+$client->send(new Users());
+
+// v3
+use neto737\HestiaCP\Command\User\ListUsers;
+$client->send(new ListUsers());
+```
+
+| v2 | v3 |
+| --- | --- |
+| `Add\Database` | `Database\AddDatabase` |
+| `Add\LetsEncryptDomain` | `Web\AddLetsEncryptDomain` |
+| `Add\MailAccount` | `Mail\AddMailAccount` |
+| `Add\MailDomain` | `Mail\AddMailDomain` |
+| `Add\User` | `User\AddUser` |
+| `Add\WebDomain` | `Web\AddWebDomain` |
+| `Add\WebDomainFtp` | `Web\AddWebDomainFtp` |
+| `Backup\User` | `Backup\BackupUser` |
+| `Backup\Users` | `User\BackupUsers` |
+| `Change\MailAccountPassword` | `Mail\ChangeMailAccountPassword` |
+| `Change\UserPassword` | `User\ChangeUserPassword` |
+| `Change\WebDomainFtpPassword` | `Web\ChangeWebDomainFtpPassword` |
+| `Change\WebDomainFtpPath` | `Web\ChangeWebDomainFtpPath` |
+| `Delete\Database` | `Database\DeleteDatabase` |
+| `Delete\Databases` | `Database\DeleteDatabases` |
+| `Delete\LetsEncryptDomain` | `Web\DeleteLetsEncryptDomain` |
+| `Delete\MailAccount` | `Mail\DeleteMailAccount` |
+| `Delete\MailDomain` | `Mail\DeleteMailDomain` |
+| `Delete\User` | `User\DeleteUser` |
+| `Delete\UserBackup` | `Backup\DeleteUserBackup` |
+| `Delete\UserBackupExclusions` | `Backup\DeleteUserBackupExclusions` |
+| `Delete\WebDomain` | `Web\DeleteWebDomain` |
+| `Delete\WebDomainFtp` | `Web\DeleteWebDomainFtp` |
+| `Lists\Database` | `Database\ListDatabase` |
+| `Lists\Databases` | `Database\ListDatabases` |
+| `Lists\MailAccounts` | `Mail\ListMailAccounts` |
+| `Lists\MailDomainDkim` | `Mail\ListMailDomainDkim` |
+| `Lists\MailDomainDkimDns` | `Mail\ListMailDomainDkimDns` |
+| `Lists\MailDomains` | `Mail\ListMailDomains` |
+| `Lists\User` | `User\ListUser` |
+| `Lists\UserBackup` | `Backup\ListUserBackup` |
+| `Lists\UserBackupExclusions` | `Backup\ListUserBackupExclusions` |
+| `Lists\UserBackups` | `Backup\ListUserBackups` |
+| `Lists\Users` | `User\ListUsers` |
+| `Lists\WebDomains` | `Web\ListWebDomains` |
+| `Suspend\MailAccount` | `Mail\SuspendMailAccount` |
+| `Suspend\MailDomain` | `Mail\SuspendMailDomain` |
+| `Suspend\User` | `User\SuspendUser` |
+| `Suspend\WebDomain` | `Web\SuspendWebDomain` |
+| `Unsuspend\MailAccount` | `Mail\UnsuspendMailAccount` |
+| `Unsuspend\MailDomain` | `Mail\UnsuspendMailDomain` |
+| `Unsuspend\User` | `User\UnsuspendUser` |
+| `Unsuspend\WebDomain` | `Web\UnsuspendWebDomain` |
+
 ## From v1 to v2
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
