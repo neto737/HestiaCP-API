@@ -60,13 +60,13 @@ class ModuleTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(Dns::class, get_class($client->getModuleDns('test')));
 	}
 
-	public function testModuleCachedPerUser(): void {
+	public function testModuleCreatedOnEachCall(): void {
 		$client = $this->createClient();
 
-		$this->assertSame($client->getModuleUser(), $client->getModuleUser());
-		$this->assertSame($client->getModulePackage(), $client->getModulePackage());
+		$this->assertNotSame($client->getModuleUser(), $client->getModuleUser());
+		$this->assertNotSame($client->getModulePackage(), $client->getModulePackage());
 
-		$this->assertSame($client->getModuleMail('alice'), $client->getModuleMail('alice'));
+		$this->assertNotSame($client->getModuleMail('alice'), $client->getModuleMail('alice'));
 		$this->assertNotSame($client->getModuleMail('alice'), $client->getModuleMail('bob'));
 		$this->assertNotSame($client->getModuleWeb('alice'), $client->getModuleWeb('bob'));
 		$this->assertNotSame($client->getModuleBackup('alice'), $client->getModuleBackup('bob'));

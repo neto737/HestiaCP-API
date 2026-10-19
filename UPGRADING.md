@@ -47,6 +47,10 @@ A class that implements `ICommand` directly must drop `setLastResponse()` and de
 
 If you read the raw response with `getResponseText()` or `getStatusCode()` after `send()`, override `process()` in your own command class instead: the body is `(string) $response->getBody()` and the status is `$response->getStatusCode()`. See [Processing the response](docs/commands.md#processing-the-response).
 
+### Modules are no longer cached
+
+Each `getModule*()` call creates a new module. In v2, `$client->getModuleMail('alice')` returned the same instance every time; in v3 two calls return two instances. Modules hold no state of their own, so code that only calls their methods needs no change. Only a check like `$a === $b` on modules behaves differently.
+
 ### Command classes grouped by verb removed
 
 The command class names from 2.0, grouped by verb (`Add\User`, `Lists\Users`, …), are gone. Code that only uses the modules needs no change. If you create command objects yourself, switch to the names grouped by module, which have been available since 2.1.0. All classes are in `neto737\HestiaCP\Command`:

@@ -16,7 +16,6 @@ use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Mails;
-use neto737\HestiaCP\Module\Module;
 use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
@@ -29,9 +28,6 @@ class Client {
 	private Host $host;
 
 	private \GuzzleHttp\Client $guzzleClient;
-
-	/** @var array<class-string<Module>, array<string, Module>> */
-	private array $modules = [];
 
 	/**
 	 * Client constructor.
@@ -162,55 +158,35 @@ class Client {
 		return $this;
 	}
 
-	/**
-	 * @template T of Module
-	 * @param class-string<T> $moduleName
-	 * @return T
-	 */
-	private function loadModule(string $moduleName, ?string $param = null): Module {
-		// Modules bound to a user are cached per user, otherwise one user's module would be reused for another
-		$key = $param ?? '';
-
-		if (!isset($this->modules[$moduleName][$key])) {
-			if ($param !== null) {
-				$this->modules[$moduleName][$key] = new $moduleName($this, $param);
-			} else {
-				$this->modules[$moduleName][$key] = new $moduleName($this);
-			}
-		}
-
-		return $this->modules[$moduleName][$key];
-	}
-
 	public function getModuleUser(): Users {
-		return $this->loadModule(Users::class);
+		return new Users($this);
 	}
 
 	public function getModuleMail(string $user): Mails {
-		return $this->loadModule(Mails::class, $user);
+		return new Mails($this, $user);
 	}
 
 	public function getModuleWeb(string $user): Webs {
-		return $this->loadModule(Webs::class, $user);
+		return new Webs($this, $user);
 	}
 
 	public function getModuleBackup(string $user): Backups {
-		return $this->loadModule(Backups::class, $user);
+		return new Backups($this, $user);
 	}
 
 	public function getModuleDatabase(string $user): Databases {
-		return $this->loadModule(Databases::class, $user);
+		return new Databases($this, $user);
 	}
 
 	public function getModulePackage(): Packages {
-		return $this->loadModule(Packages::class);
+		return new Packages($this);
 	}
 
 	public function getModuleCron(string $user): Crons {
-		return $this->loadModule(Crons::class, $user);
+		return new Crons($this, $user);
 	}
 
 	public function getModuleDns(string $user): Dns {
-		return $this->loadModule(Dns::class, $user);
+		return new Dns($this, $user);
 	}
 }

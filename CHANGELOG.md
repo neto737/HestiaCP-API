@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** commands are stateless. `ICommand::process()` takes the response, `process(ResponseInterface $response): mixed`, and `Client::send()` passes it in, instead of storing it on the command with `setLastResponse()` first. Sending the same command instance twice no longer overwrites the first result. `Command::defaultProcess()` and `Command::getResponseCode()` take the response too, as does the protected `Command::codeException()`. Classes that implement `ICommand` or override `process()` must update their signatures.
 
+- **BC break:** the client no longer caches modules. Each `getModule*()` call creates a new module, so two calls never return the same instance, even for the same user. Modules hold no state of their own, so this only matters to code that compares module instances.
+
 ### Removed
 
 - **BC break:** the command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …), deprecated since 2.1.0. The `Add`, `Change`, `Delete`, `Lists`, `Suspend` and `Unsuspend` namespaces are gone, as are `Backup\User` and `Backup\Users`. Use the names grouped by module (`User\AddUser`, `User\ListUsers`, `Mail\SuspendMailAccount`, …); [UPGRADING.md](UPGRADING.md) lists each replacement.
