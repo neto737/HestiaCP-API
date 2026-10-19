@@ -23,7 +23,21 @@ Credentials::password('admin', 'somePassword');
 Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
 ```
 
-The setters `setAccessKey()`, `setApiKey()`, `setUser()` and `setPassword()` are gone too, so a `Credentials` object can't be changed once created. To change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`. `Client::simpleFactory()` is unchanged.
+The setters `setAccessKey()`, `setApiKey()`, `setUser()` and `setPassword()` are gone too, so a `Credentials` object can't be changed once created. To use other credentials, create a new `Host` and `Client` (see below). `Client::simpleFactory()` is unchanged.
+
+### `Host` and the client's host can't be changed
+
+`Host::setHostname()`, `Host::setPort()`, `Host::setCredentials()` and `Client::setHost()` are gone. A `Host` keeps the hostname, credentials and port it was created with, and a `Client` keeps its `Host`. To connect to another server, or with other credentials, create a new client:
+
+```php
+// v2
+$client->getHost()->setCredentials($otherCredentials);
+$client->setHost(new Host('https://other.example.com', $credentials));
+
+// v3
+$client = new Client(new Host('https://panel.example.com', $otherCredentials));
+$client = new Client(new Host('https://other.example.com', $credentials));
+```
 
 ### Commands are stateless
 

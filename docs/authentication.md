@@ -52,7 +52,7 @@ $host = new Host('https://panel.example.com', $credentials, 443); // a different
 $client = new Client($host);
 ```
 
-`Credentials` can only be created with the named constructors above, and can't be changed afterwards. To change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`.
+`Credentials` can only be created with the named constructors above. `Credentials`, `Host` and the client's host can't be changed afterwards: to connect to another server, or with other credentials, create a new `Host` and `Client`.
 
 ## Hostname
 

@@ -25,8 +25,6 @@ use neto737\HestiaCP\Module\Webs;
  */
 class Client {
 
-	private Host $host;
-
 	private \GuzzleHttp\Client $guzzleClient;
 
 	/**
@@ -42,8 +40,7 @@ class Client {
 	 * @param ClientOptions|null $options
 	 * @throws ClientException
 	 */
-	public function __construct(Host $host, ?array $options = null) {
-		$this->setHost($host);
+	public function __construct(private readonly Host $host, ?array $options = null) {
 		$this->prepareCommunication($options);
 	}
 
@@ -69,11 +66,6 @@ class Client {
 		$host = new Host($hostname, $credentials);
 
 		return new self($host, $options);
-	}
-
-	public function setHost(Host $host): static {
-		$this->host = $host;
-		return $this;
 	}
 
 	public function getHost(): Host {
