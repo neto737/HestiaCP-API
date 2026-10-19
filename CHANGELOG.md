@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **BC break:** requires PHP 8.3 or later. PHP 8.2 reaches end of life on 31 December 2026. CI runs on PHP 8.3 to 8.5, and the lowest-dependencies run moved to PHP 8.3.
+
 - **BC break:** commands are stateless. `ICommand::process()` takes the response, `process(ResponseInterface $response): mixed`, and `Client::send()` passes it in, instead of storing it on the command with `setLastResponse()` first. Sending the same command instance twice no longer overwrites the first result. `Command::defaultProcess()` and `Command::getResponseCode()` take the response too, as does the protected `Command::codeException()`. Classes that implement `ICommand` or override `process()` must update their signatures.
 
 - **BC break:** the client no longer caches modules. Each `getModule*()` call creates a new module, so two calls never return the same instance, even for the same user. Modules hold no state of their own, so this only matters to code that compares module instances.

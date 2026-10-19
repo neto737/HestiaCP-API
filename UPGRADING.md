@@ -4,6 +4,10 @@
 
 The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
+### PHP 8.3 or later
+
+v3 requires PHP 8.3. v2 ran on PHP 8.2, which reaches end of life on 31 December 2026.
+
 ### `Credentials` constructor and setters removed
 
 `new Credentials(...)` no longer works: the constructor is private. Use the named constructors, which have been available since 2.1.0:
