@@ -6,6 +6,7 @@ namespace neto737\HestiaCP\Command;
 
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Exceptions\ProcessException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @extends Command<bool>
@@ -21,14 +22,14 @@ abstract class ProcessCommand extends Command {
 	 * @throws ProcessException
 	 * @throws AuthorizationException
 	 */
-	public function process(): bool {
-		parent::defaultProcess();
+	public function process(ResponseInterface $response): bool {
+		parent::defaultProcess($response);
 
-		$code = $this->getResponseCode();
+		$code = $this->getResponseCode($response);
 		if ($code === ResponseCode::OK) {
 			return true;
 		}
 
-		throw $this->codeException($code);
+		throw $this->codeException($code, $response);
 	}
 }

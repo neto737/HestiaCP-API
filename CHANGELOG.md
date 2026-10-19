@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- **BC break:** commands are stateless. `ICommand::process()` takes the response, `process(ResponseInterface $response): mixed`, and `Client::send()` passes it in, instead of storing it on the command with `setLastResponse()` first. Sending the same command instance twice no longer overwrites the first result. `Command::defaultProcess()` and `Command::getResponseCode()` take the response too, as does the protected `Command::codeException()`. Classes that implement `ICommand` or override `process()` must update their signatures.
+
 ### Removed
+
+- **BC break:** `ICommand::setLastResponse()`, and `Command::getResponseText()` and `Command::getStatusCode()`. A command no longer keeps the response; override `process()` to read it.
 
 - **BC break:** the `Credentials` constructor and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`), deprecated since 2.1.0. The constructor is private: use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()`. `Credentials` is immutable; to change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`.
 

@@ -115,8 +115,7 @@ class Client {
 				),
 				'timeout' => $this->getTimeout($command)
 			]);
-			$command->setLastResponse($response);
-			return $command->process();
+			return $command->process($response);
 		} catch (ProcessException $e) {
 			throw $e;
 		} catch (\GuzzleHttp\Exception\GuzzleException $e) {

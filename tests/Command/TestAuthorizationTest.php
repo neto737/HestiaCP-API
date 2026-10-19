@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\TestAuthorization;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 
@@ -15,9 +16,8 @@ class TestAuthorizationTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame([], $command->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
-		$this->assertNull($command->getResponseText());
 
 		$this->expectException(InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 }

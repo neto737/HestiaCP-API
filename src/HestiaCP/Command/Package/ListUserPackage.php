@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Command\Package;
 
 use neto737\HestiaCP\Command\ListCommand;
+use Psr\Http\Message\ResponseInterface;
 
 class ListUserPackage extends ListCommand {
 
@@ -16,8 +17,8 @@ class ListUserPackage extends ListCommand {
 		return 'v-list-user-package';
 	}
 
-	public function process(): array {
-		return $this->convertDetail(parent::process());
+	public function process(ResponseInterface $response): array {
+		return $this->convertDetail(parent::process($response));
 	}
 
 	public function getRequestParams(): array {

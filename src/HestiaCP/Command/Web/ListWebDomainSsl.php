@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Command\Web;
 
 use neto737\HestiaCP\Command\ListCommand;
+use Psr\Http\Message\ResponseInterface;
 
 class ListWebDomainSsl extends ListCommand {
 
@@ -17,8 +18,8 @@ class ListWebDomainSsl extends ListCommand {
 		return 'v-list-web-domain-ssl';
 	}
 
-	public function process(): array {
-		return $this->convertDetail(parent::process());
+	public function process(ResponseInterface $response): array {
+		return $this->convertDetail(parent::process($response));
 	}
 
 	public function getRequestParams(): array {

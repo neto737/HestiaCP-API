@@ -11,16 +11,16 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface ICommand {
 
-	public function setLastResponse(ResponseInterface $response): void;
-
 	public function getName(): string;
 
 	public function needReturnCode(): bool;
 
 	/**
+	 * Turns HestiaCP's response to this command into its result.
+	 *
 	 * @return T
 	 */
-	public function process(): mixed;
+	public function process(ResponseInterface $response): mixed;
 
 	/**
 	 * Request timeout in seconds for this command (0 = no timeout), or null to use the client timeout.

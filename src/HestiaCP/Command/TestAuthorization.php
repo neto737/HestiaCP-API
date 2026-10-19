@@ -7,6 +7,7 @@ namespace neto737\HestiaCP\Command;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 use neto737\HestiaCP\Exceptions\ProcessException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Runs a harmless read-only command to check the credentials.
@@ -23,9 +24,9 @@ class TestAuthorization extends ProcessCommand {
 	 * @throws InvalidResponseException
 	 * @throws ProcessException
 	 */
-	public function process(): bool {
+	public function process(ResponseInterface $response): bool {
 		try {
-			return parent::process();
+			return parent::process($response);
 		} catch (AuthorizationException) {
 			return false;
 		}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Command\Cron;
 
 use neto737\HestiaCP\Command\ListCommand;
+use Psr\Http\Message\ResponseInterface;
 
 class ListCronJob extends ListCommand {
 
@@ -17,8 +18,8 @@ class ListCronJob extends ListCommand {
 		return 'v-list-cron-job';
 	}
 
-	public function process(): array {
-		return $this->convertDetail(parent::process());
+	public function process(ResponseInterface $response): array {
+		return $this->convertDetail(parent::process($response));
 	}
 
 	public function getRequestParams(): array {

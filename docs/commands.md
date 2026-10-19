@@ -19,15 +19,7 @@ $client->send(new ChangeUserPassword('admin', 'otherPa$$word')); // true
 
 The names grouped by verb from 2.0 (`Lists\Users`, `Change\UserPassword`, …) still work, but are deprecated and will be removed in 3.0.
 
-`send()` returns whatever the command's `process()` method returns. The raw response body is kept on the command object:
-
-```php
-$command = new ListUsers();
-$client->send($command);
-
-echo $command->getResponseText(); // the JSON returned by HestiaCP
-echo $command->getStatusCode();   // the HTTP status code
-```
+`send()` returns whatever the command's `process()` method returns. A command object only describes the request and keeps nothing from the response, so you can send the same instance more than once. To work with the raw response, override `process()` (see [Processing the response](#processing-the-response)).
 
 ## Running any script
 
@@ -127,8 +119,34 @@ public function getTimeout(): ?float {
 
 A command can raise the timeout but never lower it below the client's.
 
+### Processing the response
+
+`Client::send()` passes HestiaCP's response, a PSR-7 `ResponseInterface`, to the command's `process()` method and returns what it returns. To change the result, override `process()` and call the parent first, so HestiaCP's exit codes and error responses are still checked:
+
+```php
+use neto737\HestiaCP\Command\ListCommand;
+use Psr\Http\Message\ResponseInterface;
+
+class ListFirewallRuleIds extends ListCommand {
+
+	public function getName(): string {
+		return 'v-list-firewall';
+	}
+
+	public function process(ResponseInterface $response): array {
+		return array_keys(parent::process($response));
+	}
+
+	public function getRequestParams(): array {
+		return $this->positional(['json']);
+	}
+}
+```
+
+The raw body is `(string) $response->getBody()`, and the HTTP status is `$response->getStatusCode()`.
+
 ### Implementing `ICommand` directly
 
-You can implement `\neto737\HestiaCP\Command\ICommand` without extending the base classes. You then have to implement every method yourself, including `setLastResponse()`, `needReturnCode()`, `process()` and `getTimeout()`. Extending `ProcessCommand` or `ListCommand` is simpler, and they already handle HestiaCP's exit codes and error responses.
+You can implement `\neto737\HestiaCP\Command\ICommand` without extending the base classes. You then have to implement every method yourself, including `needReturnCode()`, `process()` and `getTimeout()`. Extending `ProcessCommand` or `ListCommand` is simpler, and they already handle HestiaCP's exit codes and error responses.
 
 The full list of HestiaCP commands and their arguments is in the [HestiaCP CLI reference](https://hestiacp.com/docs/reference/cli).

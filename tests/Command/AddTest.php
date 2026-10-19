@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\User\AddUser;
 use neto737\HestiaCP\Command\Web\AddWebDomain;
 use neto737\HestiaCP\Command\Web\AddWebDomainFtp;
@@ -22,7 +23,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testUserWithName(): void {
@@ -70,7 +71,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testWebDomainWithIpAndProxyExtensions(): void {
@@ -107,7 +108,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testLEDomain(): void {
@@ -123,7 +124,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testLEDomainMailAndKeyAlgo(): void {
@@ -155,7 +156,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testMailDomain(): void {
@@ -172,7 +173,7 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testDatabase(): void {
@@ -189,6 +190,6 @@ class AddTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 }

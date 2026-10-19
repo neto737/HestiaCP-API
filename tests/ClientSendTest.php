@@ -137,6 +137,18 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($client->send(new AddUser('user', 'pass', 'mail@domain.com')));
 	}
 
+	// a command keeps nothing from a run, so the same instance can be sent again
+	public function testSendSameCommandTwice(): void {
+		$client = $this->createClient([
+			new Response(200, [], '{"admin": {"NAME": "System Administrator"}}'),
+			new Response(200, [], '{"user": {"NAME": "User"}}')
+		]);
+		$command = new ListUsers();
+
+		$this->assertSame(['admin' => ['NAME' => 'System Administrator']], $client->send($command));
+		$this->assertSame(['user' => ['NAME' => 'User']], $client->send($command));
+	}
+
 	public function testProcessError(): void {
 		$client = $this->createClient([self::codeResponse(ResponseCode::E_EXISTS, 400)]);
 
@@ -230,7 +242,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 				return [];
 			}
 
-			public function process(): bool {
+			public function process(ResponseInterface $response): bool {
 				throw new \RuntimeException('Something broke');
 			}
 		};

@@ -7,6 +7,7 @@ namespace neto737\HestiaCP\Command;
 use neto737\HestiaCP\Exceptions\AuthorizationException;
 use neto737\HestiaCP\Exceptions\InvalidResponseException;
 use neto737\HestiaCP\Exceptions\ProcessException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @extends Command<array<mixed>>
@@ -22,10 +23,10 @@ abstract class ListCommand extends Command {
 	 * @throws ProcessException
 	 * @throws AuthorizationException
 	 */
-	public function process(): array {
-		parent::defaultProcess();
+	public function process(ResponseInterface $response): array {
+		parent::defaultProcess($response);
 
-		$responseJson = trim((string) $this->getResponseText());
+		$responseJson = trim((string) $response->getBody());
 
 		// HestiaCP answers with an empty body (HTTP 204) when a command prints nothing
 		if ($responseJson === '') {
@@ -33,16 +34,16 @@ abstract class ListCommand extends Command {
 		}
 
 		try {
-			$response = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
+			$list = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
 		} catch (\JsonException $e) {
 			throw new ProcessException($responseJson, 0, $e);
 		}
 
-		if (!is_array($response)) {
+		if (!is_array($list)) {
 			throw new ProcessException($responseJson);
 		}
 
-		return $response;
+		return $list;
 	}
 
 	/**

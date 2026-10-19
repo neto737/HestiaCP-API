@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\Mail\AddMailAccountAlias;
 use neto737\HestiaCP\Command\Mail\AddMailAccountAutoreply;
 use neto737\HestiaCP\Command\Mail\AddMailAccountForward;
@@ -26,7 +27,7 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testListMailAccountCommands(): void {
@@ -40,7 +41,7 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 			$this->assertFalse($command->needReturnCode());
 
 			try {
-				$command->process();
+				$command->process(new Response());
 				$this->fail('Expected an empty response to throw');
 			} catch (\neto737\HestiaCP\Exceptions\InvalidResponseException $e) {
 				$this->assertSame('Empty response', $e->getMessage());
@@ -76,6 +77,6 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 
 	public function testProcessWithoutResponse(): void {
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		(new AddMailAccountAlias('admin', 'example.com', 'info', 'sales'))->process();
+		(new AddMailAccountAlias('admin', 'example.com', 'info', 'sales'))->process(new Response());
 	}
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\User\UnsuspendUser;
 use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
@@ -20,7 +21,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testWebDomain(): void {
@@ -35,7 +36,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testMailAccount(): void {
@@ -50,7 +51,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testMailDomain(): void {
@@ -64,7 +65,7 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testDatabase(): void {
@@ -78,6 +79,6 @@ class UnsuspendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 }

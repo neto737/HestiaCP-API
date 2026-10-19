@@ -21,6 +21,32 @@ Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
 
 The setters `setAccessKey()`, `setApiKey()`, `setUser()` and `setPassword()` are gone too, so a `Credentials` object can't be changed once created. To change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`. `Client::simpleFactory()` is unchanged.
 
+### Commands are stateless
+
+A command no longer stores the response it got. `Client::send()` passes the response straight to `process()`, which now takes it as an argument, and `setLastResponse()`, `getResponseText()` and `getStatusCode()` are gone. Code that only calls `send()` or the modules needs no change.
+
+If your command class overrides `process()`, add the response parameter and pass it to the parent:
+
+```php
+use Psr\Http\Message\ResponseInterface;
+
+// v2
+public function process(): array {
+	return array_keys(parent::process());
+}
+
+// v3
+public function process(ResponseInterface $response): array {
+	return array_keys(parent::process($response));
+}
+```
+
+If it calls `defaultProcess()` or `getResponseCode()`, or the protected `codeException()`, pass the response to those too: `$this->defaultProcess($response)`, `$this->getResponseCode($response)`, `$this->codeException($code, $response)`.
+
+A class that implements `ICommand` directly must drop `setLastResponse()` and declare `process(ResponseInterface $response): mixed`, or a narrower return type.
+
+If you read the raw response with `getResponseText()` or `getStatusCode()` after `send()`, override `process()` in your own command class instead: the body is `(string) $response->getBody()` and the status is `$response->getStatusCode()`. See [Processing the response](docs/commands.md#processing-the-response).
+
 ## From v1 to v2
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).

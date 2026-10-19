@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\Web\AddWebDomainAlias;
 use neto737\HestiaCP\Command\Web\AddWebDomainProxy;
 use neto737\HestiaCP\Command\Web\AddWebDomainSsl;
@@ -36,7 +37,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testListWebDomainSsl(): void {
@@ -47,7 +48,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testListWebTemplates(): void {
@@ -60,7 +61,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 			$this->assertSame(['arg1' => 'json'], $command->getRequestParams());
 
 			$this->assertFalse($command->needReturnCode());
-			$this->assertSame([], $command->process());
+			$this->assertSame([], $command->process(new Response()));
 		}
 	}
 
@@ -72,7 +73,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testDeleteWebDomainAlias(): void {
@@ -83,7 +84,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainSsl(): void {
@@ -94,7 +95,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainSslRestartWithoutSslHome(): void {
@@ -116,7 +117,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainSslHome(): void {
@@ -127,7 +128,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainSslHomeInvalid(): void {
@@ -158,7 +159,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainBackendTpl(): void {
@@ -169,7 +170,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainProxyTpl(): void {
@@ -180,7 +181,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainProxy(): void {
@@ -191,7 +192,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainProxyExtensionsWithoutTemplate(): void {

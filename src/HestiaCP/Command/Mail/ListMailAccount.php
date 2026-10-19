@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Command\Mail;
 
 use neto737\HestiaCP\Command\ListCommand;
+use Psr\Http\Message\ResponseInterface;
 
 class ListMailAccount extends ListCommand {
 
@@ -18,8 +19,8 @@ class ListMailAccount extends ListCommand {
 		return 'v-list-mail-account';
 	}
 
-	public function process(): array {
-		return $this->convertDetail(parent::process());
+	public function process(ResponseInterface $response): array {
+		return $this->convertDetail(parent::process($response));
 	}
 
 	public function getRequestParams(): array {
