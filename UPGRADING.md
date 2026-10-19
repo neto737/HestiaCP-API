@@ -55,6 +55,24 @@ Each `getModule*()` call creates a new module. In v2, `$client->getModuleMail('a
 
 The empty `neto737\HestiaCP\Module\IModule` interface is gone. If you type-hint it or check `instanceof IModule`, use the abstract `neto737\HestiaCP\Module\Module` class, which every module extends.
 
+### `InvalidResponseException` extends `ClientException`
+
+`InvalidResponseException` is thrown when the response isn't what HestiaCP sends, usually because the hostname points to another server. In v2 it extended `ProcessException`; in v3 it extends `ClientException`, because it's a setup problem, not a failed command.
+
+A `catch (ProcessException $e)` no longer catches it. If you catch both `ProcessException` and `ClientException`, nothing goes uncaught: the exception now reaches the `ClientException` branch. If you catch only `ProcessException`, add a `catch` for `InvalidResponseException` or `ClientException`. To handle it on its own, catch `InvalidResponseException` before `ClientException`:
+
+```php
+try {
+	$client->getModuleUser()->list();
+} catch (InvalidResponseException $e) {
+	// the host isn't HestiaCP
+} catch (ProcessException $e) {
+	// the command failed
+} catch (ClientException $e) {
+	// connection problem
+}
+```
+
 ### Command classes grouped by verb removed
 
 The command class names from 2.0, grouped by verb (`Add\User`, `Lists\Users`, …), are gone. Code that only uses the modules needs no change. If you create command objects yourself, switch to the names grouped by module, which have been available since 2.1.0. All classes are in `neto737\HestiaCP\Command`:

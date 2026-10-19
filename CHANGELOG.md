@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** the client no longer caches modules. Each `getModule*()` call creates a new module, so two calls never return the same instance, even for the same user. Modules hold no state of their own, so this only matters to code that compares module instances.
 
+- **BC break:** `InvalidResponseException` extends `ClientException` instead of `ProcessException`. A response that isn't from HestiaCP is a setup problem, not a failed command, so `catch (ProcessException $e)` no longer catches it. `Client::send()` rethrows it as is.
+
 ### Removed
 
 - **BC break:** the command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …), deprecated since 2.1.0. The `Add`, `Change`, `Delete`, `Lists`, `Suspend` and `Unsuspend` namespaces are gone, as are `Backup\User` and `Backup\Users`. Use the names grouped by module (`User\AddUser`, `User\ListUsers`, `Mail\SuspendMailAccount`, …); [UPGRADING.md](UPGRADING.md) lists each replacement.

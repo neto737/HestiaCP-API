@@ -112,7 +112,7 @@ class Client {
 				'timeout' => $this->getTimeout($command)
 			]);
 			return $command->process($response);
-		} catch (ProcessException $e) {
+		} catch (ProcessException | ClientException $e) {
 			throw $e;
 		} catch (\GuzzleHttp\Exception\GuzzleException $e) {
 			throw new ClientException('Connection error (' . $e->getMessage() . ')', 0, $e);

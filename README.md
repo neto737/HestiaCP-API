@@ -101,7 +101,7 @@ try {
 		// the user already exists
 	}
 } catch (ClientException $e) {
-	// connection problem: timeout, DNS, TLS, ...
+	// connection problem (timeout, DNS, TLS, ...), or the host isn't HestiaCP
 }
 ```
 

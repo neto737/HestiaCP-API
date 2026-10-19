@@ -215,8 +215,16 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testNotHestiaResponse(): void {
 		$client = $this->createClient([new Response(200, [], '<html>Hello</html>')]);
 
-		$this->expectException(InvalidResponseException::class);
-		$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
+		try {
+			$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
+			$this->fail('InvalidResponseException expected');
+		} catch (ProcessException) {
+			// a host that isn't HestiaCP is a setup problem, not a failed command
+			$this->fail('InvalidResponseException must not be a ProcessException');
+		} catch (InvalidResponseException $e) {
+			// send() rethrows it as is instead of wrapping it in a ClientException
+			$this->assertNull($e->getPrevious());
+		}
 	}
 
 	public function testConnectionError(): void {
