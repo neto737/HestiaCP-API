@@ -32,7 +32,7 @@ class ResponseCode {
 	public const E_API_DISABLED = 21;
 
 	/** @var array<int, string> */
-	public static array $messages = [
+	private const MESSAGES = [
 		self::OK => 'Command has been successfully performed',
 		self::E_ARGS => 'Not enough arguments provided',
 		self::E_INVALID => 'Object or argument is not valid',
@@ -58,6 +58,6 @@ class ResponseCode {
 	];
 
 	public static function getMessage(int $code): string {
-		return self::$messages[$code] ?? 'Unknown error (exit code ' . $code . ')';
+		return self::MESSAGES[$code] ?? 'Unknown error (exit code ' . $code . ')';
 	}
 }

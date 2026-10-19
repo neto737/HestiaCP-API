@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** a list command whose body isn't valid JSON, or isn't a JSON object or array, throws `InvalidResponseException` instead of `ProcessException` with code `0`. HestiaCP never sends such a body, so like a body that isn't an exit code, it means the host isn't HestiaCP. The message no longer holds the body; for invalid JSON, `getPrevious()` returns the `JsonException`.
 
+- **BC break:** the `ResponseCode::$messages` static property is replaced by a private constant. Any code could overwrite the messages at runtime, for every client in the process. Use `ResponseCode::getMessage($code)` to read a message.
+
 - PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
 
 ### Removed
