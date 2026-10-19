@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Removed
+
+- **BC break:** the `Credentials` constructor and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`), deprecated since 2.1.0. The constructor is private: use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()`. `Credentials` is immutable; to change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`.
+
 ## [2.1.0] - 2026-10-18
 
 ### Added

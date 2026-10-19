@@ -1,5 +1,26 @@
 # Upgrading
 
+## From v2 to v3
+
+The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
+
+### `Credentials` constructor and setters removed
+
+`new Credentials(...)` no longer works: the constructor is private. Use the named constructors, which have been available since 2.1.0:
+
+```php
+// v2
+new Credentials('API_KEY');
+new Credentials('admin', 'somePassword');
+
+// v3
+Credentials::legacyHash('API_KEY');
+Credentials::password('admin', 'somePassword');
+Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
+```
+
+The setters `setAccessKey()`, `setApiKey()`, `setUser()` and `setPassword()` are gone too, so a `Credentials` object can't be changed once created. To change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`. `Client::simpleFactory()` is unchanged.
+
 ## From v1 to v2
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
