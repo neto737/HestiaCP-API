@@ -79,6 +79,13 @@ class HostTest extends \PHPUnit\Framework\TestCase {
 		new Host('https://2001:db8::1', Credentials::password('', ''));
 	}
 
+	public function testRejectsUnbracketedIpv6WithoutScheme(): void {
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage('must be in brackets');
+
+		new Host('2001:db8::1', Credentials::password('', ''));
+	}
+
 	public function testUri(): void {
 		$credentials = Credentials::password('', '');
 		$host = new Host('https://hestia', $credentials);
