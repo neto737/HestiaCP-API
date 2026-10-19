@@ -15,30 +15,30 @@ class Credentials {
 	private function __construct(
 		private readonly string $mode,
 		private readonly ?string $user = null,
-		private readonly ?string $password = null,
-		private readonly ?string $api_key = null,
+		#[\SensitiveParameter] private readonly ?string $password = null,
+		#[\SensitiveParameter] private readonly ?string $api_key = null,
 		private readonly ?string $access_key = null,
-		private readonly ?string $secret_key = null
+		#[\SensitiveParameter] private readonly ?string $secret_key = null
 	) {}
 
 	/**
 	 * Access key authentication (HestiaCP 1.6+)
 	 */
-	public static function accessKey(string $accessKey, string $secretKey): self {
+	public static function accessKey(string $accessKey, #[\SensitiveParameter] string $secretKey): self {
 		return new self(self::MODE_ACCESS_KEY, access_key: $accessKey, secret_key: $secretKey);
 	}
 
 	/**
 	 * Legacy API key, sent as `hash`
 	 */
-	public static function legacyHash(string $hash): self {
+	public static function legacyHash(#[\SensitiveParameter] string $hash): self {
 		return new self(self::MODE_LEGACY_HASH, api_key: $hash);
 	}
 
 	/**
 	 * Username and password (HestiaCP only accepts the admin/root user)
 	 */
-	public static function password(string $user, string $password): self {
+	public static function password(string $user, #[\SensitiveParameter] string $password): self {
 		return new self(self::MODE_PASSWORD, user: $user, password: $password);
 	}
 
@@ -63,6 +63,22 @@ class Credentials {
 	}
 
 	/**
+	 * Masks the password, legacy hash and secret key in var_dump() and print_r()
+	 *
+	 * @return array<string, string|null>
+	 */
+	public function __debugInfo(): array {
+		return [
+			'mode' => $this->mode,
+			'user' => $this->user,
+			'password' => self::mask($this->password),
+			'api_key' => self::mask($this->api_key),
+			'access_key' => $this->access_key,
+			'secret_key' => self::mask($this->secret_key)
+		];
+	}
+
+	/**
 	 * @return array<string, string|null>
 	 */
 	public function getRequestParams(): array {
@@ -79,5 +95,9 @@ class Credentials {
 				'password' => $this->getPassword()
 			]
 		};
+	}
+
+	private static function mask(?string $value): ?string {
+		return is_null($value) ? null : '********';
 	}
 }

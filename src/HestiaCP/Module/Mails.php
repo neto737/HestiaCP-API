@@ -61,7 +61,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addAccount(string $domain, string $account, string $password): bool {
+	public function addAccount(string $domain, string $account, #[\SensitiveParameter] string $password): bool {
 		return $this->client->send(new AddMailAccount($this->user, $domain, $account, $password));
 	}
 
@@ -75,7 +75,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function changeAccountPassword(string $domain, string $account, string $password): bool {
+	public function changeAccountPassword(string $domain, string $account, #[\SensitiveParameter] string $password): bool {
 		return $this->client->send(new ChangeMailAccountPassword($this->user, $domain, $account, $password));
 	}
 

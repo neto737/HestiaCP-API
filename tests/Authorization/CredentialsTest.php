@@ -45,6 +45,31 @@ class CredentialsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['user' => '', 'password' => ''], Credentials::password('', '')->getRequestParams());
 	}
 
+	public function testDebugInfoMasksSecrets(): void {
+		$this->assertSame([
+			'mode' => 'access_key',
+			'user' => null,
+			'password' => null,
+			'api_key' => null,
+			'access_key' => 'access',
+			'secret_key' => '********'
+		], Credentials::accessKey('access', 'secret')->__debugInfo());
+		$this->assertSame('********', Credentials::legacyHash('key')->__debugInfo()['api_key']);
+		$this->assertSame('********', Credentials::password('us', 'er')->__debugInfo()['password']);
+		$this->assertSame('us', Credentials::password('us', 'er')->__debugInfo()['user']);
+	}
+
+	public function testVarDumpDoesNotShowSecrets(): void {
+		ob_start();
+		var_dump(Credentials::accessKey('access', 'top-secret'), Credentials::legacyHash('top-hash'), Credentials::password('admin', 'top-password'));
+		$dump = (string) ob_get_clean();
+
+		$this->assertStringContainsString('access', $dump);
+		$this->assertStringContainsString('admin', $dump);
+		$this->assertStringNotContainsString('top-', $dump);
+		$this->assertStringNotContainsString('top-', print_r(Credentials::password('admin', 'top-password'), true));
+	}
+
 	public function testConstructorIsPrivate(): void {
 		$this->assertTrue((new \ReflectionMethod(Credentials::class, '__construct'))->isPrivate());
 	}

@@ -62,7 +62,7 @@ class Users extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function changePassword(string $user, string $password): bool {
+	public function changePassword(string $user, #[\SensitiveParameter] string $password): bool {
 		return $this->client->send(new ChangeUserPassword($user, $password));
 	}
 
@@ -106,7 +106,7 @@ class Users extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function add(string $user, string $password, string $email, ?string $package = null, ?string $name = null, ?string $lastname = null): bool {
+	public function add(string $user, #[\SensitiveParameter] string $password, string $email, ?string $package = null, ?string $name = null, ?string $lastname = null): bool {
 		return $this->client->send(new AddUser($user, $password, $email, $package, $name, $lastname));
 	}
 

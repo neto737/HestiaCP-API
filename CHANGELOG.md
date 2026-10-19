@@ -30,6 +30,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** the empty `Module\IModule` marker interface. Type-hint the abstract `Module\Module` class instead, which every module extends.
 
+### Security
+
+- Passwords, secret keys and legacy hashes are marked `#[\SensitiveParameter]`, so stack traces and logged exceptions show `SensitiveParameterValue` instead of the value. This covers the `Credentials` named constructors, `Client::simpleFactory()` (both `$user`, which holds the key when no password is given, and `$password`), the module methods that take a password, and the commands `AddUser`, `ChangeUserPassword`, `AddMailAccount`, `ChangeMailAccountPassword`, `AddDatabase`, `ChangeDatabasePassword`, `AddWebDomainFtp` and `ChangeWebDomainFtpPassword`.
+- `Credentials::__debugInfo()` masks the password, legacy hash and secret key as `********` in `var_dump()` and `print_r()`.
+
 ## [2.1.0] - 2026-10-18
 
 ### Added

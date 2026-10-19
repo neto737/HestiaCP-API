@@ -12,7 +12,7 @@ class ChangeWebDomainFtpPassword extends ProcessCommand {
 		private readonly string $user,
 		private readonly string $domain,
 		private readonly string $ftpUser,
-		private readonly string $ftpPassword
+		#[\SensitiveParameter] private readonly string $ftpPassword
 	) {}
 
 	public function getName(): string {

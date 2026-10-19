@@ -56,7 +56,7 @@ class Client {
 	 * @throws ClientException
 	 * @throws InvalidArgumentException
 	 */
-	public static function simpleFactory(string $hostname, string $user, ?string $password = null, ?array $options = null): Client {
+	public static function simpleFactory(string $hostname, #[\SensitiveParameter] string $user, #[\SensitiveParameter] ?string $password = null, ?array $options = null): Client {
 		if (!is_null($password)) {
 			$credentials = Credentials::password($user, $password);
 		} elseif (substr_count($user, ':') === 1) {
