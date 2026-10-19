@@ -70,6 +70,10 @@ class Host {
 		$hostname = trim($hostname);
 
 		$authority = preg_replace('~^[a-z][a-z0-9+.-]*://~i', '', $hostname);
+		if ($authority === null) {
+			throw new InvalidArgumentException("Invalid hostname '$hostname'");
+		}
+
 		if (filter_var(rtrim($authority, '/'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
 			throw new InvalidArgumentException("Invalid hostname '$hostname', an IPv6 address must be in brackets, e.g. 'https://[2001:db8::1]'");
 		}

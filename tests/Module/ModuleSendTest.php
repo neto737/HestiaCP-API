@@ -19,13 +19,12 @@ use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Calls every module method through a mocked client and checks the request it sends and the value it returns.
  * Arguments use distinct values (and non-default booleans) so a swapped or dropped argument fails here.
  *
- * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
+ * @phpstan-type HistoryEntry array{request: RequestInterface, options: array<array-key, mixed>}
  * @phpstan-type ModuleCall \Closure(Client): mixed
  */
 class ModuleSendTest extends \PHPUnit\Framework\TestCase {
@@ -38,7 +37,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 	private function createClient(Response $response): Client {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler([$response]));
-		$stack->push(Middleware::history($this->history));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
 		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, ['handler' => $stack]);
 	}

@@ -31,7 +31,7 @@ use Psr\Http\Message\ResponseInterface;
  * Hestia-Exit-Code header and an HTTP error status, the legacy endpoint only echoes the code.
  *
  * @phpstan-import-type ClientOptions from Client
- * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
+ * @phpstan-type HistoryEntry array{request: RequestInterface, options: array<array-key, mixed>}
  */
 class ClientSendTest extends \PHPUnit\Framework\TestCase {
 
@@ -45,7 +45,9 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	private function createClient(array $responses, array $options = []): Client {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler($responses));
-		$stack->push(Middleware::history($this->history));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
 		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, $options + ['handler' => $stack]);
 	}
@@ -78,7 +80,9 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testRequestFormatWithLegacyHash(): void {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler([self::codeResponse(0)]));
-		$stack->push(Middleware::history($this->history));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
 		$host = new Host('https://someHost', Credentials::legacyHash('API_KEY'));
 		$client = new Client($host, ['handler' => $stack]);

@@ -144,13 +144,17 @@ class Client {
 	 */
 	private function prepareCommunication(?array $options = null): Client {
 		try {
-			$this->guzzleClient = new \GuzzleHttp\Client([
+			$config = [
 				'timeout' => $options['timeout'] ?? 10.0,
 				'verify' => $options['verify'] ?? true,
-				'handler' => $options['handler'] ?? null,
 				// HestiaCP reports failures with HTTP error codes, the commands handle them
 				'http_errors' => false
-			]);
+			];
+			if (isset($options['handler'])) {
+				$config['handler'] = $options['handler'];
+			}
+
+			$this->guzzleClient = new \GuzzleHttp\Client($config);
 		} catch (\Exception $e) {
 			throw new ClientException('Bad Client configuration (' . $e->getMessage() . ')');
 		}

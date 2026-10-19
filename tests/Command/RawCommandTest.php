@@ -16,10 +16,9 @@ use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 use neto737\HestiaCP\Exceptions\ProcessException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 /**
- * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
+ * @phpstan-type HistoryEntry array{request: RequestInterface, options: array<array-key, mixed>}
  */
 class RawCommandTest extends \PHPUnit\Framework\TestCase {
 
@@ -29,13 +28,15 @@ class RawCommandTest extends \PHPUnit\Framework\TestCase {
 	private function createClient(Response $response): Client {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler([$response]));
-		$stack->push(Middleware::history($this->history));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
 		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, ['handler' => $stack]);
 	}
 
 	/**
-	 * @return array<string, mixed>
+	 * @return array<array-key, array<mixed>|string>
 	 */
 	private function sentParams(): array {
 		$this->assertCount(1, $this->history);
