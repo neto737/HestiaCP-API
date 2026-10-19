@@ -97,6 +97,22 @@ try {
 }
 ```
 
+### `Exceptions\Exception` is an interface
+
+The exceptions extend PHP's standard exceptions instead of a common base class: `InvalidArgumentException` extends `\InvalidArgumentException`, and `RuntimeException` (the parent of `ProcessException`, `AuthorizationException`, `ClientException` and `InvalidResponseException`) extends `\RuntimeException`. `Exceptions\Exception` became an interface that all of them implement.
+
+`catch (Exception $e)` and `instanceof Exception` work as before. A `catch (\InvalidArgumentException $e)`, `catch (\LogicException $e)` or `catch (\RuntimeException $e)` now also catches the library's exceptions, so check that such a block, placed before your `catch` for the library's types, doesn't take them over.
+
+Only code that creates or extends `Exceptions\Exception` itself must change, because an interface can't be instantiated or extended by a class. Throw or extend one of the concrete classes, or implement the interface:
+
+```php
+// v2
+class MyException extends \neto737\HestiaCP\Exceptions\Exception {}
+
+// v3
+class MyException extends \RuntimeException implements \neto737\HestiaCP\Exceptions\Exception {}
+```
+
 ### `ResponseCode::$messages` removed
 
 The messages for the exit codes are in a private constant instead of the public static `ResponseCode::$messages` array, so they can no longer be changed at runtime. To read a message, call `ResponseCode::getMessage($code)` instead of `ResponseCode::$messages[$code]`; it also returns `Unknown error (exit code N)` for a code with no message. If you replaced messages in the array, for example to translate them, map the exception code to your own message instead: `$myMessages[$e->getCode()] ?? $e->getMessage()`.

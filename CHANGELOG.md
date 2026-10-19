@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** a list command whose body isn't valid JSON, or isn't a JSON object or array, throws `InvalidResponseException` instead of `ProcessException` with code `0`. HestiaCP never sends such a body, so like a body that isn't an exit code, it means the host isn't HestiaCP. The message no longer holds the body; for invalid JSON, `getPrevious()` returns the `JsonException`.
 
+- **BC break:** the exceptions extend PHP's standard exceptions: `Exceptions\InvalidArgumentException` extends `\InvalidArgumentException` and `Exceptions\RuntimeException`, with its subclasses, extends `\RuntimeException`. `Exceptions\Exception` is now a marker interface that every exception implements, instead of their base class. `catch (Exceptions\Exception $e)` still catches all of them, and `catch (\InvalidArgumentException $e)` or `catch (\RuntimeException $e)` now catches them too. Code that instantiates or extends `Exceptions\Exception` must change.
+
 - **BC break:** the `ResponseCode::$messages` static property is replaced by a private constant. Any code could overwrite the messages at runtime, for every client in the process. Use `ResponseCode::getMessage($code)` to read a message.
 
 - **BC break:** class constants are typed: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. A subclass that redeclares one of them must declare it with the same type.
