@@ -19,8 +19,7 @@ class Credentials {
 		private readonly ?string $api_key = null,
 		private readonly ?string $access_key = null,
 		private readonly ?string $secret_key = null
-	) {
-	}
+	) {}
 
 	/**
 	 * Access key authentication (HestiaCP 1.6+)
