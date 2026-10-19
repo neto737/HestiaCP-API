@@ -17,6 +17,7 @@ class ListUser extends ListCommand {
 		return 'v-list-user';
 	}
 
+	#[\Override]
 	public function process(ResponseInterface $response): array {
 		return $this->convertDetail(parent::process($response));
 	}

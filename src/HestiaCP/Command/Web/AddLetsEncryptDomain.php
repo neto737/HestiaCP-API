@@ -9,11 +9,11 @@ use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 
 class AddLetsEncryptDomain extends ProcessCommand {
 
-	public const KEY_ALGO_ECDSA_256 = 'ecdsa-256';
-	public const KEY_ALGO_ECDSA_384 = 'ecdsa-384';
-	public const KEY_ALGO_RSA = 'rsa';
+	public const string KEY_ALGO_ECDSA_256 = 'ecdsa-256';
+	public const string KEY_ALGO_ECDSA_384 = 'ecdsa-384';
+	public const string KEY_ALGO_RSA = 'rsa';
 
-	private const KEY_ALGOS = [self::KEY_ALGO_ECDSA_256, self::KEY_ALGO_ECDSA_384, self::KEY_ALGO_RSA];
+	private const array KEY_ALGOS = [self::KEY_ALGO_ECDSA_256, self::KEY_ALGO_ECDSA_384, self::KEY_ALGO_RSA];
 
 	/**
 	 * @param string      $user
@@ -40,6 +40,7 @@ class AddLetsEncryptDomain extends ProcessCommand {
 		return 'v-add-letsencrypt-domain';
 	}
 
+	#[\Override]
 	public function getTimeout(): ?float {
 		return 90;
 	}

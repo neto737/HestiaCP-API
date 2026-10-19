@@ -6,11 +6,11 @@ namespace neto737\HestiaCP\Authorization;
 
 class Credentials {
 
-	private const MODE_ACCESS_KEY = 'access_key';
+	private const string MODE_ACCESS_KEY = 'access_key';
 
-	private const MODE_LEGACY_HASH = 'legacy_hash';
+	private const string MODE_LEGACY_HASH = 'legacy_hash';
 
-	private const MODE_PASSWORD = 'password';
+	private const string MODE_PASSWORD = 'password';
 
 	private function __construct(
 		private readonly string $mode,

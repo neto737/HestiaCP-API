@@ -18,6 +18,7 @@ class ListWebDomain extends ListCommand {
 		return 'v-list-web-domain';
 	}
 
+	#[\Override]
 	public function process(ResponseInterface $response): array {
 		return $this->convertDetail(parent::process($response));
 	}

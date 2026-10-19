@@ -15,11 +15,12 @@ use Psr\Http\Message\ResponseInterface;
  */
 abstract class Command implements ICommand {
 
-	protected const FORMAT_JSON = 'json';
+	protected const string FORMAT_JSON = 'json';
 
 	/**
 	 * Request timeout in seconds for this command (0 = no timeout), or null to use the client timeout.
 	 */
+	#[\Override]
 	public function getTimeout(): ?float {
 		return null;
 	}

@@ -18,6 +18,7 @@ class ListWebDomainSsl extends ListCommand {
 		return 'v-list-web-domain-ssl';
 	}
 
+	#[\Override]
 	public function process(ResponseInterface $response): array {
 		return $this->convertDetail(parent::process($response));
 	}

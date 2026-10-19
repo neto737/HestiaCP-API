@@ -24,6 +24,7 @@ abstract class ListCommand extends Command {
 	 * @throws AuthorizationException
 	 * @throws InvalidResponseException
 	 */
+	#[\Override]
 	public function process(ResponseInterface $response): array {
 		parent::defaultProcess($response);
 

@@ -101,6 +101,22 @@ try {
 
 The messages for the exit codes are in a private constant instead of the public static `ResponseCode::$messages` array, so they can no longer be changed at runtime. To read a message, call `ResponseCode::getMessage($code)` instead of `ResponseCode::$messages[$code]`; it also returns `Unknown error (exit code N)` for a code with no message. If you replaced messages in the array, for example to translate them, map the exception code to your own message instead: `$myMessages[$e->getCode()] ?? $e->getMessage()`.
 
+### Class constants are typed
+
+The class constants declare their types: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. Reading them works as before. Only a subclass that redeclares one of them must change: PHP fails with a fatal error unless the redeclared constant has the same type.
+
+```php
+// v2
+class MyCommand extends Command {
+	protected const FORMAT_JSON = 'json';
+}
+
+// v3
+class MyCommand extends Command {
+	protected const string FORMAT_JSON = 'json';
+}
+```
+
 ### Command classes grouped by verb removed
 
 The command class names from 2.0, grouped by verb (`Add\User`, `Lists\Users`, …), are gone. Code that only uses the modules needs no change. If you create command objects yourself, switch to the names grouped by module, which have been available since 2.1.0. All classes are in `neto737\HestiaCP\Command`:

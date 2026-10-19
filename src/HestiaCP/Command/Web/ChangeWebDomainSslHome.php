@@ -9,7 +9,7 @@ use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 
 class ChangeWebDomainSslHome extends ProcessCommand {
 
-	private const SSL_HOMES = [AddWebDomainSsl::SSL_HOME_SAME, AddWebDomainSsl::SSL_HOME_SINGLE];
+	private const array SSL_HOMES = [AddWebDomainSsl::SSL_HOME_SAME, AddWebDomainSsl::SSL_HOME_SINGLE];
 
 	/**
 	 * @param string    $sslHome One of the AddWebDomainSsl::SSL_HOME_* constants

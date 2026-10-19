@@ -18,6 +18,7 @@ class ListDnssecPublicKey extends ListCommand {
 		return 'v-list-dnssec-public-key';
 	}
 
+	#[\Override]
 	public function process(ResponseInterface $response): array {
 		return $this->convertDetail(parent::process($response));
 	}

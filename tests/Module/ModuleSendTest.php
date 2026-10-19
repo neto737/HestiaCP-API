@@ -29,7 +29,7 @@ use Psr\Http\Message\RequestInterface;
  */
 class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 
-	private const LIST_BODY = '{"first": {"NAME": "First"}, "second": {"NAME": "Second"}}';
+	private const string LIST_BODY = '{"first": {"NAME": "First"}, "second": {"NAME": "Second"}}';
 
 	/** @var array<array-key, HistoryEntry> */
 	private array $history = [];

@@ -22,6 +22,7 @@ abstract class ProcessCommand extends Command {
 	 * @throws ProcessException
 	 * @throws AuthorizationException
 	 */
+	#[\Override]
 	public function process(ResponseInterface $response): bool {
 		parent::defaultProcess($response);
 

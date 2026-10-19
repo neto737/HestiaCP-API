@@ -24,6 +24,7 @@ class TestAuthorization extends ProcessCommand {
 	 * @throws InvalidResponseException
 	 * @throws ProcessException
 	 */
+	#[\Override]
 	public function process(ResponseInterface $response): bool {
 		try {
 			return parent::process($response);

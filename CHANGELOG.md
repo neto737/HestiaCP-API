@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** the `ResponseCode::$messages` static property is replaced by a private constant. Any code could overwrite the messages at runtime, for every client in the process. Use `ResponseCode::getMessage($code)` to read a message.
 
+- **BC break:** class constants are typed: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. A subclass that redeclares one of them must declare it with the same type.
+
 - PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
 
 ### Removed

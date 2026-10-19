@@ -18,6 +18,7 @@ class ListUserBackup extends ListCommand {
 		return 'v-list-user-backup';
 	}
 
+	#[\Override]
 	public function process(ResponseInterface $response): array {
 		return $this->convertDetail(parent::process($response));
 	}

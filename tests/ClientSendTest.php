@@ -254,6 +254,7 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 				return [];
 			}
 
+			#[\Override]
 			public function process(ResponseInterface $response): bool {
 				throw new \RuntimeException('Something broke');
 			}
