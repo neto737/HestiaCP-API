@@ -8,39 +8,10 @@ use neto737\HestiaCP\Authorization\Credentials;
 
 class CredentialsTest extends \PHPUnit\Framework\TestCase {
 
-	public function testApiKey(): void {
-		$credentials = new Credentials('');
-		$this->assertSame('', $credentials->getApiKey());
-
-		$credentials->setApiKey('key');
-		$this->assertSame('key', $credentials->getApiKey());
-	}
-
-	public function testUser(): void {
-		$credentials = new Credentials('', '');
-		$this->assertSame('', $credentials->getUser());
-
-		$credentials->setUser('test');
-		$this->assertSame('test', $credentials->getUser());
-	}
-
-	public function testPassword(): void {
-		$credentials = new Credentials('', '');
-		$this->assertSame('', $credentials->getPassword());
-
-		$credentials->setPassword('test');
-		$this->assertSame('test', $credentials->getPassword());
-	}
-
 	public function testParams(): void {
-		$credentials = new Credentials('us', 'er');
-		$this->assertSame(['user' => 'us', 'password' => 'er'], $credentials->getRequestParams());
-
-		$credentials_apikey = new Credentials('key');
-		$this->assertSame(['hash' => 'key'], $credentials_apikey->getRequestParams());
-
-		$credentials_accesskey = Credentials::accessKey('access', 'secret');
-		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials_accesskey->getRequestParams());
+		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], Credentials::accessKey('access', 'secret')->getRequestParams());
+		$this->assertSame(['hash' => 'key'], Credentials::legacyHash('key')->getRequestParams());
+		$this->assertSame(['user' => 'us', 'password' => 'er'], Credentials::password('us', 'er')->getRequestParams());
 	}
 
 	public function testAccessKey(): void {
@@ -50,23 +21,6 @@ class CredentialsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertNull($credentials->getApiKey());
 		$this->assertNull($credentials->getUser());
 		$this->assertNull($credentials->getPassword());
-	}
-
-	public function testSwitchBetweenKeys(): void {
-		$credentials = Credentials::accessKey('access', 'secret');
-		$credentials->setApiKey('key');
-		$this->assertNull($credentials->getAccessKey());
-		$this->assertNull($credentials->getSecretKey());
-		$this->assertSame(['hash' => 'key'], $credentials->getRequestParams());
-
-		$credentials->setAccessKey('access', 'secret');
-		$this->assertNull($credentials->getApiKey());
-		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials->getRequestParams());
-	}
-
-	public function testNamedConstructors(): void {
-		$this->assertSame(['hash' => 'key'], Credentials::legacyHash('key')->getRequestParams());
-		$this->assertSame(['user' => 'us', 'password' => 'er'], Credentials::password('us', 'er')->getRequestParams());
 	}
 
 	public function testNamedConstructorsOnlySetTheirOwnFields(): void {
@@ -91,17 +45,32 @@ class CredentialsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['user' => '', 'password' => ''], Credentials::password('', '')->getRequestParams());
 	}
 
-	public function testSwitchFromPassword(): void {
-		$credentials = Credentials::password('us', 'er');
-		$credentials->setApiKey('key');
-		$this->assertNull($credentials->getUser());
-		$this->assertNull($credentials->getPassword());
-		$this->assertSame(['hash' => 'key'], $credentials->getRequestParams());
+	public function testDebugInfoMasksSecrets(): void {
+		$this->assertSame([
+			'mode' => 'access_key',
+			'user' => null,
+			'password' => null,
+			'api_key' => null,
+			'access_key' => 'access',
+			'secret_key' => '********'
+		], Credentials::accessKey('access', 'secret')->__debugInfo());
+		$this->assertSame('********', Credentials::legacyHash('key')->__debugInfo()['api_key']);
+		$this->assertSame('********', Credentials::password('us', 'er')->__debugInfo()['password']);
+		$this->assertSame('us', Credentials::password('us', 'er')->__debugInfo()['user']);
 	}
 
-	public function testUserAndPasswordSettersKeepTheMode(): void {
-		$credentials = Credentials::accessKey('access', 'secret');
-		$credentials->setUser('us')->setPassword('er');
-		$this->assertSame(['access_key' => 'access', 'secret_key' => 'secret'], $credentials->getRequestParams());
+	public function testVarDumpDoesNotShowSecrets(): void {
+		ob_start();
+		var_dump(Credentials::accessKey('access', 'top-secret'), Credentials::legacyHash('top-hash'), Credentials::password('admin', 'top-password'));
+		$dump = (string) ob_get_clean();
+
+		$this->assertStringContainsString('access', $dump);
+		$this->assertStringContainsString('admin', $dump);
+		$this->assertStringNotContainsString('top-', $dump);
+		$this->assertStringNotContainsString('top-', print_r(Credentials::password('admin', 'top-password'), true));
+	}
+
+	public function testConstructorIsPrivate(): void {
+		$this->assertTrue((new \ReflectionMethod(Credentials::class, '__construct'))->isPrivate());
 	}
 }

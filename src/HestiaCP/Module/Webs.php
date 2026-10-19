@@ -140,7 +140,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomainFtp(string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null): bool {
+	public function addDomainFtp(string $domain, string $ftpUser, #[\SensitiveParameter] string $ftpPassword, ?string $ftpPath = null): bool {
 		return $this->client->send(new AddWebDomainFtp($this->user, $domain, $ftpUser, $ftpPassword, $ftpPath));
 	}
 
@@ -154,7 +154,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function changeDomainFtpPassword(string $domain, string $ftpUser, string $ftpPassword): bool {
+	public function changeDomainFtpPassword(string $domain, string $ftpUser, #[\SensitiveParameter] string $ftpPassword): bool {
 		return $this->client->send(new ChangeWebDomainFtpPassword($this->user, $domain, $ftpUser, $ftpPassword));
 	}
 

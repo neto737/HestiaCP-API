@@ -12,7 +12,7 @@ class AddDatabase extends ProcessCommand {
 		private readonly string $user,
 		private readonly string $database,
 		private readonly string $dbuser,
-		private readonly string $dbpass,
+		#[\SensitiveParameter] private readonly string $dbpass,
 		private readonly string $type = 'mysql'
 	) {}
 

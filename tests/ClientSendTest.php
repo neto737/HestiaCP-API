@@ -31,7 +31,7 @@ use Psr\Http\Message\ResponseInterface;
  * Hestia-Exit-Code header and an HTTP error status, the legacy endpoint only echoes the code.
  *
  * @phpstan-import-type ClientOptions from Client
- * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
+ * @phpstan-type HistoryEntry array{request: RequestInterface, options: array<array-key, mixed>}
  */
 class ClientSendTest extends \PHPUnit\Framework\TestCase {
 
@@ -45,7 +45,9 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	private function createClient(array $responses, array $options = []): Client {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler($responses));
-		$stack->push(Middleware::history($this->history));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
 		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, $options + ['handler' => $stack]);
 	}
@@ -78,7 +80,9 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testRequestFormatWithLegacyHash(): void {
 		$this->history = [];
 		$stack = HandlerStack::create(new MockHandler([self::codeResponse(0)]));
-		$stack->push(Middleware::history($this->history));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
 		$host = new Host('https://someHost', Credentials::legacyHash('API_KEY'));
 		$client = new Client($host, ['handler' => $stack]);
@@ -135,6 +139,18 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testProcessSuccessLegacy(): void {
 		$client = $this->createClient([new Response(200, [], '0')]);
 		$this->assertTrue($client->send(new AddUser('user', 'pass', 'mail@domain.com')));
+	}
+
+	// a command keeps nothing from a run, so the same instance can be sent again
+	public function testSendSameCommandTwice(): void {
+		$client = $this->createClient([
+			new Response(200, [], '{"admin": {"NAME": "System Administrator"}}'),
+			new Response(200, [], '{"user": {"NAME": "User"}}')
+		]);
+		$command = new ListUsers();
+
+		$this->assertSame(['admin' => ['NAME' => 'System Administrator']], $client->send($command));
+		$this->assertSame(['user' => ['NAME' => 'User']], $client->send($command));
 	}
 
 	public function testProcessError(): void {
@@ -203,8 +219,16 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testNotHestiaResponse(): void {
 		$client = $this->createClient([new Response(200, [], '<html>Hello</html>')]);
 
-		$this->expectException(InvalidResponseException::class);
-		$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
+		try {
+			$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
+			$this->fail('InvalidResponseException expected');
+		} catch (ProcessException) {
+			// a host that isn't HestiaCP is a setup problem, not a failed command
+			$this->fail('InvalidResponseException must not be a ProcessException');
+		} catch (InvalidResponseException $e) {
+			// send() rethrows it as is instead of wrapping it in a ClientException
+			$this->assertNull($e->getPrevious());
+		}
 	}
 
 	public function testConnectionError(): void {
@@ -230,7 +254,8 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 				return [];
 			}
 
-			public function process(): bool {
+			#[\Override]
+			public function process(ResponseInterface $response): bool {
 				throw new \RuntimeException('Something broke');
 			}
 		};
@@ -273,7 +298,8 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testListNotList(): void {
 		$client = $this->createClient([new Response(200, [], '"OK"')]);
 
-		$this->expectException(ProcessException::class);
+		$this->expectException(InvalidResponseException::class);
+		$this->expectExceptionMessage('Response is not a JSON object or array');
 		$client->send(new ListUsers());
 	}
 
@@ -285,9 +311,13 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testListInvalidJson(): void {
 		$client = $this->createClient([new Response(200, [], 'not json')]);
 
-		$this->expectException(ProcessException::class);
-		$this->expectExceptionMessage('not json');
-		$client->send(new ListUsers());
+		try {
+			$client->send(new ListUsers());
+			$this->fail('InvalidResponseException expected');
+		} catch (InvalidResponseException $e) {
+			$this->assertStringStartsWith('Response is not JSON', $e->getMessage());
+			$this->assertInstanceOf(\JsonException::class, $e->getPrevious());
+		}
 	}
 
 	public function testListDatabasesReturnsAll(): void {

@@ -10,7 +10,7 @@ class AddUser extends ProcessCommand {
 
 	public function __construct(
 		private readonly string $user,
-		private readonly string $password,
+		#[\SensitiveParameter] private readonly string $password,
 		private readonly string $email,
 		private readonly ?string $package = null,
 		private readonly ?string $name = null,

@@ -16,7 +16,6 @@ use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Mails;
-use neto737\HestiaCP\Module\Module;
 use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
@@ -26,12 +25,7 @@ use neto737\HestiaCP\Module\Webs;
  */
 class Client {
 
-	private Host $host;
-
 	private \GuzzleHttp\Client $guzzleClient;
-
-	/** @var array<class-string<Module>, array<string, Module>> */
-	private array $modules = [];
 
 	/**
 	 * Client constructor.
@@ -46,8 +40,7 @@ class Client {
 	 * @param ClientOptions|null $options
 	 * @throws ClientException
 	 */
-	public function __construct(Host $host, ?array $options = null) {
-		$this->setHost($host);
+	public function __construct(private readonly Host $host, ?array $options = null) {
 		$this->prepareCommunication($options);
 	}
 
@@ -60,7 +53,7 @@ class Client {
 	 * @throws ClientException
 	 * @throws InvalidArgumentException
 	 */
-	public static function simpleFactory(string $hostname, string $user, ?string $password = null, ?array $options = null): Client {
+	public static function simpleFactory(string $hostname, #[\SensitiveParameter] string $user, #[\SensitiveParameter] ?string $password = null, ?array $options = null): Client {
 		if (!is_null($password)) {
 			$credentials = Credentials::password($user, $password);
 		} elseif (substr_count($user, ':') === 1) {
@@ -73,11 +66,6 @@ class Client {
 		$host = new Host($hostname, $credentials);
 
 		return new self($host, $options);
-	}
-
-	public function setHost(Host $host): static {
-		$this->host = $host;
-		return $this;
 	}
 
 	public function getHost(): Host {
@@ -115,9 +103,8 @@ class Client {
 				),
 				'timeout' => $this->getTimeout($command)
 			]);
-			$command->setLastResponse($response);
-			return $command->process();
-		} catch (ProcessException $e) {
+			return $command->process($response);
+		} catch (ProcessException | ClientException $e) {
 			throw $e;
 		} catch (\GuzzleHttp\Exception\GuzzleException $e) {
 			throw new ClientException('Connection error (' . $e->getMessage() . ')', 0, $e);
@@ -149,13 +136,17 @@ class Client {
 	 */
 	private function prepareCommunication(?array $options = null): Client {
 		try {
-			$this->guzzleClient = new \GuzzleHttp\Client([
+			$config = [
 				'timeout' => $options['timeout'] ?? 10.0,
 				'verify' => $options['verify'] ?? true,
-				'handler' => $options['handler'] ?? null,
 				// HestiaCP reports failures with HTTP error codes, the commands handle them
 				'http_errors' => false
-			]);
+			];
+			if (isset($options['handler'])) {
+				$config['handler'] = $options['handler'];
+			}
+
+			$this->guzzleClient = new \GuzzleHttp\Client($config);
 		} catch (\Exception $e) {
 			throw new ClientException('Bad Client configuration (' . $e->getMessage() . ')');
 		}
@@ -163,55 +154,35 @@ class Client {
 		return $this;
 	}
 
-	/**
-	 * @template T of Module
-	 * @param class-string<T> $moduleName
-	 * @return T
-	 */
-	private function loadModule(string $moduleName, ?string $param = null): Module {
-		// Modules bound to a user are cached per user, otherwise one user's module would be reused for another
-		$key = $param ?? '';
-
-		if (!isset($this->modules[$moduleName][$key])) {
-			if ($param !== null) {
-				$this->modules[$moduleName][$key] = new $moduleName($this, $param);
-			} else {
-				$this->modules[$moduleName][$key] = new $moduleName($this);
-			}
-		}
-
-		return $this->modules[$moduleName][$key];
-	}
-
 	public function getModuleUser(): Users {
-		return $this->loadModule(Users::class);
+		return new Users($this);
 	}
 
 	public function getModuleMail(string $user): Mails {
-		return $this->loadModule(Mails::class, $user);
+		return new Mails($this, $user);
 	}
 
 	public function getModuleWeb(string $user): Webs {
-		return $this->loadModule(Webs::class, $user);
+		return new Webs($this, $user);
 	}
 
 	public function getModuleBackup(string $user): Backups {
-		return $this->loadModule(Backups::class, $user);
+		return new Backups($this, $user);
 	}
 
 	public function getModuleDatabase(string $user): Databases {
-		return $this->loadModule(Databases::class, $user);
+		return new Databases($this, $user);
 	}
 
 	public function getModulePackage(): Packages {
-		return $this->loadModule(Packages::class);
+		return new Packages($this);
 	}
 
 	public function getModuleCron(string $user): Crons {
-		return $this->loadModule(Crons::class, $user);
+		return new Crons($this, $user);
 	}
 
 	public function getModuleDns(string $user): Dns {
-		return $this->loadModule(Dns::class, $user);
+		return new Dns($this, $user);
 	}
 }

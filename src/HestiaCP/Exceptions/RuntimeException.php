@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Exceptions;
 
-class RuntimeException extends Exception {}
+class RuntimeException extends \RuntimeException implements Exception {}

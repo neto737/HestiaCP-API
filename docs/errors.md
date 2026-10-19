@@ -1,6 +1,6 @@
 # Error handling
 
-Every failure is thrown as an exception. All of them extend `\neto737\HestiaCP\Exceptions\Exception`.
+Every failure is thrown as an exception. All of them implement the `\neto737\HestiaCP\Exceptions\Exception` interface, so `catch (Exception $e)` catches any of them. They also extend PHP's `\InvalidArgumentException` or `\RuntimeException`, so code that catches those standard types catches them too.
 
 ```php
 use neto737\HestiaCP\Command\ResponseCode;
@@ -17,11 +17,11 @@ try {
 		// the user already exists
 	}
 } catch (ClientException $e) {
-	// connection problem (timeout, DNS, TLS, ...)
+	// connection problem (timeout, DNS, TLS, ...), or the host isn't HestiaCP
 }
 ```
 
-Catch `AuthorizationException` before `ProcessException`, because it is a subclass.
+Catch `AuthorizationException` before `ProcessException`, because it is a subclass. Likewise, catch `InvalidResponseException` before `ClientException` to tell a host that isn't HestiaCP apart from a connection problem.
 
 ## Exception types
 
@@ -30,10 +30,11 @@ All classes are in the `neto737\HestiaCP\Exceptions` namespace.
 | Exception | Extends | Thrown when |
 | --- | --- | --- |
 | `AuthorizationException` | `ProcessException` | The credentials are wrong (exit code 9) or the user may not run the command (exit code 10). |
-| `InvalidResponseException` | `ProcessException` | The response isn't what HestiaCP sends, for example when the hostname points to another server. |
-| `ProcessException` | `RuntimeException` | HestiaCP ran the command and it failed with any other exit code, or a list command returned invalid JSON. |
+| `InvalidResponseException` | `ClientException` | The response isn't what HestiaCP sends, for example when the hostname points to another server: a body that isn't an exit code, an HTTP error status without an exit code, or a list command body that isn't a JSON object or array. |
+| `ProcessException` | `RuntimeException` | HestiaCP ran the command and it failed with any other exit code. |
 | `ClientException` | `RuntimeException` | The request didn't complete: timeout, DNS failure, TLS error, refused connection. The original Guzzle exception is available with `getPrevious()`. |
-| `InvalidArgumentException` | `Exception` | An argument is invalid before anything is sent, for example a malformed hostname or a `RawCommand` name that isn't a HestiaCP script name. |
+| `RuntimeException` | `\RuntimeException` | Not thrown itself; the parent of the four classes above. |
+| `InvalidArgumentException` | `\InvalidArgumentException` | An argument is invalid before anything is sent, for example a malformed hostname or a `RawCommand` name that isn't a HestiaCP script name. |
 
 ## Exit codes
 

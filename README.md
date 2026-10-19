@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://packagist.org/packages/neto737/hestiacp-api"><img src="https://img.shields.io/packagist/v/neto737/hestiacp-api?label=packagist" alt="Latest Stable Version"></a>
   <a href="https://packagist.org/packages/neto737/hestiacp-api"><img src="https://img.shields.io/packagist/dt/neto737/hestiacp-api" alt="Total Downloads"></a>
-  <img src="https://img.shields.io/badge/php-%E2%89%A5%208.2-777BB4?logo=php&logoColor=white" alt="PHP 8.2 or later">
+  <img src="https://img.shields.io/badge/php-%E2%89%A5%208.3-777BB4?logo=php&logoColor=white" alt="PHP 8.3 or later">
   <a href="https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml"><img src="https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml/badge.svg?branch=main" alt="Tests"></a>
   <a href="https://codecov.io/gh/neto737/HestiaCP-API"><img src="https://codecov.io/gh/neto737/HestiaCP-API/branch/main/graph/badge.svg?token=F93I5JQXY6" alt="Coverage"></a>
   <a href="LICENSE"><img src="https://img.shields.io/packagist/l/neto737/hestiacp-api" alt="License"></a>
@@ -28,11 +28,11 @@
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
 - **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
-- Tested on PHP 8.2 to 8.5 and checked against HestiaCP 1.10.
+- Tested on PHP 8.3 to 8.5 and checked against HestiaCP 1.10.
 
 ## Requirements
 
-- PHP 8.2 or later
+- PHP 8.3 or later
 - HestiaCP with the API enabled, and the IP address of the calling machine allowed in the server settings
 
 ## Installation
@@ -101,7 +101,7 @@ try {
 		// the user already exists
 	}
 } catch (ClientException $e) {
-	// connection problem: timeout, DNS, TLS, ...
+	// connection problem (timeout, DNS, TLS, ...), or the host isn't HestiaCP
 }
 ```
 

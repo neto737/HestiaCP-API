@@ -34,7 +34,7 @@ class Databases extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function add(string $database, string $dbuser, string $dbpass, string $type = 'mysql'): bool {
+	public function add(string $database, string $dbuser, #[\SensitiveParameter] string $dbpass, string $type = 'mysql'): bool {
 		return $this->client->send(new AddDatabase($this->user, $database, $dbuser, $dbpass, $type));
 	}
 
@@ -47,7 +47,7 @@ class Databases extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function changePassword(string $database, string $dbpass): bool {
+	public function changePassword(string $database, #[\SensitiveParameter] string $dbpass): bool {
 		return $this->client->send(new ChangeDatabasePassword($this->user, $database, $dbpass));
 	}
 

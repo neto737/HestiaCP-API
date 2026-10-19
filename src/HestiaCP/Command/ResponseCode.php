@@ -6,33 +6,33 @@ namespace neto737\HestiaCP\Command;
 
 class ResponseCode {
 
-	public const OK = 0;
-	public const E_ARGS = 1;
-	public const E_INVALID = 2;
-	public const E_NOTEXIST = 3;
-	public const E_EXISTS = 4;
-	public const E_SUSPENDED = 5;
-	public const E_UNSUSPENDED = 6;
-	public const E_INUSE = 7;
-	public const E_LIMIT = 8;
-	public const E_PASSWORD = 9;
-	public const E_FORBIDDEN = 10;
-	public const E_DISABLED = 11;
-	public const E_PARSING = 12;
-	public const E_DISK = 13;
-	public const E_LA = 14;
-	public const E_CONNECT = 15;
-	public const E_FTP = 16;
-	public const E_DB = 17;
-	public const E_RRD = 18;
-	public const E_UPDATE = 19;
-	public const E_RESTART = 20;
+	public const int OK = 0;
+	public const int E_ARGS = 1;
+	public const int E_INVALID = 2;
+	public const int E_NOTEXIST = 3;
+	public const int E_EXISTS = 4;
+	public const int E_SUSPENDED = 5;
+	public const int E_UNSUSPENDED = 6;
+	public const int E_INUSE = 7;
+	public const int E_LIMIT = 8;
+	public const int E_PASSWORD = 9;
+	public const int E_FORBIDDEN = 10;
+	public const int E_DISABLED = 11;
+	public const int E_PARSING = 12;
+	public const int E_DISK = 13;
+	public const int E_LA = 14;
+	public const int E_CONNECT = 15;
+	public const int E_FTP = 16;
+	public const int E_DB = 17;
+	public const int E_RRD = 18;
+	public const int E_UPDATE = 19;
+	public const int E_RESTART = 20;
 	// HestiaCP uses 21 for both: E_BACKUP in the CLI scripts, E_API_DISABLED in the API
-	public const E_BACKUP = 21;
-	public const E_API_DISABLED = 21;
+	public const int E_BACKUP = 21;
+	public const int E_API_DISABLED = 21;
 
 	/** @var array<int, string> */
-	public static array $messages = [
+	private const array MESSAGES = [
 		self::OK => 'Command has been successfully performed',
 		self::E_ARGS => 'Not enough arguments provided',
 		self::E_INVALID => 'Object or argument is not valid',
@@ -58,6 +58,6 @@ class ResponseCode {
 	];
 
 	public static function getMessage(int $code): string {
-		return self::$messages[$code] ?? 'Unknown error (exit code ' . $code . ')';
+		return self::MESSAGES[$code] ?? 'Unknown error (exit code ' . $code . ')';
 	}
 }

@@ -1,5 +1,216 @@
 # Upgrading
 
+## From v2 to v3
+
+The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
+
+### PHP 8.3 or later
+
+v3 requires PHP 8.3. v2 ran on PHP 8.2, which reaches end of life on 31 December 2026.
+
+### `Credentials` constructor and setters removed
+
+`new Credentials(...)` no longer works: the constructor is private. Use the named constructors, which have been available since 2.1.0:
+
+```php
+// v2
+new Credentials('API_KEY');
+new Credentials('admin', 'somePassword');
+
+// v3
+Credentials::legacyHash('API_KEY');
+Credentials::password('admin', 'somePassword');
+Credentials::accessKey('ACCESS_KEY', 'SECRET_KEY');
+```
+
+The setters `setAccessKey()`, `setApiKey()`, `setUser()` and `setPassword()` are gone too, so a `Credentials` object can't be changed once created. To use other credentials, create a new `Host` and `Client` (see below). `Client::simpleFactory()` is unchanged.
+
+### `Host` and the client's host can't be changed
+
+`Host::setHostname()`, `Host::setPort()`, `Host::setCredentials()` and `Client::setHost()` are gone. A `Host` keeps the hostname, credentials and port it was created with, and a `Client` keeps its `Host`. To connect to another server, or with other credentials, create a new client:
+
+```php
+// v2
+$client->getHost()->setCredentials($otherCredentials);
+$client->setHost(new Host('https://other.example.com', $credentials));
+
+// v3
+$client = new Client(new Host('https://panel.example.com', $otherCredentials));
+$client = new Client(new Host('https://other.example.com', $credentials));
+```
+
+### Commands are stateless
+
+A command no longer stores the response it got. `Client::send()` passes the response straight to `process()`, which now takes it as an argument, and `setLastResponse()`, `getResponseText()` and `getStatusCode()` are gone. Code that only calls `send()` or the modules needs no change.
+
+If your command class overrides `process()`, add the response parameter and pass it to the parent:
+
+```php
+use Psr\Http\Message\ResponseInterface;
+
+// v2
+public function process(): array {
+	return array_keys(parent::process());
+}
+
+// v3
+public function process(ResponseInterface $response): array {
+	return array_keys(parent::process($response));
+}
+```
+
+If it calls `defaultProcess()`, `getResponseCode()` or `codeException()`, pass the response to those too: `$this->defaultProcess($response)`, `$this->getResponseCode($response)`, `$this->codeException($code, $response)`.
+
+A class that implements `ICommand` directly must drop `setLastResponse()` and declare `process(ResponseInterface $response): mixed`, or a narrower return type.
+
+If you read the raw response with `getResponseText()` or `getStatusCode()` after `send()`, override `process()` in your own command class instead: the body is `(string) $response->getBody()` and the status is `$response->getStatusCode()`. See [Processing the response](docs/commands.md#processing-the-response).
+
+### `defaultProcess()` and `getResponseCode()` are protected
+
+`Command::defaultProcess()` and `Command::getResponseCode()` are protected, like `codeException()`. Command subclasses call them as before. If you called them on a command from outside its class, for example to check a response yourself, write a command class that overrides `process()` and does the check there. See [Processing the response](docs/commands.md#processing-the-response).
+
+### Modules are no longer cached
+
+Each `getModule*()` call creates a new module. In v2, `$client->getModuleMail('alice')` returned the same instance every time; in v3 two calls return two instances. Modules hold no state of their own, so code that only calls their methods needs no change. Only a check like `$a === $b` on modules behaves differently.
+
+### `IModule` removed
+
+The empty `neto737\HestiaCP\Module\IModule` interface is gone. If you type-hint it or check `instanceof IModule`, use the abstract `neto737\HestiaCP\Module\Module` class, which every module extends.
+
+### `InvalidResponseException` extends `ClientException`
+
+`InvalidResponseException` is thrown when the response isn't what HestiaCP sends, usually because the hostname points to another server. In v2 it extended `ProcessException`; in v3 it extends `ClientException`, because it's a setup problem, not a failed command.
+
+It is also thrown in a case that threw `ProcessException` with code `0` in v2: a list command whose body isn't valid JSON, or isn't a JSON object or array. HestiaCP never sends that, so it means the same thing as a body that isn't an exit code. The message no longer holds the body.
+
+A `catch (ProcessException $e)` no longer catches it. If you catch both `ProcessException` and `ClientException`, nothing goes uncaught: the exception now reaches the `ClientException` branch. If you catch only `ProcessException`, add a `catch` for `InvalidResponseException` or `ClientException`. To handle it on its own, catch `InvalidResponseException` before `ClientException`:
+
+```php
+try {
+	$client->getModuleUser()->list();
+} catch (InvalidResponseException $e) {
+	// the host isn't HestiaCP
+} catch (ProcessException $e) {
+	// the command failed
+} catch (ClientException $e) {
+	// connection problem
+}
+```
+
+### `Exceptions\Exception` is an interface
+
+The exceptions extend PHP's standard exceptions instead of a common base class: `InvalidArgumentException` extends `\InvalidArgumentException`, and `RuntimeException` (the parent of `ProcessException`, `AuthorizationException`, `ClientException` and `InvalidResponseException`) extends `\RuntimeException`. `Exceptions\Exception` became an interface that all of them implement.
+
+`catch (Exception $e)` and `instanceof Exception` work as before. A `catch (\InvalidArgumentException $e)`, `catch (\LogicException $e)` or `catch (\RuntimeException $e)` now also catches the library's exceptions, so check that such a block, placed before your `catch` for the library's types, doesn't take them over.
+
+Only code that creates or extends `Exceptions\Exception` itself must change, because an interface can't be instantiated or extended by a class. Throw or extend one of the concrete classes, or implement the interface:
+
+```php
+// v2
+class MyException extends \neto737\HestiaCP\Exceptions\Exception {}
+
+// v3
+class MyException extends \RuntimeException implements \neto737\HestiaCP\Exceptions\Exception {}
+```
+
+### `ResponseCode::$messages` removed
+
+The messages for the exit codes are in a private constant instead of the public static `ResponseCode::$messages` array, so they can no longer be changed at runtime. To read a message, call `ResponseCode::getMessage($code)` instead of `ResponseCode::$messages[$code]`; it also returns `Unknown error (exit code N)` for a code with no message. If you replaced messages in the array, for example to translate them, map the exception code to your own message instead: `$myMessages[$e->getCode()] ?? $e->getMessage()`.
+
+### Class constants are typed
+
+The class constants declare their types: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. Reading them works as before. Only a subclass that redeclares one of them must change: PHP fails with a fatal error unless the redeclared constant has the same type.
+
+```php
+// v2
+class MyCommand extends Command {
+	protected const FORMAT_JSON = 'json';
+}
+
+// v3
+class MyCommand extends Command {
+	protected const string FORMAT_JSON = 'json';
+}
+```
+
+### Command classes grouped by verb removed
+
+The command class names from 2.0, grouped by verb (`Add\User`, `Lists\Users`, …), are gone. Code that only uses the modules needs no change. If you create command objects yourself, switch to the names grouped by module, which have been available since 2.1.0. All classes are in `neto737\HestiaCP\Command`:
+
+```php
+// v2
+use neto737\HestiaCP\Command\Lists\Users;
+$client->send(new Users());
+
+// v3
+use neto737\HestiaCP\Command\User\ListUsers;
+$client->send(new ListUsers());
+```
+
+| v2 | v3 |
+| --- | --- |
+| `Add\Database` | `Database\AddDatabase` |
+| `Add\LetsEncryptDomain` | `Web\AddLetsEncryptDomain` |
+| `Add\MailAccount` | `Mail\AddMailAccount` |
+| `Add\MailDomain` | `Mail\AddMailDomain` |
+| `Add\User` | `User\AddUser` |
+| `Add\WebDomain` | `Web\AddWebDomain` |
+| `Add\WebDomainFtp` | `Web\AddWebDomainFtp` |
+| `Backup\User` | `Backup\BackupUser` |
+| `Backup\Users` | `User\BackupUsers` |
+| `Change\MailAccountPassword` | `Mail\ChangeMailAccountPassword` |
+| `Change\UserPassword` | `User\ChangeUserPassword` |
+| `Change\WebDomainFtpPassword` | `Web\ChangeWebDomainFtpPassword` |
+| `Change\WebDomainFtpPath` | `Web\ChangeWebDomainFtpPath` |
+| `Delete\Database` | `Database\DeleteDatabase` |
+| `Delete\Databases` | `Database\DeleteDatabases` |
+| `Delete\LetsEncryptDomain` | `Web\DeleteLetsEncryptDomain` |
+| `Delete\MailAccount` | `Mail\DeleteMailAccount` |
+| `Delete\MailDomain` | `Mail\DeleteMailDomain` |
+| `Delete\User` | `User\DeleteUser` |
+| `Delete\UserBackup` | `Backup\DeleteUserBackup` |
+| `Delete\UserBackupExclusions` | `Backup\DeleteUserBackupExclusions` |
+| `Delete\WebDomain` | `Web\DeleteWebDomain` |
+| `Delete\WebDomainFtp` | `Web\DeleteWebDomainFtp` |
+| `Lists\Database` | `Database\ListDatabase` |
+| `Lists\Databases` | `Database\ListDatabases` |
+| `Lists\MailAccounts` | `Mail\ListMailAccounts` |
+| `Lists\MailDomainDkim` | `Mail\ListMailDomainDkim` |
+| `Lists\MailDomainDkimDns` | `Mail\ListMailDomainDkimDns` |
+| `Lists\MailDomains` | `Mail\ListMailDomains` |
+| `Lists\User` | `User\ListUser` |
+| `Lists\UserBackup` | `Backup\ListUserBackup` |
+| `Lists\UserBackupExclusions` | `Backup\ListUserBackupExclusions` |
+| `Lists\UserBackups` | `Backup\ListUserBackups` |
+| `Lists\Users` | `User\ListUsers` |
+| `Lists\WebDomains` | `Web\ListWebDomains` |
+| `Suspend\MailAccount` | `Mail\SuspendMailAccount` |
+| `Suspend\MailDomain` | `Mail\SuspendMailDomain` |
+| `Suspend\User` | `User\SuspendUser` |
+| `Suspend\WebDomain` | `Web\SuspendWebDomain` |
+| `Unsuspend\MailAccount` | `Mail\UnsuspendMailAccount` |
+| `Unsuspend\MailDomain` | `Mail\UnsuspendMailDomain` |
+| `Unsuspend\User` | `User\UnsuspendUser` |
+| `Unsuspend\WebDomain` | `Web\UnsuspendWebDomain` |
+
+### `ARG_*` constants removed
+
+`Command::ARG_1` … `ARG_6` are gone. Only relevant if you wrote your own command classes. Build the request parameters with `positional()`, available since 2.1.0, which takes the arguments in order:
+
+```php
+// v2
+public function getRequestParams(): array {
+	return [self::ARG_1 => $this->user, self::ARG_2 => self::FORMAT_JSON];
+}
+
+// v3
+public function getRequestParams(): array {
+	return $this->positional([$this->user, self::FORMAT_JSON]);
+}
+```
+
+Use `null` for an optional argument that isn't set. See [Writing your own command](docs/commands.md#writing-your-own-command).
+
 ## From v1 to v2
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).

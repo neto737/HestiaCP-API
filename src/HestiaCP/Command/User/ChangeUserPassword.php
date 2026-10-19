@@ -10,7 +10,7 @@ class ChangeUserPassword extends ProcessCommand {
 
 	public function __construct(
 		private readonly string $user,
-		private readonly string $password
+		#[\SensitiveParameter] private readonly string $password
 	) {}
 
 	public function getName(): string {

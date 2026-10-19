@@ -12,6 +12,7 @@ class BackupUsers extends ProcessCommand {
 		return 'v-backup-users';
 	}
 
+	#[\Override]
 	public function getTimeout(): ?float {
 		// the backup runs synchronously and can take a long time
 		return 0;

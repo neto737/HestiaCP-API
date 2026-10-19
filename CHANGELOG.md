@@ -6,6 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- **BC break:** requires PHP 8.3 or later. PHP 8.2 reaches end of life on 31 December 2026. CI runs on PHP 8.3 to 8.5, and the lowest-dependencies run moved to PHP 8.3.
+
+- **BC break:** commands are stateless. `ICommand::process()` takes the response, `process(ResponseInterface $response): mixed`, and `Client::send()` passes it in, instead of storing it on the command with `setLastResponse()` first. Sending the same command instance twice no longer overwrites the first result. `Command::defaultProcess()`, `Command::getResponseCode()` and `Command::codeException()` take the response too. Classes that implement `ICommand` or override `process()` must update their signatures.
+
+- **BC break:** `Command::defaultProcess()` and `Command::getResponseCode()` are protected instead of public. Only command subclasses use them; code that called them from outside a command must move the check into a command's `process()`.
+
+- **BC break:** the client no longer caches modules. Each `getModule*()` call creates a new module, so two calls never return the same instance, even for the same user. Modules hold no state of their own, so this only matters to code that compares module instances.
+
+- **BC break:** `InvalidResponseException` extends `ClientException` instead of `ProcessException`. A response that isn't from HestiaCP is a setup problem, not a failed command, so `catch (ProcessException $e)` no longer catches it. `Client::send()` rethrows it as is.
+
+- **BC break:** a list command whose body isn't valid JSON, or isn't a JSON object or array, throws `InvalidResponseException` instead of `ProcessException` with code `0`. HestiaCP never sends such a body, so like a body that isn't an exit code, it means the host isn't HestiaCP. The message no longer holds the body; for invalid JSON, `getPrevious()` returns the `JsonException`.
+
+- **BC break:** the exceptions extend PHP's standard exceptions: `Exceptions\InvalidArgumentException` extends `\InvalidArgumentException` and `Exceptions\RuntimeException`, with its subclasses, extends `\RuntimeException`. `Exceptions\Exception` is now a marker interface that every exception implements, instead of their base class. `catch (Exceptions\Exception $e)` still catches all of them, and `catch (\InvalidArgumentException $e)` or `catch (\RuntimeException $e)` now catches them too. Code that instantiates or extends `Exceptions\Exception` must change.
+
+- **BC break:** the `ResponseCode::$messages` static property is replaced by a private constant. Any code could overwrite the messages at runtime, for every client in the process. Use `ResponseCode::getMessage($code)` to read a message.
+
+- **BC break:** class constants are typed: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. A subclass that redeclares one of them must declare it with the same type.
+
+- PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
+
+### Removed
+
+- **BC break:** the command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …), deprecated since 2.1.0. The `Add`, `Change`, `Delete`, `Lists`, `Suspend` and `Unsuspend` namespaces are gone, as are `Backup\User` and `Backup\Users`. Use the names grouped by module (`User\AddUser`, `User\ListUsers`, `Mail\SuspendMailAccount`, …); [UPGRADING.md](UPGRADING.md) lists each replacement.
+
+- **BC break:** `ICommand::setLastResponse()`, and `Command::getResponseText()` and `Command::getStatusCode()`. A command no longer keeps the response; override `process()` to read it.
+
+- **BC break:** the `Credentials` constructor and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`), deprecated since 2.1.0. The constructor is private: use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()`. `Credentials` is immutable; to use other credentials, create a new `Host` and `Client`.
+
+- **BC break:** `Host::setHostname()`, `Host::setPort()`, `Host::setCredentials()` and `Client::setHost()`. `Host` is immutable, like `Credentials`, and a client stays bound to the host it was created with, so a client shared by several parts of an application can't be switched to another server while in use. To connect to another server, or with other credentials, create a new `Host` and `Client`.
+
+- **BC break:** `Command::ARG_1` … `ARG_6`, deprecated since 2.1.0. Use `positional()` to build the `arg1`, `arg2`, … request parameters.
+
+- **BC break:** the empty `Module\IModule` marker interface. Type-hint the abstract `Module\Module` class instead, which every module extends.
+
+### Security
+
+- Passwords, secret keys and legacy hashes are marked `#[\SensitiveParameter]`, so stack traces and logged exceptions show `SensitiveParameterValue` instead of the value. This covers the `Credentials` named constructors, `Client::simpleFactory()` (both `$user`, which holds the key when no password is given, and `$password`), the module methods that take a password, and the commands `AddUser`, `ChangeUserPassword`, `AddMailAccount`, `ChangeMailAccountPassword`, `AddDatabase`, `ChangeDatabasePassword`, `AddWebDomainFtp` and `ChangeWebDomainFtpPassword`.
+- `Credentials::__debugInfo()` masks the password, legacy hash and secret key as `********` in `var_dump()` and `print_r()`.
+
 ## [2.1.0] - 2026-10-18
 
 ### Added
