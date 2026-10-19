@@ -77,6 +77,8 @@ The empty `neto737\HestiaCP\Module\IModule` interface is gone. If you type-hint 
 
 `InvalidResponseException` is thrown when the response isn't what HestiaCP sends, usually because the hostname points to another server. In v2 it extended `ProcessException`; in v3 it extends `ClientException`, because it's a setup problem, not a failed command.
 
+It is also thrown in a case that threw `ProcessException` with code `0` in v2: a list command whose body isn't valid JSON, or isn't a JSON object or array. HestiaCP never sends that, so it means the same thing as a body that isn't an exit code. The message no longer holds the body.
+
 A `catch (ProcessException $e)` no longer catches it. If you catch both `ProcessException` and `ClientException`, nothing goes uncaught: the exception now reaches the `ClientException` branch. If you catch only `ProcessException`, add a `catch` for `InvalidResponseException` or `ClientException`. To handle it on its own, catch `InvalidResponseException` before `ClientException`:
 
 ```php

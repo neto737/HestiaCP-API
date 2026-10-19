@@ -297,7 +297,8 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testListNotList(): void {
 		$client = $this->createClient([new Response(200, [], '"OK"')]);
 
-		$this->expectException(ProcessException::class);
+		$this->expectException(InvalidResponseException::class);
+		$this->expectExceptionMessage('Response is not a JSON object or array');
 		$client->send(new ListUsers());
 	}
 
@@ -309,9 +310,13 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 	public function testListInvalidJson(): void {
 		$client = $this->createClient([new Response(200, [], 'not json')]);
 
-		$this->expectException(ProcessException::class);
-		$this->expectExceptionMessage('not json');
-		$client->send(new ListUsers());
+		try {
+			$client->send(new ListUsers());
+			$this->fail('InvalidResponseException expected');
+		} catch (InvalidResponseException $e) {
+			$this->assertStringStartsWith('Response is not JSON', $e->getMessage());
+			$this->assertInstanceOf(\JsonException::class, $e->getPrevious());
+		}
 	}
 
 	public function testListDatabasesReturnsAll(): void {

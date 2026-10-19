@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** `InvalidResponseException` extends `ClientException` instead of `ProcessException`. A response that isn't from HestiaCP is a setup problem, not a failed command, so `catch (ProcessException $e)` no longer catches it. `Client::send()` rethrows it as is.
 
+- **BC break:** a list command whose body isn't valid JSON, or isn't a JSON object or array, throws `InvalidResponseException` instead of `ProcessException` with code `0`. HestiaCP never sends such a body, so like a body that isn't an exit code, it means the host isn't HestiaCP. The message no longer holds the body; for invalid JSON, `getPrevious()` returns the `JsonException`.
+
 - PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
 
 ### Removed

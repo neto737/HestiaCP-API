@@ -22,6 +22,7 @@ abstract class ListCommand extends Command {
 	 * @return array<mixed>
 	 * @throws ProcessException
 	 * @throws AuthorizationException
+	 * @throws InvalidResponseException
 	 */
 	public function process(ResponseInterface $response): array {
 		parent::defaultProcess($response);
@@ -33,14 +34,15 @@ abstract class ListCommand extends Command {
 			return [];
 		}
 
+		// HestiaCP always prints a JSON object or array, so anything else comes from another server
 		try {
 			$list = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);
 		} catch (\JsonException $e) {
-			throw new ProcessException($responseJson, 0, $e);
+			throw new InvalidResponseException('Response is not JSON. Is hostname really HestiaCP?', 0, $e);
 		}
 
 		if (!is_array($list)) {
-			throw new ProcessException($responseJson);
+			throw new InvalidResponseException('Response is not a JSON object or array. Is hostname really HestiaCP?');
 		}
 
 		return $list;
