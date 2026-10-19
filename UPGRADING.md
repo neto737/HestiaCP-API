@@ -59,11 +59,15 @@ public function process(ResponseInterface $response): array {
 }
 ```
 
-If it calls `defaultProcess()` or `getResponseCode()`, or the protected `codeException()`, pass the response to those too: `$this->defaultProcess($response)`, `$this->getResponseCode($response)`, `$this->codeException($code, $response)`.
+If it calls `defaultProcess()`, `getResponseCode()` or `codeException()`, pass the response to those too: `$this->defaultProcess($response)`, `$this->getResponseCode($response)`, `$this->codeException($code, $response)`.
 
 A class that implements `ICommand` directly must drop `setLastResponse()` and declare `process(ResponseInterface $response): mixed`, or a narrower return type.
 
 If you read the raw response with `getResponseText()` or `getStatusCode()` after `send()`, override `process()` in your own command class instead: the body is `(string) $response->getBody()` and the status is `$response->getStatusCode()`. See [Processing the response](docs/commands.md#processing-the-response).
+
+### `defaultProcess()` and `getResponseCode()` are protected
+
+`Command::defaultProcess()` and `Command::getResponseCode()` are protected, like `codeException()`. Command subclasses call them as before. If you called them on a command from outside its class, for example to check a response yourself, write a command class that overrides `process()` and does the check there. See [Processing the response](docs/commands.md#processing-the-response).
 
 ### Modules are no longer cached
 

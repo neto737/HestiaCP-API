@@ -27,7 +27,7 @@ abstract class Command implements ICommand {
 	/**
 	 * @throws InvalidResponseException
 	 */
-	public function getResponseCode(ResponseInterface $response): int {
+	protected function getResponseCode(ResponseInterface $response): int {
 		$exitCode = $this->getExitCode($response);
 		if ($exitCode !== null) {
 			return $exitCode;
@@ -46,7 +46,7 @@ abstract class Command implements ICommand {
 	 * @throws AuthorizationException
 	 * @throws ProcessException
 	 */
-	public function defaultProcess(ResponseInterface $response): void {
+	protected function defaultProcess(ResponseInterface $response): void {
 		$responseText = (string) $response->getBody();
 
 		if (strpos($responseText, 'Error: authentication failed') === 0) {
