@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** the `Credentials` constructor and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`), deprecated since 2.1.0. The constructor is private: use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()`. `Credentials` is immutable; to change the credentials of a `Host`, pass new `Credentials` to `Host::setCredentials()`.
 
+- **BC break:** `Command::ARG_1` … `ARG_6`, deprecated since 2.1.0. Use `positional()` to build the `arg1`, `arg2`, … request parameters.
+
 ## [2.1.0] - 2026-10-18
 
 ### Added

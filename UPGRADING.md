@@ -107,6 +107,24 @@ $client->send(new ListUsers());
 | `Unsuspend\User` | `User\UnsuspendUser` |
 | `Unsuspend\WebDomain` | `Web\UnsuspendWebDomain` |
 
+### `ARG_*` constants removed
+
+`Command::ARG_1` … `ARG_6` are gone. Only relevant if you wrote your own command classes. Build the request parameters with `positional()`, available since 2.1.0, which takes the arguments in order:
+
+```php
+// v2
+public function getRequestParams(): array {
+	return [self::ARG_1 => $this->user, self::ARG_2 => self::FORMAT_JSON];
+}
+
+// v3
+public function getRequestParams(): array {
+	return $this->positional([$this->user, self::FORMAT_JSON]);
+}
+```
+
+Use `null` for an optional argument that isn't set. See [Writing your own command](docs/commands.md#writing-your-own-command).
+
 ## From v1 to v2
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).

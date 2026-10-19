@@ -15,19 +15,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 abstract class Command implements ICommand {
 
-	/** @deprecated Use positional() instead. Will be removed in 3.0. */
-	protected const ARG_1 = 'arg1';
-	/** @deprecated Use positional() instead. Will be removed in 3.0. */
-	protected const ARG_2 = 'arg2';
-	/** @deprecated Use positional() instead. Will be removed in 3.0. */
-	protected const ARG_3 = 'arg3';
-	/** @deprecated Use positional() instead. Will be removed in 3.0. */
-	protected const ARG_4 = 'arg4';
-	/** @deprecated Use positional() instead. Will be removed in 3.0. */
-	protected const ARG_5 = 'arg5';
-	/** @deprecated Use positional() instead. Will be removed in 3.0. */
-	protected const ARG_6 = 'arg6';
-
 	protected const FORMAT_JSON = 'json';
 
 	/**

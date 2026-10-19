@@ -103,8 +103,6 @@ $this->positional(['admin', null, 'yes']); // ['arg1' => 'admin', 'arg2' => '', 
 $this->positional(['admin', 'yes', null]); // ['arg1' => 'admin', 'arg2' => 'yes']
 ```
 
-The `ARG_1` … `ARG_6` constants are deprecated and will be removed in 3.0.
-
 ### Timeouts
 
 To give a slow command more time than the client default, override `getTimeout()`:
