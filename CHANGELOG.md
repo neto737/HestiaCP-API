@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** `Command::ARG_1` … `ARG_6`, deprecated since 2.1.0. Use `positional()` to build the `arg1`, `arg2`, … request parameters.
 
+- **BC break:** the empty `Module\IModule` marker interface. Type-hint the abstract `Module\Module` class instead, which every module extends.
+
 ## [2.1.0] - 2026-10-18
 
 ### Added

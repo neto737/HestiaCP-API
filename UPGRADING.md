@@ -51,6 +51,10 @@ If you read the raw response with `getResponseText()` or `getStatusCode()` after
 
 Each `getModule*()` call creates a new module. In v2, `$client->getModuleMail('alice')` returned the same instance every time; in v3 two calls return two instances. Modules hold no state of their own, so code that only calls their methods needs no change. Only a check like `$a === $b` on modules behaves differently.
 
+### `IModule` removed
+
+The empty `neto737\HestiaCP\Module\IModule` interface is gone. If you type-hint it or check `instanceof IModule`, use the abstract `neto737\HestiaCP\Module\Module` class, which every module extends.
+
 ### Command classes grouped by verb removed
 
 The command class names from 2.0, grouped by verb (`Add\User`, `Lists\Users`, …), are gone. Code that only uses the modules needs no change. If you create command objects yourself, switch to the names grouped by module, which have been available since 2.1.0. All classes are in `neto737\HestiaCP\Command`:

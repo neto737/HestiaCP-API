@@ -6,7 +6,7 @@ namespace neto737\HestiaCP\Module;
 
 use neto737\HestiaCP\Client;
 
-abstract class Module implements IModule {
+abstract class Module {
 
 	protected Client $client;
 
