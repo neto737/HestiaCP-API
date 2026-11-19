@@ -102,3 +102,11 @@ $client->testAuthorization(); // true, or false on an authentication failure
 ```
 
 It runs `v-list-sys-info`, so the credentials must be allowed to run that command.
+
+`false` means HestiaCP refused the request with exit code 9 or 10, which can have several causes. HestiaCP doesn't always say which one, so check each:
+
+- The credentials are wrong: the key, secret, legacy hash or password, or, with a password, a username other than the admin user.
+- The IP address of the calling machine isn't allowed to use the API.
+- The access key may not run `v-list-sys-info`. A non-admin user's access key only runs the commands of its permission sets, so `testAuthorization()` returns `false` for it even when the key works. Test such a key with a command it may run, for example `$client->getModuleMail('jane')->listDomains()`.
+
+Other failures throw: `ProcessException` when the API is disabled (exit code 11), or when the key belongs to a non-admin user and the API is enabled for the admin only (exit code 21). `ClientException` when the server can't be reached.

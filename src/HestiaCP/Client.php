@@ -73,6 +73,12 @@ class Client {
 	}
 
 	/**
+	 * Runs v-list-sys-info to check the credentials.
+	 *
+	 * Returns false when HestiaCP refuses the request (exit code 9 or 10): wrong credentials, an IP address
+	 * that isn't allowed, or credentials that may not run v-list-sys-info, which includes every non-admin
+	 * access key that lacks it in its permissions.
+	 *
 	 * @return bool
 	 * @throws ClientException
 	 * @throws ProcessException
