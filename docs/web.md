@@ -81,14 +81,17 @@ $web->deleteDomainSslHsts('example.com');
 ```php
 $web->addDomainLetsEncrypt('example.com', 'www.example.com');
 
-// certificate for the mail domain as well
+// certificate for the mail domain (mail.example.com and the webmail alias) instead of the web domain
 $web->addDomainLetsEncrypt('example.com', null, true);
 
 // key algorithm: ecdsa-256 (default), ecdsa-384 or rsa
 $web->addDomainLetsEncrypt('example.com', 'www.example.com', false, 'rsa');
 
 $web->deleteDomainLetsEncrypt('example.com');
+$web->deleteDomainLetsEncrypt('example.com', mail: true); // the mail domain's certificate
 ```
+
+The web domain and the mail domain each have their own certificate: to cover both, call `addDomainLetsEncrypt()` once without and once with `$mail`.
 
 Getting a certificate is slow, so this command uses a timeout of at least 90 seconds.
 

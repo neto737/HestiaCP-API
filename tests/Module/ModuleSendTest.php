@@ -370,9 +370,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'yes', 'arg5' => 'rsa']
 		];
 		yield 'Webs::deleteDomainLetsEncrypt' => [
-			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainLetsEncrypt('example.com', true),
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainLetsEncrypt('example.com', true, true),
 			'v-delete-letsencrypt-domain',
-			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes', 'arg4' => 'yes']
 		];
 		yield 'Webs::addDomainFtp' => [
 			fn (Client $c) => $c->getModuleWeb('alice')->addDomainFtp('example.com', 'ftpuser', 'secret', '/public_html'),

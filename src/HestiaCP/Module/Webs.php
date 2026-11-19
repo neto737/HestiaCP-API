@@ -121,12 +121,13 @@ class Webs extends Module {
 	 *
 	 * @param string $domain
 	 * @param bool   $restart
+	 * @param bool   $mail    Delete the mail domain's certificate (mail.DOMAIN) instead of the web domain's
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function deleteDomainLetsEncrypt(string $domain, bool $restart = false): bool {
-		return $this->client->send(new DeleteLetsEncryptDomain($this->user, $domain, $restart));
+	public function deleteDomainLetsEncrypt(string $domain, bool $restart = false, bool $mail = false): bool {
+		return $this->client->send(new DeleteLetsEncryptDomain($this->user, $domain, $restart, $mail));
 	}
 
 	/**

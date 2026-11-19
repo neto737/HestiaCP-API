@@ -234,11 +234,19 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 	public function testDeleteLetsEncryptDomain(): void {
 		$command = new DeleteLetsEncryptDomain('admin', 'domain.com');
 		$this->assertSame('v-delete-letsencrypt-domain', $command->getName());
+		// no MAIL argument: HestiaCP reads any value, "no" included, as the mail domain
 		$this->assertSame([
 			'arg1' => 'admin',
 			'arg2' => 'domain.com',
 			'arg3' => 'no'
 		], $command->getRequestParams());
+
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no',
+			'arg4' => 'yes'
+		], (new DeleteLetsEncryptDomain('admin', 'domain.com', false, true))->getRequestParams());
 
 		$this->assertTrue($command->needReturnCode());
 
