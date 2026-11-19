@@ -57,12 +57,13 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @param string $password
+	 * @param int|null $quota Mailbox size limit in MB, 0 for unlimited. HestiaCP's default (unlimited) when not set.
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addAccount(string $domain, string $account, #[\SensitiveParameter] string $password): bool {
-		return $this->client->send(new AddMailAccount($this->user, $domain, $account, $password));
+	public function addAccount(string $domain, string $account, #[\SensitiveParameter] string $password, ?int $quota = null): bool {
+		return $this->client->send(new AddMailAccount($this->user, $domain, $account, $password, $quota));
 	}
 
 	/**

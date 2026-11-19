@@ -121,6 +121,9 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 			'arg4' => 'pass'
 		], $command->getRequestParams());
 
+		$this->assertSame('1024', (new AddMailAccount('admin', 'domain.com', 'account', 'pass', 1024))->getRequestParams()['arg5']);
+		$this->assertSame('0', (new AddMailAccount('admin', 'domain.com', 'account', 'pass', 0))->getRequestParams()['arg5']);
+
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);

@@ -40,6 +40,7 @@ $mail->listAccounts('example.com'); // ['info' => [...], ...]
 $mail->listAccount('example.com', 'info'); // ['ALIAS' => '...', 'FWD' => '...', 'FWD_ONLY' => '...', 'AUTOREPLY' => '...', ...]
 
 $mail->addAccount('example.com', 'info', 'pa$$word'); // creates info@example.com
+$mail->addAccount('example.com', 'sales', 'pa$$word', 1024); // with a 1024 MB quota; 0 or no quota means unlimited
 
 $mail->changeAccountPassword('example.com', 'info', 'otherPa$$word');
 

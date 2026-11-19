@@ -259,9 +259,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		];
 
 		yield 'Mails::addAccount' => [
-			fn (Client $c) => $c->getModuleMail('alice')->addAccount('example.com', 'info', 'secret'),
+			fn (Client $c) => $c->getModuleMail('alice')->addAccount('example.com', 'info', 'secret', 2048),
 			'v-add-mail-account',
-			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'secret']
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'secret', 'arg5' => '2048']
 		];
 		yield 'Mails::changeAccountPassword' => [
 			fn (Client $c) => $c->getModuleMail('alice')->changeAccountPassword('example.com', 'info', 'secret'),

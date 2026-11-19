@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - Backups: `updateExclusions()` replaces the backup exclusion list, for example `updateExclusions(['WEB' => ['example.com:public_html/cache'], 'DB' => ['*']])`. It writes the list to a file on the server with the new `MakeTmpFile` command (`v-make-tmp-file`, handled by HestiaCP's API itself), then runs the new `Backup\UpdateUserBackupExclusions` command (`v-update-user-backup-exclusions`), which reads it.
+- Mail: `addAccount()` and `AddMailAccount` take an optional mailbox quota in MB, `addAccount('example.com', 'info', 'pa$$word', 1024)`. `0` means unlimited, like HestiaCP's default when the quota isn't set.
 
 ### Changed
 
