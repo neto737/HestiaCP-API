@@ -28,7 +28,7 @@
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
 - **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
-- Tested on PHP 8.3 to 8.5 and checked against HestiaCP 1.10.
+- Tested on PHP 8.3 to 8.5, and against a live HestiaCP 1.10.8 server with all three login methods.
 
 ## Requirements
 
@@ -111,7 +111,7 @@ All exception types and exit codes are listed in [Error handling](docs/errors.md
 
 - [Authentication and client setup](docs/authentication.md): access keys, legacy API keys, passwords, hostname rules, TLS and timeouts
 - [Error handling](docs/errors.md): exception types and HestiaCP exit codes
-- Modules: [Users](docs/users.md) · [Web domains](docs/web.md) · [Mail](docs/mail.md) · [Databases](docs/databases.md) · [Backups](docs/backups.md)
+- Modules: [Users](docs/users.md) · [Web domains](docs/web.md) · [Mail](docs/mail.md) · [DNS](docs/dns.md) · [Databases](docs/databases.md) · [Backups](docs/backups.md) · [Cron jobs](docs/cron.md) · [Packages](docs/packages.md)
 - [Sending commands directly](docs/commands.md): using the command classes, and writing your own
 
 **Upgrading from v1?** Read [UPGRADING.md](UPGRADING.md). All changes are listed in [CHANGELOG.md](CHANGELOG.md).
