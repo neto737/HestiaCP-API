@@ -26,6 +26,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** class constants are typed: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. A subclass that redeclares one of them must declare it with the same type.
 
+- **BC break:** with an access key, commands that return their exit code, such as `ProcessCommand` and `RawCommand`, are sent with `returncode=no`. HestiaCP sends the exit code in the `Hestia-Exit-Code` header anyway, and the body now holds HestiaCP's error message, so a failed command's `ProcessException` says why it failed, for example `Object doesn't exist (Error: /tmp/ssl/example.com.crt not found)` instead of only `Object doesn't exist`. The legacy API key and password still ask for the exit code as the body, because their endpoint sends no header. A custom command whose `process()` reads the exit code from the body must call `getResponseCode()` instead. `Credentials::isAccessKey()` is new.
+
 - PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
 
 ### Removed

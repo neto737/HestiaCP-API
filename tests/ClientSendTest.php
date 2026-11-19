@@ -72,9 +72,24 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 			'arg2' => 'pass',
 			'arg3' => 'mail@domain.com',
 			'arg4' => 'default',
-			'returncode' => 'yes',
+			// with an access key, the exit code comes in the Hestia-Exit-Code header
+			'returncode' => 'no',
 			'cmd' => 'v-add-user'
 		], $params);
+	}
+
+	public function testRequestFormatWithPassword(): void {
+		$this->history = [];
+		$stack = HandlerStack::create(new MockHandler([self::codeResponse(0)]));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
+
+		$client = Client::simpleFactory('https://someHost', 'admin', 'pass', ['handler' => $stack]);
+		$client->send(new AddUser('user', 'pass', 'mail@domain.com'));
+
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame('yes', $params['returncode']);
 	}
 
 	public function testRequestFormatWithLegacyHash(): void {
@@ -164,6 +179,29 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 			$this->assertSame(ResponseCode::E_EXISTS, $e->getCode());
 			$this->assertSame('Object already exists', $e->getMessage());
 		}
+	}
+
+	// HestiaCP's answer to an access key with returncode=no: the code in the header, the error in the body
+	public function testProcessErrorKeepsHestiaMessage(): void {
+		$client = $this->createClient([
+			new Response(400, ['Hestia-Exit-Code' => '3'], "Error: user nouser doesn't exist")
+		]);
+
+		$this->expectException(ProcessException::class);
+		$this->expectExceptionCode(ResponseCode::E_NOTEXIST);
+		$this->expectExceptionMessage("Object doesn't exist (Error: user nouser doesn't exist)");
+		$client->send(new AddUser('nouser', 'pass', 'mail@domain.com'));
+	}
+
+	public function testProcessSuccessWithoutOutput(): void {
+		$client = $this->createClient([new Response(204, ['Hestia-Exit-Code' => '0'], '')]);
+		$this->assertTrue($client->send(new AddUser('user', 'pass', 'mail@domain.com')));
+	}
+
+	// the body is the command's output, not an exit code
+	public function testProcessSuccessWithOutput(): void {
+		$client = $this->createClient([new Response(200, ['Hestia-Exit-Code' => '0'], "HOSTNAME  OS\n--------  --\nhost      Debian")]);
+		$this->assertTrue($client->testAuthorization());
 	}
 
 	public function testProcessErrorLegacy(): void {

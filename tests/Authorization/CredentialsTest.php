@@ -23,6 +23,12 @@ class CredentialsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertNull($credentials->getPassword());
 	}
 
+	public function testIsAccessKey(): void {
+		$this->assertTrue(Credentials::accessKey('access', 'secret')->isAccessKey());
+		$this->assertFalse(Credentials::legacyHash('key')->isAccessKey());
+		$this->assertFalse(Credentials::password('us', 'er')->isAccessKey());
+	}
+
 	public function testNamedConstructorsOnlySetTheirOwnFields(): void {
 		$hash = Credentials::legacyHash('key');
 		$this->assertSame('key', $hash->getApiKey());

@@ -211,6 +211,12 @@ public function getRequestParams(): array {
 
 Use `null` for an optional argument that isn't set. See [Writing your own command](docs/commands.md#writing-your-own-command).
 
+### With an access key, the body is no longer the exit code
+
+With an access key, commands that return their exit code (`ProcessCommand`, `RawCommand`, and any command whose `needReturnCode()` returns `true`) are sent with `returncode=no`. HestiaCP sends the exit code in the `Hestia-Exit-Code` header either way, and the body now holds the command's output, or its error message when it fails, so the `ProcessException` message includes it, for example `Object doesn't exist (Error: user jane doesn't exist)`.
+
+Nothing changes for the bundled commands. If a command of yours overrides `process()` and reads the exit code from the body, for example `(int) (string) $response->getBody()`, call `$this->getResponseCode($response)` instead: it reads the header first and the body otherwise.
+
 ## From v1 to v2
 
 v2 brings the library up to date with HestiaCP 1.10. Most code keeps working, but check each section below. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).

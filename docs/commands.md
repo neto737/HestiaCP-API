@@ -141,6 +141,8 @@ class ListFirewallRuleIds extends ListCommand {
 
 The raw body is `(string) $response->getBody()`, and the HTTP status is `$response->getStatusCode()`.
 
+What the body holds depends on the credentials. When a command's `needReturnCode()` returns `true`, as for `ProcessCommand`, the client asks HestiaCP for the exit code as the body, but only with a legacy API key or a password. With an access key, HestiaCP always sends the exit code in the `Hestia-Exit-Code` header, so the body holds the command's output, or its error message when it fails. `getResponseCode()` reads the header first and the body otherwise, so it works with both.
+
 ### Implementing `ICommand` directly
 
 You can implement `\neto737\HestiaCP\Command\ICommand` without extending the base classes. You then have to implement every method yourself, including `needReturnCode()`, `process()` and `getTimeout()`. Extending `ProcessCommand` or `ListCommand` is simpler, and they already handle HestiaCP's exit codes and error responses.

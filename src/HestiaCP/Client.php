@@ -91,13 +91,15 @@ class Client {
 	 */
 	public function send(ICommand $command): mixed {
 		$host = $this->getHost();
+		// With an access key, the exit code comes in a header, so the body can carry HestiaCP's error message
+		$returnCode = $command->needReturnCode() && !$host->getCredentials()->isAccessKey();
 		try {
 			$response = $this->guzzleClient->post($host->buildUri(), [
 				'form_params' => array_merge(
 					$host->getCredentials()->getRequestParams(),
 					$command->getRequestParams(),
 					[
-						'returncode' => $command->needReturnCode() ? 'yes' : 'no',
+						'returncode' => $returnCode ? 'yes' : 'no',
 						'cmd' => $command->getName()
 					]
 				),

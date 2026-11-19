@@ -13,6 +13,11 @@ interface ICommand {
 
 	public function getName(): string;
 
+	/**
+	 * Whether the result is the command's exit code rather than its output. The client then asks HestiaCP
+	 * to send the code as the body, except with an access key: HestiaCP always sends the code in the
+	 * Hestia-Exit-Code header then, and the body keeps the output or the error message.
+	 */
 	public function needReturnCode(): bool;
 
 	/**

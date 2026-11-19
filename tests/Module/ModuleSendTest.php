@@ -41,7 +41,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			$this->history[] = ['request' => $request, 'options' => $options];
 		}));
 
-		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, ['handler' => $stack]);
+		// a legacy hash, because with an access key every command is sent with returncode=no, and
+		// returncode=yes here shows that the method runs a command that returns its exit code
+		return Client::simpleFactory('https://someHost', 'API_KEY', null, ['handler' => $stack]);
 	}
 
 	/**
@@ -52,7 +54,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertCount(1, $this->history);
 
 		parse_str((string) $this->history[0]['request']->getBody(), $params);
-		$this->assertSame(['access_key' => 'ACCESS', 'secret_key' => 'SECRET'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
+		$this->assertSame(['hash' => 'API_KEY'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
 	}
 
 	/**

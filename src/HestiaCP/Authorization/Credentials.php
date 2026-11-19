@@ -42,6 +42,14 @@ class Credentials {
 		return new self(self::MODE_PASSWORD, user: $user, password: $password);
 	}
 
+	/**
+	 * Whether these are access key credentials. HestiaCP then sends every command's exit code in the
+	 * Hestia-Exit-Code header, while the legacy hash and password only get it in the body.
+	 */
+	public function isAccessKey(): bool {
+		return $this->mode === self::MODE_ACCESS_KEY;
+	}
+
 	public function getAccessKey(): ?string {
 		return $this->access_key;
 	}

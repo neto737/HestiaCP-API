@@ -130,7 +130,8 @@ class RawCommandTest extends \PHPUnit\Framework\TestCase {
 			'secret_key' => 'SECRET',
 			'arg1' => 'admin',
 			'arg2' => 'admin_db',
-			'returncode' => 'yes',
+			// with an access key, the exit code comes in the Hestia-Exit-Code header
+			'returncode' => 'no',
 			'cmd' => 'v-suspend-database'
 		], $this->sentParams());
 	}
