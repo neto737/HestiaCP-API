@@ -64,7 +64,7 @@ For `ProcessException` and its subclasses, `getCode()` returns the HestiaCP exit
 | 20 | `E_RESTART` | Service restart failed |
 | 21 | `E_BACKUP` / `E_API_DISABLED` | Backup failed, or API access is disabled for this user |
 
-HestiaCP uses 21 for two things: `E_BACKUP` in its scripts and `E_API_DISABLED` in the API. Both constants have the value 21.
+HestiaCP uses 21 for two things: `E_BACKUP` in its scripts and `E_API_DISABLED` in the API. Both constants have the value 21. The command tells them apart: a backup command fails with `E_BACKUP`, and any command sent with a non-admin user's access key fails with `E_API_DISABLED` while the server allows API access for the admin only. To allow it for all users, change that in the server settings, or run `v-change-sys-config-value API_SYSTEM 2` on the server. With an access key, the message also includes HestiaCP's own text, `Error: API has been disabled`.
 
 An unknown code gets the message `Unknown error (exit code N)`. `ResponseCode::getMessage($code)` returns the message for any code.
 
