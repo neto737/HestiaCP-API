@@ -105,6 +105,33 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 			'arg5' => 'yes'
 		], $command->getRequestParams());
 
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no',
+			'arg4' => 'no',
+			'arg5' => 'yes',
+			'arg6' => '4096',
+			'arg7' => 'no',
+			'arg8' => 'yes',
+			'arg9' => 'sel2026'
+		], (new AddMailDomain('admin', 'domain.com', false, false, true, 4096, false, true, 'sel2026'))->getRequestParams());
+
+		// arguments before a set one are sent empty, except REJECT_SPAM, which HestiaCP would store empty
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'yes',
+			'arg4' => 'yes',
+			'arg5' => 'yes',
+			'arg6' => '',
+			'arg7' => '',
+			'arg8' => 'no',
+			'arg9' => 'sel2026'
+		], (new AddMailDomain('admin', 'domain.com', dkimSelector: 'sel2026'))->getRequestParams());
+
+		$this->assertSame('2048', (new AddMailDomain('admin', 'domain.com', dkimSize: 2048))->getRequestParams()['arg6']);
+
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);

@@ -126,12 +126,16 @@ class Mails extends Module {
 	 * @param bool   $antispam
 	 * @param bool   $antivirus
 	 * @param bool   $dkim
+	 * @param int|null    $dkimSize     DKIM key size in bits (HestiaCP's default: 2048)
+	 * @param bool|null   $restart      Restart the web and proxy servers (HestiaCP's default: right away, or queued)
+	 * @param bool|null   $rejectSpam   Reject messages marked as spam instead of delivering them (HestiaCP's default: no)
+	 * @param string|null $dkimSelector DKIM selector (HestiaCP's default: mail)
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true): bool {
-		return $this->client->send(new AddMailDomain($this->user, $domain, $antispam, $antivirus, $dkim));
+	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true, ?int $dkimSize = null, ?bool $restart = null, ?bool $rejectSpam = null, ?string $dkimSelector = null): bool {
+		return $this->client->send(new AddMailDomain($this->user, $domain, $antispam, $antivirus, $dkim, $dkimSize, $restart, $rejectSpam, $dkimSelector));
 	}
 
 	/**

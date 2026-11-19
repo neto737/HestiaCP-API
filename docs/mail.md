@@ -26,6 +26,20 @@ $mail->deleteDomain('example.com');
 $mail->addDomain('example.com', true, true, false); // antispam, antivirus, no DKIM
 ```
 
+The other options are left to HestiaCP's defaults unless set. Named arguments keep the call readable:
+
+```php
+$mail->addDomain(
+	'example.com',
+	dkimSize: 4096,         // DKIM key size in bits (default 2048)
+	dkimSelector: 's2026',  // DKIM selector (default "mail")
+	rejectSpam: true,       // reject messages marked as spam instead of delivering them (default false)
+	restart: false          // don't restart the web and proxy servers now
+);
+```
+
+Without SpamAssassin on the server, HestiaCP turns antispam and spam rejection off whatever you pass; without ClamAV, antivirus.
+
 ## DKIM
 
 ```php

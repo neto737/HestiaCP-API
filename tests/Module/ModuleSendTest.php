@@ -284,9 +284,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
 		];
 		yield 'Mails::addDomain' => [
-			fn (Client $c) => $c->getModuleMail('alice')->addDomain('example.com', false, true, false),
+			fn (Client $c) => $c->getModuleMail('alice')->addDomain('example.com', false, true, false, 1024, true, true, 'sel'),
 			'v-add-mail-domain',
-			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'no', 'arg4' => 'yes', 'arg5' => 'no']
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'no', 'arg4' => 'yes', 'arg5' => 'no', 'arg6' => '1024', 'arg7' => 'yes', 'arg8' => 'yes', 'arg9' => 'sel']
 		];
 		yield 'Mails::suspendDomain' => [
 			fn (Client $c) => $c->getModuleMail('alice')->suspendDomain('example.com'),
