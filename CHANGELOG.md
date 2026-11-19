@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Backups: `updateExclusions()` replaces the backup exclusion list, for example `updateExclusions(['WEB' => ['example.com:public_html/cache'], 'DB' => ['*']])`. It writes the list to a file on the server with the new `MakeTmpFile` command (`v-make-tmp-file`, handled by HestiaCP's API itself), then runs the new `Backup\UpdateUserBackupExclusions` command (`v-update-user-backup-exclusions`), which reads it.
+
 ### Changed
 
 - **BC break:** requires PHP 8.3 or later. PHP 8.2 reaches end of life on 31 December 2026. CI runs on PHP 8.3 to 8.5, and the lowest-dependencies run moved to PHP 8.3.

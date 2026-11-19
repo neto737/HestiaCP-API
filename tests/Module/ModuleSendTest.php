@@ -34,9 +34,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 	/** @var array<array-key, HistoryEntry> */
 	private array $history = [];
 
-	private function createClient(Response $response): Client {
+	private function createClient(Response ...$responses): Client {
 		$this->history = [];
-		$stack = HandlerStack::create(new MockHandler([$response]));
+		$stack = HandlerStack::create(new MockHandler($responses));
 		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
 			$this->history[] = ['request' => $request, 'options' => $options];
 		}));
@@ -697,6 +697,81 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertRequest($cmd, $args, 'no');
 	}
 
+	public function testBackupsUpdateExclusions(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModuleBackup('alice')->updateExclusions([
+			'WEB' => ['example.com:public_html/cache', 'example.net'],
+			'DB' => ['*']
+		]));
+
+		$this->assertCount(2, $this->history);
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => "WEB='example.com:public_html/cache,example.net'\nDNS=''\nMAIL=''\nDB='*'\nCRON=''\nUSER=''",
+			'arg2' => 'hestiacp-api-backup-exclusions-alice',
+			'returncode' => 'no',
+			'cmd' => 'v-make-tmp-file'
+		], $params);
+
+		parse_str((string) $this->history[1]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => 'alice',
+			'arg2' => '/tmp/hestiacp-api-backup-exclusions-alice',
+			'returncode' => 'yes',
+			'cmd' => 'v-update-user-backup-exclusions'
+		], $params);
+	}
+
+	public function testBackupsUpdateExclusionsEmptyClearsAll(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModuleBackup('alice')->updateExclusions([]));
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame("WEB=''\nDNS=''\nMAIL=''\nDB=''\nCRON=''\nUSER=''", $params['arg1']);
+	}
+
+	// nothing is written when the tmp file fails
+	public function testBackupsUpdateExclusionsStopsWhenTmpFileFails(): void {
+		$client = $this->createClient(new Response(403, ['Hestia-Exit-Code' => '10'], 'Error: Unable to create temporary file'));
+
+		try {
+			$client->getModuleBackup('alice')->updateExclusions(['DB' => ['*']]);
+			$this->fail('AuthorizationException expected');
+		} catch (\neto737\HestiaCP\Exceptions\AuthorizationException) {
+			$this->assertCount(1, $this->history);
+		}
+	}
+
+	/**
+	 * @return iterable<string, array{array<string, list<string>>}>
+	 */
+	public static function invalidExclusionsProvider(): iterable {
+		yield 'unknown type' => [['FILES' => ['x']]];
+		yield 'lowercase type' => [['web' => ['example.com']]];
+		yield 'empty entry' => [['DB' => ['']]];
+		yield 'quote' => [['USER' => ["it's"]]];
+		yield 'comma' => [['DB' => ['a,b']]];
+		yield 'newline' => [['DNS' => ["example.com\nDB='*'"]]];
+	}
+
+	/**
+	 * @param array<string, list<string>> $exclusions
+	 */
+	#[DataProvider('invalidExclusionsProvider')]
+	public function testBackupsUpdateExclusionsInvalid(array $exclusions): void {
+		$client = $this->createClient();
+
+		try {
+			$client->getModuleBackup('alice')->updateExclusions($exclusions);
+			$this->fail('InvalidArgumentException expected');
+		} catch (\neto737\HestiaCP\Exceptions\InvalidArgumentException) {
+			$this->assertCount(0, $this->history);
+		}
+	}
+
 	/**
 	 * Keeps the providers in sync with the modules, so a new module method can't be added without a test.
 	 */
@@ -711,7 +786,12 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			}
 		}
 
-		$tested = [...array_keys(iterator_to_array(self::processProvider())), ...array_keys(iterator_to_array(self::listProvider()))];
+		$tested = [
+			...array_keys(iterator_to_array(self::processProvider())),
+			...array_keys(iterator_to_array(self::listProvider())),
+			// methods that send more than one request, tested on their own
+			'Backups::updateExclusions'
+		];
 
 		sort($methods);
 		sort($tested);

@@ -11,6 +11,7 @@ use neto737\HestiaCP\Command\Backup\DeleteUserBackupExclusions;
 use neto737\HestiaCP\Command\Backup\ListUserBackup;
 use neto737\HestiaCP\Command\Backup\ListUserBackupExclusions;
 use neto737\HestiaCP\Command\Backup\ListUserBackups;
+use neto737\HestiaCP\Command\Backup\UpdateUserBackupExclusions;
 use neto737\HestiaCP\Command\User\BackupUsers;
 
 class BackupTest extends \PHPUnit\Framework\TestCase {
@@ -70,6 +71,13 @@ class BackupTest extends \PHPUnit\Framework\TestCase {
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process(new Response());
+	}
+
+	public function testUpdateUserBackupExclusions(): void {
+		$command = new UpdateUserBackupExclusions('admin', '/tmp/exclusions');
+		$this->assertSame('v-update-user-backup-exclusions', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => '/tmp/exclusions'], $command->getRequestParams());
+		$this->assertTrue($command->needReturnCode());
 	}
 
 	public function testDeleteUserBackupExclusions(): void {

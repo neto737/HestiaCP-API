@@ -39,6 +39,20 @@ $backup->listBackupExclusions();
 
 $backup->deleteExclusions();      // delete all exclusions
 $backup->deleteExclusions('WEB'); // delete one type: WEB, DNS, MAIL, DB, CRON or USER
+
+// replace the whole list; the types left out are cleared
+$backup->updateExclusions([
+	'WEB' => ['example.com:public_html/cache', 'example.net'], // a domain, or domain:path inside it
+	'MAIL' => ['example.com:info'],                            // a domain, or domain:account
+	'DNS' => ['example.com'],
+	'DB' => ['alice_wordpress'],
+	'USER' => ['tmp'],                                         // a directory in the user's home
+	'CRON' => ['*'],                                           // CRON only accepts *
+]);
 ```
+
+In every type, `*` excludes everything of that type. An entry can't be empty or contain a quote, a comma or whitespace: `updateExclusions()` throws an `InvalidArgumentException` for those, or for an unknown type, before sending anything. HestiaCP checks the rest, and a `ProcessException` with `ResponseCode::E_INVALID` tells you an entry was refused.
+
+`updateExclusions()` sends two requests. HestiaCP's `v-update-user-backup-exclusions` reads the list from a file, so `v-make-tmp-file` first writes it to `/tmp/hestiacp-api-backup-exclusions-<user>` on the server. The file stays there, and the next call for the same user replaces it. With a non-admin user's access key, the key needs permission to run both commands.
 
 All methods except the `list*()` methods return `true` on success and throw an exception on failure (see [Error handling](errors.md)).
