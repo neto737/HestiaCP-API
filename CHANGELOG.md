@@ -38,6 +38,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
 
+- A live test suite, `composer test:live`, runs the modules against a real HestiaCP server, with an access key and, when given, a legacy API key and a password. `composer test` doesn't run it. See the README.
+
 ### Removed
 
 - **BC break:** the command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …), deprecated since 2.1.0. The `Add`, `Change`, `Delete`, `Lists`, `Suspend` and `Unsuspend` namespaces are gone, as are `Backup\User` and `Backup\Users`. Use the names grouped by module (`User\AddUser`, `User\ListUsers`, `Mail\SuspendMailAccount`, …); [UPGRADING.md](UPGRADING.md) lists each replacement.

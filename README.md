@@ -129,6 +129,8 @@ Each check can also run on its own: `composer test` (PHPUnit), `composer analyse
 
 The tests use Guzzle's mock handler, so they don't need a HestiaCP server.
 
+A separate suite runs against a real HestiaCP server, to catch what a mock can't: `composer test:live`. It needs `HESTIACP_HOST` and `HESTIACP_ACCESS_KEY` (an admin access key, `ACCESS_KEY:SECRET_KEY`), and optionally `HESTIACP_HASH` and `HESTIACP_PASSWORD` to test the legacy endpoint, and `HESTIACP_VERIFY` (a CA bundle path, or `0`). Each test class creates a user and deletes it afterwards, so use a test server, not a production one.
+
 ## Credits
 
 This library started as a fork of [ProfiCloS/vestacp-api](https://github.com/ProfiCloS/vestacp-api) by PROFI CLOUD SERVICES s.r.o., a client for VestaCP, and was adapted and extended for HestiaCP.
