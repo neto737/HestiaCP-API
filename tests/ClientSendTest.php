@@ -280,6 +280,24 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$client->send(new ListUsers());
 	}
 
+	// what HestiaCP's nginx answers on port 8083 to a plain HTTP request
+	public function testRedirectIsNotFollowed(): void {
+		$redirect = new Response(302, ['Location' => 'https://somehost:8083/api/'], '<html>302 Found</html>');
+
+		foreach ([new AddUser('user', 'pass', 'mail@domain.com'), new ListUsers()] as $command) {
+			// a followed redirect would consume the second response
+			$client = $this->createClient([$redirect, new Response(200, [], '{}')]);
+			try {
+				$client->send($command);
+				$this->fail('InvalidResponseException expected');
+			} catch (InvalidResponseException $e) {
+				$this->assertSame('Unexpected redirect (HTTP 302 to https://somehost:8083/api/). Check the scheme and hostname, e.g. https:// instead of http://', $e->getMessage());
+			}
+			$this->assertCount(1, $this->history);
+			$this->assertFalse($this->history[0]['options']['allow_redirects']);
+		}
+	}
+
 	public function testUnexpectedHttpStatus(): void {
 		$client = $this->createClient([new Response(502, [], '<html>Bad Gateway</html>')]);
 

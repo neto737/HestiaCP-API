@@ -61,6 +61,10 @@ abstract class Command implements ICommand {
 			if ($exitCode !== ResponseCode::OK) {
 				throw $this->codeException($exitCode, $response);
 			}
+		} elseif ($statusCode >= 300 && $statusCode < 400) {
+			// HestiaCP's API never redirects, and the client doesn't follow redirects
+			$location = $response->getHeaderLine('Location');
+			throw new InvalidResponseException('Unexpected redirect (HTTP ' . $statusCode . ($location !== '' ? ' to ' . $location : '') . '). Check the scheme and hostname, e.g. https:// instead of http://');
 		} elseif ($statusCode >= 400) {
 			throw new InvalidResponseException('Unexpected HTTP status ' . $statusCode . '. Is hostname really HestiaCP?');
 		}

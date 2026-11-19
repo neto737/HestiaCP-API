@@ -64,6 +64,8 @@ The hostname must start with `https://` (or `http://`) and contain only the host
 
 A trailing slash is removed, and the scheme and host are lowercased. The port is a separate argument of `Host`, not part of the hostname. A hostname with a port, path, query, fragment or user info, or without a scheme, throws `\neto737\HestiaCP\Exceptions\InvalidArgumentException`.
 
+Use `https://`. HestiaCP serves its panel and API over HTTPS only. With `http://`, the request, including the credentials, is sent unencrypted before HestiaCP answers with a redirect to HTTPS. The client doesn't follow redirects: it throws `\neto737\HestiaCP\Exceptions\InvalidResponseException` with the address it was redirected to.
+
 ## Client options
 
 Options are passed as the last argument of `Client::simpleFactory()` or `new Client()`:

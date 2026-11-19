@@ -142,7 +142,10 @@ class Client {
 				'timeout' => $options['timeout'] ?? 10.0,
 				'verify' => $options['verify'] ?? true,
 				// HestiaCP reports failures with HTTP error codes, the commands handle them
-				'http_errors' => false
+				'http_errors' => false,
+				// HestiaCP's API never redirects. A redirect usually means http:// instead of https://,
+				// and following it would turn the POST into a GET without the command
+				'allow_redirects' => false
 			];
 			if (isset($options['handler'])) {
 				$config['handler'] = $options['handler'];

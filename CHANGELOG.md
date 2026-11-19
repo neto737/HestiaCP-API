@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Passwords, secret keys and legacy hashes are marked `#[\SensitiveParameter]`, so stack traces and logged exceptions show `SensitiveParameterValue` instead of the value. This covers the `Credentials` named constructors, `Client::simpleFactory()` (both `$user`, which holds the key when no password is given, and `$password`), the module methods that take a password, and the commands `AddUser`, `ChangeUserPassword`, `AddMailAccount`, `ChangeMailAccountPassword`, `AddDatabase`, `ChangeDatabasePassword`, `AddWebDomainFtp` and `ChangeWebDomainFtpPassword`.
 - `Credentials::__debugInfo()` masks the password, legacy hash and secret key as `********` in `var_dump()` and `print_r()`.
+- The client no longer follows redirects. HestiaCP's API never redirects; a redirect usually means the hostname starts with `http://`, which HestiaCP answers with a redirect to HTTPS after the credentials were already sent unencrypted. Guzzle followed it as a `GET` without the command, and HestiaCP failed with exit code 405. A redirect without an exit code now throws `InvalidResponseException` with the redirect target, for example `Unexpected redirect (HTTP 302 to https://panel.example.com:8083/api/)`.
 
 ## [2.1.0] - 2026-10-18
 
