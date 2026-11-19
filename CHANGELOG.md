@@ -42,6 +42,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **BC break:** the empty `Module\IModule` marker interface. Type-hint the abstract `Module\Module` class instead, which every module extends.
 
+### Fixed
+
+- With a legacy API key or a password, a list command that fails throws `ProcessException` with HestiaCP's error message, for example `Command failed (Error: user jane doesn't exist)`, instead of `InvalidResponseException` ("Response is not JSON"). HestiaCP's legacy endpoint answers a failed command with HTTP 200 and the error text, and doesn't send the exit code, so the exception's code is `0`. A list command that prints nothing, which the legacy endpoint answers with `OK`, for example an unknown command, throws `ProcessException` too.
+
 ### Security
 
 - Passwords, secret keys and legacy hashes are marked `#[\SensitiveParameter]`, so stack traces and logged exceptions show `SensitiveParameterValue` instead of the value. This covers the `Credentials` named constructors, `Client::simpleFactory()` (both `$user`, which holds the key when no password is given, and `$password`), the module methods that take a password, and the commands `AddUser`, `ChangeUserPassword`, `AddMailAccount`, `ChangeMailAccountPassword`, `AddDatabase`, `ChangeDatabasePassword`, `AddWebDomainFtp` and `ChangeWebDomainFtpPassword`.

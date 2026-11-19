@@ -88,7 +88,7 @@ abstract class Command implements ICommand {
 	/**
 	 * The exit code from the Hestia-Exit-Code header, or null when the response has none.
 	 */
-	private function getExitCode(ResponseInterface $response): ?int {
+	protected function getExitCode(ResponseInterface $response): ?int {
 		$exitCode = $response->getHeaderLine('Hestia-Exit-Code');
 
 		return preg_match('~^\d+$~', $exitCode) ? (int) $exitCode : null;

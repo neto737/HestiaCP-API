@@ -35,6 +35,19 @@ abstract class ListCommand extends Command {
 			return [];
 		}
 
+		// The legacy endpoint (legacy API key or password) sends no exit code: a failed command
+		// answers with HTTP 200 and its error message, and a command that printed nothing with "OK"
+		if ($this->getExitCode($response) === null) {
+			if (str_starts_with($responseJson, 'Error:')) {
+				throw new ProcessException('Command failed (' . $responseJson . ')');
+			}
+
+			// a list command always prints JSON, even for an empty list, so no output means it failed
+			if ($responseJson === 'OK') {
+				throw new ProcessException('Command failed without an error message. Does the command exist?');
+			}
+		}
+
 		// HestiaCP always prints a JSON object or array, so anything else comes from another server
 		try {
 			$list = json_decode($responseJson, true, 512, JSON_THROW_ON_ERROR);

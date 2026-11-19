@@ -209,6 +209,39 @@ class ClientSendTest extends \PHPUnit\Framework\TestCase {
 		$client->send(new ListUser('someone'));
 	}
 
+	// the legacy endpoint prints the script's error with HTTP 200 and no exit code
+	public function testListErrorLegacy(): void {
+		$client = $this->createClient([new Response(200, [], "Error: user someone doesn't exist\n")]);
+
+		try {
+			$client->send(new ListUser('someone'));
+			$this->fail('ProcessException expected');
+		} catch (InvalidResponseException) {
+			$this->fail('a failed command on the legacy endpoint is not a host problem');
+		} catch (ProcessException $e) {
+			$this->assertNotInstanceOf(AuthorizationException::class, $e);
+			$this->assertSame(0, $e->getCode());
+			$this->assertSame("Command failed (Error: user someone doesn't exist)", $e->getMessage());
+		}
+	}
+
+	// the legacy endpoint answers "OK" when the command printed nothing, e.g. an unknown command
+	public function testListNoOutputLegacy(): void {
+		$client = $this->createClient([new Response(200, [], 'OK')]);
+
+		$this->expectException(ProcessException::class);
+		$this->expectExceptionMessage('Command failed without an error message');
+		$client->send(new ListUsers());
+	}
+
+	// with an exit code header, an "Error:" body is still checked as JSON
+	public function testListErrorTextWithExitCodeZero(): void {
+		$client = $this->createClient([new Response(200, ['Hestia-Exit-Code' => '0'], 'Error: something')]);
+
+		$this->expectException(InvalidResponseException::class);
+		$client->send(new ListUsers());
+	}
+
 	public function testUnexpectedHttpStatus(): void {
 		$client = $this->createClient([new Response(502, [], '<html>Bad Gateway</html>')]);
 

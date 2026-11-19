@@ -67,3 +67,7 @@ For `ProcessException` and its subclasses, `getCode()` returns the HestiaCP exit
 HestiaCP uses 21 for two things: `E_BACKUP` in its scripts and `E_API_DISABLED` in the API. Both constants have the value 21.
 
 An unknown code gets the message `Unknown error (exit code N)`. `ResponseCode::getMessage($code)` returns the message for any code.
+
+## Legacy API key and password
+
+With a legacy API key or a username and password, HestiaCP doesn't send the exit code of a list command (`list*()`, `detail()`, `stats()`, `RawListCommand`). When one fails, the `ProcessException` has the code `0` and HestiaCP's own message, for example `Command failed (Error: user jane doesn't exist)`, so you can't compare `getCode()` with a `ResponseCode` constant. The other commands aren't affected. Use an [access key](authentication.md#credentials) to get the exit code from every command.
