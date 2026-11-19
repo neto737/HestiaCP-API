@@ -121,9 +121,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		];
 
 		yield 'Databases::add' => [
-			fn (Client $c) => $c->getModuleDatabase('alice')->add('alice_db', 'alice_dbuser', 'secret', 'pgsql'),
+			fn (Client $c) => $c->getModuleDatabase('alice')->add('alice_db', 'alice_dbuser', 'secret', 'pgsql', 'db2.example.com', 'LATIN1'),
 			'v-add-database',
-			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'alice_dbuser', 'arg4' => 'secret', 'arg5' => 'pgsql']
+			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'alice_dbuser', 'arg4' => 'secret', 'arg5' => 'pgsql', 'arg6' => 'db2.example.com', 'arg7' => 'LATIN1']
 		];
 		yield 'Databases::changePassword' => [
 			fn (Client $c) => $c->getModuleDatabase('alice')->changePassword('alice_db', 'secret'),

@@ -44,6 +44,16 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase {
 			'arg5' => 'mysql'
 		], $command->getRequestParams());
 
+		$this->assertSame(
+			['arg5' => 'mysql', 'arg6' => 'db2.example.com', 'arg7' => 'LATIN1'],
+			array_slice((new AddDatabase('admin', 'database', 'user', 'pass', 'mysql', 'db2.example.com', 'LATIN1'))->getRequestParams(), 4)
+		);
+		// without a host, HestiaCP picks one
+		$this->assertSame(
+			['arg5' => 'mysql', 'arg6' => '', 'arg7' => 'LATIN1'],
+			array_slice((new AddDatabase('admin', 'database', 'user', 'pass', charset: 'LATIN1'))->getRequestParams(), 4)
+		);
+
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);

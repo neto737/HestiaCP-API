@@ -30,12 +30,14 @@ class Databases extends Module {
 	 * @param string    $dbuser
 	 * @param string    $dbpass
 	 * @param string    $type
+	 * @param string|null $host    Database server, as listed by v-list-database-hosts. HestiaCP picks one when not set.
+	 * @param string|null $charset Character set, e.g. UTF8MB4 or LATIN1 (HestiaCP's default: UTF8MB4)
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function add(string $database, string $dbuser, #[\SensitiveParameter] string $dbpass, string $type = 'mysql'): bool {
-		return $this->client->send(new AddDatabase($this->user, $database, $dbuser, $dbpass, $type));
+	public function add(string $database, string $dbuser, #[\SensitiveParameter] string $dbpass, string $type = 'mysql', ?string $host = null, ?string $charset = null): bool {
+		return $this->client->send(new AddDatabase($this->user, $database, $dbuser, $dbpass, $type, $host, $charset));
 	}
 
 	/**
