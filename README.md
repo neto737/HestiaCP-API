@@ -28,12 +28,15 @@
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
 - **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
-- Tested on PHP 8.3 to 8.5, and against a live HestiaCP 1.10.9 server with all three login methods.
+- **Tested against a real server:** besides the unit tests on PHP 8.3 to 8.5, every module method was tested against a live HestiaCP 1.10.9 server, with all three login methods.
 
 ## Requirements
 
 - PHP 8.3 or later
 - HestiaCP with the API enabled, and the IP address of the calling machine allowed in the server settings
+- HestiaCP 1.6 or later for access keys. The library is tested on HestiaCP 1.10.9; an older version may lack some scripts or arguments, which HestiaCP reports as a failed command (a `ProcessException`).
+
+Where HestiaCP 1.10.9 behaves unexpectedly, the docs say so, for example in [packages](docs/packages.md#copying-renaming-and-deleting) and [DNSSEC](docs/dns.md#dnssec).
 
 ## Installation
 
@@ -129,7 +132,7 @@ Each check can also run on its own: `composer test` (PHPUnit), `composer analyse
 
 The tests use Guzzle's mock handler, so they don't need a HestiaCP server.
 
-A separate suite runs against a real HestiaCP server, to catch what a mock can't: `composer test:live`. It needs `HESTIACP_HOST` and `HESTIACP_ACCESS_KEY` (an admin access key, `ACCESS_KEY:SECRET_KEY`), and optionally `HESTIACP_HASH` and `HESTIACP_PASSWORD` to test the legacy endpoint, and `HESTIACP_VERIFY` (a CA bundle path, or `0`). Each test class creates a user and deletes it afterwards, so use a test server, not a production one.
+A separate suite runs against a real HestiaCP server, to catch what a mock can't: `composer test:live`. It needs `HESTIACP_HOST` and `HESTIACP_ACCESS_KEY` (an admin access key, `ACCESS_KEY:SECRET_KEY`), and optionally `HESTIACP_HASH` and `HESTIACP_PASSWORD` to test the legacy endpoint, and `HESTIACP_VERIFY` (a CA bundle path, or `0`). Each test class creates a user and deletes it afterwards, so use a test server, not a production one. The suite covers every module method except `Users::backup()`, which backs up every user on the server, and Let's Encrypt, which needs a domain that resolves to the server; both were tested by hand against HestiaCP 1.10.9.
 
 ## Credits
 
