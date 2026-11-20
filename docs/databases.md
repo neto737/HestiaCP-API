@@ -12,7 +12,12 @@ The database module works on the databases of one user, given when you get the m
 $db->add('database', 'dbuser', 'dbpass'); // creates admin_database with the user admin_dbuser
 
 $db->add('database', 'dbuser', 'dbpass', 'pgsql'); // PostgreSQL, if it is installed on the server
+
+$db->add('database', 'dbuser', 'dbpass', charset: 'LATIN1');       // a character set other than UTF8MB4
+$db->add('database', 'dbuser', 'dbpass', host: 'db2.example.com'); // a database server other than the one HestiaCP picks
 ```
+
+The host must be one of the database servers HestiaCP knows (`v-list-database-hosts`). Without it, HestiaCP picks one, which is `localhost` on a single server.
 
 The type defaults to `mysql`.
 

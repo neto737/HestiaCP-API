@@ -15,9 +15,17 @@ class HostTest extends \PHPUnit\Framework\TestCase {
 		$host = new Host('https://hestia', $credentials);
 
 		$this->assertSame('https://hestia', $host->getHostname());
+	}
 
-		$host->setHostname('http://host');
-		$this->assertSame('http://host', $host->getHostname());
+	public function testIsImmutable(): void {
+		$class = new \ReflectionClass(Host::class);
+
+		foreach ($class->getProperties() as $property) {
+			$this->assertTrue($property->isReadOnly(), "Host::\${$property->getName()} must be readonly");
+		}
+		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+			$this->assertStringStartsNotWith('set', $method->getName());
+		}
 	}
 
 	/** @return array<string, array{string, string}> */
@@ -71,15 +79,11 @@ class HostTest extends \PHPUnit\Framework\TestCase {
 		new Host('https://2001:db8::1', Credentials::password('', ''));
 	}
 
-	public function testSetHostnameKeepsPreviousValueOnError(): void {
-		$host = new Host('https://hestia', Credentials::password('', ''));
+	public function testRejectsUnbracketedIpv6WithoutScheme(): void {
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage('must be in brackets');
 
-		try {
-			$host->setHostname('hestia');
-			$this->fail('Expected InvalidArgumentException');
-		} catch (InvalidArgumentException $e) {
-			$this->assertSame('https://hestia', $host->getHostname());
-		}
+		new Host('2001:db8::1', Credentials::password('', ''));
 	}
 
 	public function testUri(): void {
@@ -98,7 +102,7 @@ class HostTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertSame(8083, $host->getPort());
 
-		$host->setPort(2023);
+		$host = new Host('https://hestia', $credentials, 2023);
 		$this->assertSame(2023, $host->getPort());
 	}
 
@@ -107,11 +111,5 @@ class HostTest extends \PHPUnit\Framework\TestCase {
 		$host = new Host('https://hestia', $credentials);
 
 		$this->assertSame($credentials, $host->getCredentials());
-
-		$newCredentials = Credentials::password('', '');
-		$host->setCredentials($newCredentials);
-
-		$this->assertNotSame($credentials, $host->getCredentials());
-		$this->assertSame($newCredentials, $host->getCredentials());
 	}
 }

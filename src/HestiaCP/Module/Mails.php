@@ -29,6 +29,22 @@ use neto737\HestiaCP\Command\Mail\ListMailDomain;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
 use neto737\HestiaCP\Command\Mail\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountQuota;
+use neto737\HestiaCP\Command\Mail\AddMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\AddMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\AddMailDomainReject;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainReject;
+use neto737\HestiaCP\Command\Mail\ListMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\AddMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainSslCert;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainSsl;
 
 class Mails extends Module {
 
@@ -57,12 +73,13 @@ class Mails extends Module {
 	 * @param string $domain
 	 * @param string $account
 	 * @param string $password
+	 * @param int|null $quota Mailbox size limit in MB, 0 for unlimited. HestiaCP's default (unlimited) when not set.
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addAccount(string $domain, string $account, string $password): bool {
-		return $this->client->send(new AddMailAccount($this->user, $domain, $account, $password));
+	public function addAccount(string $domain, string $account, #[\SensitiveParameter] string $password, ?int $quota = null): bool {
+		return $this->client->send(new AddMailAccount($this->user, $domain, $account, $password, $quota));
 	}
 
 	/**
@@ -75,7 +92,7 @@ class Mails extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function changeAccountPassword(string $domain, string $account, string $password): bool {
+	public function changeAccountPassword(string $domain, string $account, #[\SensitiveParameter] string $password): bool {
 		return $this->client->send(new ChangeMailAccountPassword($this->user, $domain, $account, $password));
 	}
 
@@ -125,12 +142,16 @@ class Mails extends Module {
 	 * @param bool   $antispam
 	 * @param bool   $antivirus
 	 * @param bool   $dkim
+	 * @param int|null    $dkimSize     DKIM key size in bits (HestiaCP's default: 2048)
+	 * @param bool|null   $restart      Restart the web and proxy servers (HestiaCP's default: right away, or queued)
+	 * @param bool|null   $rejectSpam   Reject messages marked as spam instead of delivering them (HestiaCP's default: no)
+	 * @param string|null $dkimSelector DKIM selector (HestiaCP's default: mail)
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true): bool {
-		return $this->client->send(new AddMailDomain($this->user, $domain, $antispam, $antivirus, $dkim));
+	public function addDomain(string $domain, bool $antispam = true, bool $antivirus = true, bool $dkim = true, ?int $dkimSize = null, ?bool $restart = null, ?bool $rejectSpam = null, ?string $dkimSelector = null): bool {
+		return $this->client->send(new AddMailDomain($this->user, $domain, $antispam, $antivirus, $dkim, $dkimSize, $restart, $rejectSpam, $dkimSelector));
 	}
 
 	/**
@@ -349,5 +370,208 @@ class Mails extends Module {
 	 */
 	public function deleteAccountAutoreply(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccountAutoreply($this->user, $domain, $account));
+	}
+
+	/**
+	 * This function changes the mailbox size limit of a mail account.
+	 *
+	 * @param string $domain
+	 * @param string $account
+	 * @param int    $quota   Mailbox size limit in MB, 0 for unlimited
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\InvalidArgumentException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeAccountQuota(string $domain, string $account, int $quota): bool {
+		return $this->client->send(new ChangeMailAccountQuota($this->user, $domain, $account, $quota));
+	}
+
+	/**
+	 * This function sets the address that receives mail sent to unknown accounts of a mail domain.
+	 *
+	 * @param string $domain
+	 * @param string $email
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainCatchall(string $domain, string $email): bool {
+		return $this->client->send(new AddMailDomainCatchall($this->user, $domain, $email));
+	}
+
+	/**
+	 * This function changes the catch-all address of a mail domain.
+	 *
+	 * @param string $domain
+	 * @param string $email
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainCatchall(string $domain, string $email): bool {
+		return $this->client->send(new ChangeMailDomainCatchall($this->user, $domain, $email));
+	}
+
+	/**
+	 * This function removes the catch-all address of a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainCatchall(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainCatchall($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on spam filtering for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainAntispam(string $domain): bool {
+		return $this->client->send(new AddMailDomainAntispam($this->user, $domain));
+	}
+
+	/**
+	 * This function turns off spam filtering for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainAntispam(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainAntispam($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on virus scanning for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainAntivirus(string $domain): bool {
+		return $this->client->send(new AddMailDomainAntivirus($this->user, $domain));
+	}
+
+	/**
+	 * This function turns off virus scanning for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainAntivirus(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainAntivirus($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on DKIM signing for a mail domain and creates its key.
+	 *
+	 * @param string      $domain
+	 * @param int|null    $dkimSize     DKIM key size in bits (HestiaCP's default: 2048)
+	 * @param string|null $dkimSelector DKIM selector (HestiaCP's default: mail)
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainDkim(string $domain, ?int $dkimSize = null, ?string $dkimSelector = null): bool {
+		return $this->client->send(new AddMailDomainDkim($this->user, $domain, $dkimSize, $dkimSelector));
+	}
+
+	/**
+	 * This function turns off DKIM signing for a mail domain and deletes its key.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainDkim(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainDkim($this->user, $domain));
+	}
+
+	/**
+	 * This function makes a mail domain reject messages marked as spam instead of delivering them.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainRejectSpam(string $domain): bool {
+		return $this->client->send(new AddMailDomainReject($this->user, $domain));
+	}
+
+	/**
+	 * This function makes a mail domain deliver messages marked as spam again.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainRejectSpam(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainReject($this->user, $domain));
+	}
+
+	/**
+	 * This function obtains the SSL certificate of a mail domain.
+	 *
+	 * @param string $domain
+	 * @return array<mixed>
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function listDomainSsl(string $domain): array {
+		return $this->client->send(new ListMailDomainSsl($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on SSL for a mail domain (mail.DOMAIN), with a certificate already on the server.
+	 *
+	 * @param string    $domain
+	 * @param string    $sslDir  Directory on the server holding <domain>.crt, <domain>.key and optionally <domain>.ca
+	 * @param bool|null $restart Restart the mail services, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainSsl(string $domain, string $sslDir, ?bool $restart = null): bool {
+		return $this->client->send(new AddMailDomainSsl($this->user, $domain, $sslDir, $restart));
+	}
+
+	/**
+	 * This function replaces the SSL certificate of a mail domain with one already on the server.
+	 *
+	 * @param string    $domain
+	 * @param string    $sslDir  Directory on the server holding <domain>.crt, <domain>.key and optionally <domain>.ca
+	 * @param bool|null $restart Restart the mail services, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainSslCert(string $domain, string $sslDir, ?bool $restart = null): bool {
+		return $this->client->send(new ChangeMailDomainSslCert($this->user, $domain, $sslDir, $restart));
+	}
+
+	/**
+	 * This function turns off SSL for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainSsl(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainSsl($this->user, $domain));
 	}
 }

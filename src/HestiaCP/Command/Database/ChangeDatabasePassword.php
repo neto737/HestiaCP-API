@@ -11,7 +11,7 @@ class ChangeDatabasePassword extends ProcessCommand {
 	public function __construct(
 		private readonly string $user,
 		private readonly string $database,
-		private readonly string $dbpass
+		#[\SensitiveParameter] private readonly string $dbpass
 	) {}
 
 	public function getName(): string {

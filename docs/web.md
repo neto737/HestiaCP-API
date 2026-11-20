@@ -34,6 +34,33 @@ $web->addDomain(
 
 `suspendDomain()` and `unsuspendDomain()` take an optional `$restart` argument (default `false`).
 
+To move a domain to another of the server's IP addresses:
+
+```php
+$web->changeDomainIp('example.com', '192.0.2.20');
+```
+
+## Redirects
+
+```php
+$web->addDomainRedirect('example.com', 'www.example.com');             // 301 to the same path on www.example.com
+$web->addDomainRedirect('example.com', 'https://example.org/new', 302); // any status code
+
+$web->deleteDomainRedirect('example.com');
+```
+
+The redirect is stored as `REDIRECT` and `REDIRECT_CODE` in `listDomain()`. HestiaCP removes a trailing slash from the target.
+
+## HTTP authentication
+
+```php
+$web->addDomainHttpAuth('example.com', 'guest', 'pa$$word'); // turns it on, call again to add more users
+$web->changeDomainHttpAuthPassword('example.com', 'guest', 'otherPa$$word');
+$web->deleteDomainHttpAuth('example.com', 'guest');          // deleting the last user turns it off
+```
+
+`listDomain()` lists the users in `AUTH_USER`, separated by colons.
+
 ## Aliases
 
 ```php
@@ -48,7 +75,7 @@ $web->deleteDomainAlias('example.com', 'shop.example.com'); // one at a time
 $web->listDomainSsl('example.com'); // ['CRT' => '...', 'KEY' => '...', 'CA' => '...', 'SUBJECT' => '...', 'NOT_AFTER' => '...', ...]
 ```
 
-To use your own certificate, put `example.com.crt`, `example.com.key` and, if you have one, `example.com.ca` in a directory **on the HestiaCP server**, and pass that directory. HestiaCP copies the files, so the directory can be deleted afterwards. The API can't upload the files for you.
+To use your own certificate, put `example.com.crt`, `example.com.key` and, if you have one, `example.com.ca` in a directory **on the HestiaCP server**, and pass that directory. HestiaCP copies the files, so the directory can be deleted afterwards. See [Uploading a certificate](#uploading-a-certificate) to send the files through the API.
 
 ```php
 use neto737\HestiaCP\Command\Web\AddWebDomainSsl;
@@ -76,19 +103,41 @@ $web->addDomainSslHsts('example.com');
 $web->deleteDomainSslHsts('example.com');
 ```
 
+### Uploading a certificate
+
+The `MakeTmpFile` command writes a file to `/tmp` on the server, as HestiaCP's web UI does with an uploaded certificate. Write the files there and pass `/tmp`:
+
+```php
+use neto737\HestiaCP\Command\MakeTmpFile;
+
+$client->send(new MakeTmpFile('example.com.crt', $certificate)); // PEM
+$client->send(new MakeTmpFile('example.com.key', $privateKey));  // PEM, without a passphrase
+$client->send(new MakeTmpFile('example.com.ca', $chain));        // intermediate certificates, if any
+
+$web->addDomainSsl('example.com', '/tmp');
+
+// HestiaCP doesn't delete the files, and the API can't either: empty the key at least
+$client->send(new MakeTmpFile('example.com.key', ''));
+```
+
+The files stay in `/tmp` until the server cleans it up. While `/tmp/example.com.ca` exists, even empty, HestiaCP checks the certificate against it, so a later certificate without a chain fails with `SSL intermediate chain is not valid`. Upload the chain again with each certificate that has one. The same works for a mail domain, with `Mails::addDomainSsl()`.
+
 ## Let's Encrypt
 
 ```php
 $web->addDomainLetsEncrypt('example.com', 'www.example.com');
 
-// certificate for the mail domain as well
+// certificate for the mail domain (mail.example.com and the webmail alias) instead of the web domain
 $web->addDomainLetsEncrypt('example.com', null, true);
 
 // key algorithm: ecdsa-256 (default), ecdsa-384 or rsa
 $web->addDomainLetsEncrypt('example.com', 'www.example.com', false, 'rsa');
 
 $web->deleteDomainLetsEncrypt('example.com');
+$web->deleteDomainLetsEncrypt('example.com', mail: true); // the mail domain's certificate
 ```
+
+The web domain and the mail domain each have their own certificate: to cover both, call `addDomainLetsEncrypt()` once without and once with `$mail`.
 
 Getting a certificate is slow, so this command uses a timeout of at least 90 seconds.
 

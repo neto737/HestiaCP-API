@@ -16,7 +16,6 @@ use neto737\HestiaCP\Module\Crons;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Dns;
 use neto737\HestiaCP\Module\Mails;
-use neto737\HestiaCP\Module\Module;
 use neto737\HestiaCP\Module\Packages;
 use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
@@ -26,12 +25,7 @@ use neto737\HestiaCP\Module\Webs;
  */
 class Client {
 
-	private Host $host;
-
 	private \GuzzleHttp\Client $guzzleClient;
-
-	/** @var array<class-string<Module>, array<string, Module>> */
-	private array $modules = [];
 
 	/**
 	 * Client constructor.
@@ -46,8 +40,7 @@ class Client {
 	 * @param ClientOptions|null $options
 	 * @throws ClientException
 	 */
-	public function __construct(Host $host, ?array $options = null) {
-		$this->setHost($host);
+	public function __construct(private readonly Host $host, ?array $options = null) {
 		$this->prepareCommunication($options);
 	}
 
@@ -60,7 +53,7 @@ class Client {
 	 * @throws ClientException
 	 * @throws InvalidArgumentException
 	 */
-	public static function simpleFactory(string $hostname, string $user, ?string $password = null, ?array $options = null): Client {
+	public static function simpleFactory(string $hostname, #[\SensitiveParameter] string $user, #[\SensitiveParameter] ?string $password = null, ?array $options = null): Client {
 		if (!is_null($password)) {
 			$credentials = Credentials::password($user, $password);
 		} elseif (substr_count($user, ':') === 1) {
@@ -75,16 +68,17 @@ class Client {
 		return new self($host, $options);
 	}
 
-	public function setHost(Host $host): static {
-		$this->host = $host;
-		return $this;
-	}
-
 	public function getHost(): Host {
 		return $this->host;
 	}
 
 	/**
+	 * Runs v-list-sys-info to check the credentials.
+	 *
+	 * Returns false when HestiaCP refuses the request (exit code 9 or 10): wrong credentials, an IP address
+	 * that isn't allowed, or credentials that may not run v-list-sys-info, which includes every non-admin
+	 * access key that lacks it in its permissions.
+	 *
 	 * @return bool
 	 * @throws ClientException
 	 * @throws ProcessException
@@ -103,21 +97,22 @@ class Client {
 	 */
 	public function send(ICommand $command): mixed {
 		$host = $this->getHost();
+		// With an access key, the exit code comes in a header, so the body can carry HestiaCP's error message
+		$returnCode = $command->needReturnCode() && !$host->getCredentials()->isAccessKey();
 		try {
 			$response = $this->guzzleClient->post($host->buildUri(), [
 				'form_params' => array_merge(
 					$host->getCredentials()->getRequestParams(),
 					$command->getRequestParams(),
 					[
-						'returncode' => $command->needReturnCode() ? 'yes' : 'no',
+						'returncode' => $returnCode ? 'yes' : 'no',
 						'cmd' => $command->getName()
 					]
 				),
 				'timeout' => $this->getTimeout($command)
 			]);
-			$command->setLastResponse($response);
-			return $command->process();
-		} catch (ProcessException $e) {
+			return $command->process($response);
+		} catch (ProcessException | ClientException $e) {
 			throw $e;
 		} catch (\GuzzleHttp\Exception\GuzzleException $e) {
 			throw new ClientException('Connection error (' . $e->getMessage() . ')', 0, $e);
@@ -149,13 +144,20 @@ class Client {
 	 */
 	private function prepareCommunication(?array $options = null): Client {
 		try {
-			$this->guzzleClient = new \GuzzleHttp\Client([
+			$config = [
 				'timeout' => $options['timeout'] ?? 10.0,
 				'verify' => $options['verify'] ?? true,
-				'handler' => $options['handler'] ?? null,
 				// HestiaCP reports failures with HTTP error codes, the commands handle them
-				'http_errors' => false
-			]);
+				'http_errors' => false,
+				// HestiaCP's API never redirects. A redirect usually means http:// instead of https://,
+				// and following it would turn the POST into a GET without the command
+				'allow_redirects' => false
+			];
+			if (isset($options['handler'])) {
+				$config['handler'] = $options['handler'];
+			}
+
+			$this->guzzleClient = new \GuzzleHttp\Client($config);
 		} catch (\Exception $e) {
 			throw new ClientException('Bad Client configuration (' . $e->getMessage() . ')');
 		}
@@ -163,55 +165,35 @@ class Client {
 		return $this;
 	}
 
-	/**
-	 * @template T of Module
-	 * @param class-string<T> $moduleName
-	 * @return T
-	 */
-	private function loadModule(string $moduleName, ?string $param = null): Module {
-		// Modules bound to a user are cached per user, otherwise one user's module would be reused for another
-		$key = $param ?? '';
-
-		if (!isset($this->modules[$moduleName][$key])) {
-			if ($param !== null) {
-				$this->modules[$moduleName][$key] = new $moduleName($this, $param);
-			} else {
-				$this->modules[$moduleName][$key] = new $moduleName($this);
-			}
-		}
-
-		return $this->modules[$moduleName][$key];
-	}
-
 	public function getModuleUser(): Users {
-		return $this->loadModule(Users::class);
+		return new Users($this);
 	}
 
 	public function getModuleMail(string $user): Mails {
-		return $this->loadModule(Mails::class, $user);
+		return new Mails($this, $user);
 	}
 
 	public function getModuleWeb(string $user): Webs {
-		return $this->loadModule(Webs::class, $user);
+		return new Webs($this, $user);
 	}
 
 	public function getModuleBackup(string $user): Backups {
-		return $this->loadModule(Backups::class, $user);
+		return new Backups($this, $user);
 	}
 
 	public function getModuleDatabase(string $user): Databases {
-		return $this->loadModule(Databases::class, $user);
+		return new Databases($this, $user);
 	}
 
 	public function getModulePackage(): Packages {
-		return $this->loadModule(Packages::class);
+		return new Packages($this);
 	}
 
 	public function getModuleCron(string $user): Crons {
-		return $this->loadModule(Crons::class, $user);
+		return new Crons($this, $user);
 	}
 
 	public function getModuleDns(string $user): Dns {
-		return $this->loadModule(Dns::class, $user);
+		return new Dns($this, $user);
 	}
 }

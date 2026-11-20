@@ -6,6 +6,80 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-11-20
+
+This release removes what 2.1.0 deprecated, cleans up the structure and contains breaking changes, marked **BC break** below. See [UPGRADING.md](UPGRADING.md) for how to migrate from v2. It also adds mail quotas, catch-all addresses, mail domain settings and SSL, web redirects and HTTP authentication, user profile changes and package management. Every module method was tested against a live HestiaCP 1.10.9 server.
+
+### Added
+
+- Backups: `updateExclusions()` replaces the backup exclusion list, for example `updateExclusions(['WEB' => ['example.com:public_html/cache'], 'DB' => ['*']])`. It writes the list to a file on the server with the new `MakeTmpFile` command (`v-make-tmp-file`, handled by HestiaCP's API itself), then runs the new `Backup\UpdateUserBackupExclusions` command (`v-update-user-backup-exclusions`), which reads it.
+- Mail: `addAccount()` and `AddMailAccount` take an optional mailbox quota in MB, `addAccount('example.com', 'info', 'pa$$word', 1024)`. `0` means unlimited, like HestiaCP's default when the quota isn't set.
+- Mail: `addDomain()` and `AddMailDomain` take the rest of `v-add-mail-domain`'s options: the DKIM key size, `$restart`, rejecting spam and the DKIM selector, for example `addDomain('example.com', dkimSize: 4096, dkimSelector: 's2026')`. Each is only sent when set, so HestiaCP keeps its own defaults.
+- Databases: `add()` and `AddDatabase` take an optional database host and character set, for example `add('wordpress', 'wp', 'pa$$word', charset: 'LATIN1')`. Without a host, HestiaCP picks one; without a character set, it uses UTF8MB4.
+- Mail: `changeAccountQuota()` changes a mailbox's size limit in MB, `0` for unlimited (`Mail\ChangeMailAccountQuota`, `v-change-mail-account-quota`).
+- Mail: the catch-all address, `addDomainCatchall()`, `changeDomainCatchall()` and `deleteDomainCatchall()` (`Mail\AddMailDomainCatchall`, `Mail\ChangeMailDomainCatchall`, `Mail\DeleteMailDomainCatchall`; `v-add-mail-domain-catchall`, `v-change-mail-domain-catchall`, `v-delete-mail-domain-catchall`).
+- Mail: turning a domain's features on and off after it was added: `addDomainAntispam()`, `deleteDomainAntispam()`, `addDomainAntivirus()`, `deleteDomainAntivirus()`, `addDomainDkim()`, `deleteDomainDkim()`, `addDomainRejectSpam()` and `deleteDomainRejectSpam()`. `addDomainDkim()` takes the key size and selector, like `addDomain()`. The command classes are `Mail\AddMailDomainAntispam`, `Mail\DeleteMailDomainAntispam`, `Mail\AddMailDomainAntivirus`, `Mail\DeleteMailDomainAntivirus`, `Mail\AddMailDomainDkim`, `Mail\DeleteMailDomainDkim`, `Mail\AddMailDomainReject` and `Mail\DeleteMailDomainReject` (`v-add-mail-domain-antispam`, `v-delete-mail-domain-antispam`, `v-add-mail-domain-antivirus`, `v-delete-mail-domain-antivirus`, `v-add-mail-domain-dkim`, `v-delete-mail-domain-dkim`, `v-add-mail-domain-reject`, `v-delete-mail-domain-reject`).
+- Mail: SSL certificates for a mail domain, `listDomainSsl()`, `addDomainSsl()`, `changeDomainSslCert()` and `deleteDomainSsl()` (`Mail\ListMailDomainSsl`, `Mail\AddMailDomainSsl`, `Mail\ChangeMailDomainSslCert`, `Mail\DeleteMailDomainSsl`; `v-list-mail-domain-ssl`, `v-add-mail-domain-ssl`, `v-change-mail-domain-sslcert`, `v-delete-mail-domain-ssl`).
+- Web: `changeDomainIp()` (`Web\ChangeWebDomainIp`, `v-change-web-domain-ip`).
+- Web: redirects, `addDomainRedirect()` and `deleteDomainRedirect()`, with the HTTP status code (default `301`) (`Web\AddWebDomainRedirect`, `Web\DeleteWebDomainRedirect`; `v-add-web-domain-redirect`, `v-delete-web-domain-redirect`).
+- Web: HTTP authentication, `addDomainHttpAuth()`, `changeDomainHttpAuthPassword()` and `deleteDomainHttpAuth()` (`Web\AddWebDomainHttpAuth`, `Web\ChangeWebDomainHttpAuth`, `Web\DeleteWebDomainHttpAuth`; `v-add-web-domain-httpauth`, `v-change-web-domain-httpauth`, `v-delete-web-domain-httpauth`). The password is marked `#[\SensitiveParameter]`.
+- Users: `changeName()`, `changeShell()`, `changeLanguage()` and `changeRole()` (`User\ChangeUserName`, `User\ChangeUserShell`, `User\ChangeUserLanguage`, `User\ChangeUserRole`; `v-change-user-name`, `v-change-user-shell`, `v-change-user-language`, `v-change-user-role`).
+- Packages: `add()` adds a package, or replaces one with `$rewrite`, from its settings, for example `add('gold', ['DISK_QUOTA' => 10240] + $packages->detail('default'))`. Like `updateExclusions()`, it writes them to a file on the server with `MakeTmpFile`, then runs the new `Package\AddUserPackage` command (`v-add-user-package`). `copy()`, `rename()` and `delete()` run `Package\CopyUserPackage`, `Package\RenameUserPackage` and `Package\DeleteUserPackage` (`v-copy-user-package`, `v-rename-user-package`, `v-delete-user-package`). [docs/packages.md](docs/packages.md) describes two HestiaCP 1.10.9 bugs they run into: renaming leaves the package's users on the old name, and deleting `gold` also moves the users of `gold-plus` to the default package.
+- Web: [docs/web.md](docs/web.md#uploading-a-certificate) shows how to upload your own certificate through the API with `MakeTmpFile`, for `addDomainSsl()` and `Mails::addDomainSsl()`.
+- Web: `deleteDomainLetsEncrypt()` and `DeleteLetsEncryptDomain` take `$mail`, to delete the mail domain's Let's Encrypt certificate instead of the web domain's, like `addDomainLetsEncrypt()` does when adding one. It's only sent when `true`, because HestiaCP reads any value, `no` included, as the mail domain.
+
+### Changed
+
+- **BC break:** requires PHP 8.3 or later. PHP 8.2 reaches end of life on 31 December 2026. CI runs on PHP 8.3 to 8.5, and the lowest-dependencies run moved to PHP 8.3.
+
+- **BC break:** commands are stateless. `ICommand::process()` takes the response, `process(ResponseInterface $response): mixed`, and `Client::send()` passes it in, instead of storing it on the command with `setLastResponse()` first. Sending the same command instance twice no longer overwrites the first result. `Command::defaultProcess()`, `Command::getResponseCode()` and `Command::codeException()` take the response too. Classes that implement `ICommand` or override `process()` must update their signatures.
+
+- **BC break:** `Command::defaultProcess()` and `Command::getResponseCode()` are protected instead of public. Only command subclasses use them; code that called them from outside a command must move the check into a command's `process()`.
+
+- **BC break:** the client no longer caches modules. Each `getModule*()` call creates a new module, so two calls never return the same instance, even for the same user. Modules hold no state of their own, so this only matters to code that compares module instances.
+
+- **BC break:** `InvalidResponseException` extends `ClientException` instead of `ProcessException`. A response that isn't from HestiaCP is a setup problem, not a failed command, so `catch (ProcessException $e)` no longer catches it. `Client::send()` rethrows it as is.
+
+- **BC break:** a list command whose body isn't valid JSON, or isn't a JSON object or array, throws `InvalidResponseException` instead of `ProcessException` with code `0`. HestiaCP never sends such a body, so like a body that isn't an exit code, it means the host isn't HestiaCP. The message no longer holds the body; for invalid JSON, `getPrevious()` returns the `JsonException`.
+
+- **BC break:** the exceptions extend PHP's standard exceptions: `Exceptions\InvalidArgumentException` extends `\InvalidArgumentException` and `Exceptions\RuntimeException`, with its subclasses, extends `\RuntimeException`. `Exceptions\Exception` is now a marker interface that every exception implements, instead of their base class. `catch (Exceptions\Exception $e)` still catches all of them, and `catch (\InvalidArgumentException $e)` or `catch (\RuntimeException $e)` now catches them too. Code that instantiates or extends `Exceptions\Exception` must change.
+
+- **BC break:** the `ResponseCode::$messages` static property is replaced by a private constant. Any code could overwrite the messages at runtime, for every client in the process. Use `ResponseCode::getMessage($code)` to read a message.
+
+- **BC break:** class constants are typed: the `ResponseCode` codes are `int`, and `Command::FORMAT_JSON`, `AddLetsEncryptDomain::KEY_ALGO_*` and `AddWebDomainSsl::SSL_HOME_*` are `string`. A subclass that redeclares one of them must declare it with the same type.
+
+- **BC break:** with an access key, commands that return their exit code, such as `ProcessCommand` and `RawCommand`, are sent with `returncode=no`. HestiaCP sends the exit code in the `Hestia-Exit-Code` header anyway, and the body now holds HestiaCP's error message, so a failed command's `ProcessException` says why it failed, for example `Object doesn't exist (Error: /tmp/ssl/example.com.crt not found)` instead of only `Object doesn't exist`. The legacy API key and password still ask for the exit code as the body, because their endpoint sends no header. A custom command whose `process()` reads the exit code from the body must call `getResponseCode()` instead. `Credentials::isAccessKey()` is new.
+
+- PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
+
+- Tested against HestiaCP 1.10.9.
+
+- A live test suite, `composer test:live`, runs the modules against a real HestiaCP server, with an access key and, when given, a legacy API key and a password. `composer test` doesn't run it. See the README.
+
+### Removed
+
+- **BC break:** the command class names grouped by verb (`Add\User`, `Lists\Users`, `Suspend\MailAccount`, …), deprecated since 2.1.0. The `Add`, `Change`, `Delete`, `Lists`, `Suspend` and `Unsuspend` namespaces are gone, as are `Backup\User` and `Backup\Users`. Use the names grouped by module (`User\AddUser`, `User\ListUsers`, `Mail\SuspendMailAccount`, …); [UPGRADING.md](UPGRADING.md) lists each replacement.
+
+- **BC break:** `ICommand::setLastResponse()`, and `Command::getResponseText()` and `Command::getStatusCode()`. A command no longer keeps the response; override `process()` to read it.
+
+- **BC break:** the `Credentials` constructor and its setters (`setAccessKey()`, `setApiKey()`, `setUser()`, `setPassword()`), deprecated since 2.1.0. The constructor is private: use `Credentials::accessKey()`, `Credentials::legacyHash()` or `Credentials::password()`. `Credentials` is immutable; to use other credentials, create a new `Host` and `Client`.
+
+- **BC break:** `Host::setHostname()`, `Host::setPort()`, `Host::setCredentials()` and `Client::setHost()`. `Host` is immutable, like `Credentials`, and a client stays bound to the host it was created with, so a client shared by several parts of an application can't be switched to another server while in use. To connect to another server, or with other credentials, create a new `Host` and `Client`.
+
+- **BC break:** `Command::ARG_1` … `ARG_6`, deprecated since 2.1.0. Use `positional()` to build the `arg1`, `arg2`, … request parameters.
+
+- **BC break:** the empty `Module\IModule` marker interface. Type-hint the abstract `Module\Module` class instead, which every module extends.
+
+### Fixed
+
+- With a legacy API key or a password, a list command that fails throws `ProcessException` with HestiaCP's error message, for example `Command failed (Error: user jane doesn't exist)`, instead of `InvalidResponseException` ("Response is not JSON"). HestiaCP's legacy endpoint answers a failed command with HTTP 200 and the error text, and doesn't send the exit code, so the exception's code is `0`. A list command that prints nothing, which the legacy endpoint answers with `OK`, for example an unknown command, throws `ProcessException` too.
+
+### Security
+
+- Passwords, secret keys and legacy hashes are marked `#[\SensitiveParameter]`, so stack traces and logged exceptions show `SensitiveParameterValue` instead of the value. This covers the `Credentials` named constructors, `Client::simpleFactory()` (both `$user`, which holds the key when no password is given, and `$password`), the module methods that take a password, and the commands `AddUser`, `ChangeUserPassword`, `AddMailAccount`, `ChangeMailAccountPassword`, `AddDatabase`, `ChangeDatabasePassword`, `AddWebDomainFtp` and `ChangeWebDomainFtpPassword`.
+- `Credentials::__debugInfo()` masks the password, legacy hash and secret key as `********` in `var_dump()` and `print_r()`.
+- The client no longer follows redirects. HestiaCP's API never redirects; a redirect usually means the hostname starts with `http://`, which HestiaCP answers with a redirect to HTTPS after the credentials were already sent unencrypted. Guzzle followed it as a `GET` without the command, and HestiaCP failed with exit code 405. A redirect without an exit code now throws `InvalidResponseException` with the redirect target, for example `Unexpected redirect (HTTP 302 to https://panel.example.com:8083/api/)`.
+
 ## [2.1.0] - 2026-10-18
 
 ### Added
@@ -111,7 +185,8 @@ This release brings the library up to date with HestiaCP 1.10 and contains break
 
 First release, with the user, web and mail modules.
 
-[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/neto737/HestiaCP-API/compare/v2.1.0...v3.0.0
 [2.1.0]: https://github.com/neto737/HestiaCP-API/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/neto737/HestiaCP-API/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/neto737/HestiaCP-API/compare/v1.1.0...v1.2.0

@@ -19,28 +19,31 @@ use neto737\HestiaCP\Module\Users;
 use neto737\HestiaCP\Module\Webs;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Calls every module method through a mocked client and checks the request it sends and the value it returns.
  * Arguments use distinct values (and non-default booleans) so a swapped or dropped argument fails here.
  *
- * @phpstan-type HistoryEntry array{request: RequestInterface, response: ResponseInterface|null, error: mixed, options: array<array-key, mixed>}
+ * @phpstan-type HistoryEntry array{request: RequestInterface, options: array<array-key, mixed>}
  * @phpstan-type ModuleCall \Closure(Client): mixed
  */
 class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 
-	private const LIST_BODY = '{"first": {"NAME": "First"}, "second": {"NAME": "Second"}}';
+	private const string LIST_BODY = '{"first": {"NAME": "First"}, "second": {"NAME": "Second"}}';
 
 	/** @var array<array-key, HistoryEntry> */
 	private array $history = [];
 
-	private function createClient(Response $response): Client {
+	private function createClient(Response ...$responses): Client {
 		$this->history = [];
-		$stack = HandlerStack::create(new MockHandler([$response]));
-		$stack->push(Middleware::history($this->history));
+		$stack = HandlerStack::create(new MockHandler($responses));
+		$stack->push(Middleware::tap(function (RequestInterface $request, array $options): void {
+			$this->history[] = ['request' => $request, 'options' => $options];
+		}));
 
-		return Client::simpleFactory('https://someHost', 'ACCESS:SECRET', null, ['handler' => $stack]);
+		// a legacy hash, because with an access key every command is sent with returncode=no, and
+		// returncode=yes here shows that the method runs a command that returns its exit code
+		return Client::simpleFactory('https://someHost', 'API_KEY', null, ['handler' => $stack]);
 	}
 
 	/**
@@ -51,7 +54,7 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertCount(1, $this->history);
 
 		parse_str((string) $this->history[0]['request']->getBody(), $params);
-		$this->assertSame(['access_key' => 'ACCESS', 'secret_key' => 'SECRET'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
+		$this->assertSame(['hash' => 'API_KEY'] + $args + ['returncode' => $returnCode, 'cmd' => $cmd], $params);
 	}
 
 	/**
@@ -118,9 +121,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		];
 
 		yield 'Databases::add' => [
-			fn (Client $c) => $c->getModuleDatabase('alice')->add('alice_db', 'alice_dbuser', 'secret', 'pgsql'),
+			fn (Client $c) => $c->getModuleDatabase('alice')->add('alice_db', 'alice_dbuser', 'secret', 'pgsql', 'db2.example.com', 'LATIN1'),
 			'v-add-database',
-			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'alice_dbuser', 'arg4' => 'secret', 'arg5' => 'pgsql']
+			['arg1' => 'alice', 'arg2' => 'alice_db', 'arg3' => 'alice_dbuser', 'arg4' => 'secret', 'arg5' => 'pgsql', 'arg6' => 'db2.example.com', 'arg7' => 'LATIN1']
 		];
 		yield 'Databases::changePassword' => [
 			fn (Client $c) => $c->getModuleDatabase('alice')->changePassword('alice_db', 'secret'),
@@ -256,9 +259,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		];
 
 		yield 'Mails::addAccount' => [
-			fn (Client $c) => $c->getModuleMail('alice')->addAccount('example.com', 'info', 'secret'),
+			fn (Client $c) => $c->getModuleMail('alice')->addAccount('example.com', 'info', 'secret', 2048),
 			'v-add-mail-account',
-			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'secret']
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => 'secret', 'arg5' => '2048']
 		];
 		yield 'Mails::changeAccountPassword' => [
 			fn (Client $c) => $c->getModuleMail('alice')->changeAccountPassword('example.com', 'info', 'secret'),
@@ -281,9 +284,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info']
 		];
 		yield 'Mails::addDomain' => [
-			fn (Client $c) => $c->getModuleMail('alice')->addDomain('example.com', false, true, false),
+			fn (Client $c) => $c->getModuleMail('alice')->addDomain('example.com', false, true, false, 1024, true, true, 'sel'),
 			'v-add-mail-domain',
-			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'no', 'arg4' => 'yes', 'arg5' => 'no']
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'no', 'arg4' => 'yes', 'arg5' => 'no', 'arg6' => '1024', 'arg7' => 'yes', 'arg8' => 'yes', 'arg9' => 'sel']
 		];
 		yield 'Mails::suspendDomain' => [
 			fn (Client $c) => $c->getModuleMail('alice')->suspendDomain('example.com'),
@@ -367,9 +370,9 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'yes', 'arg5' => 'rsa']
 		];
 		yield 'Webs::deleteDomainLetsEncrypt' => [
-			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainLetsEncrypt('example.com', true),
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainLetsEncrypt('example.com', true, true),
 			'v-delete-letsencrypt-domain',
-			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes', 'arg4' => 'yes']
 		];
 		yield 'Webs::addDomainFtp' => [
 			fn (Client $c) => $c->getModuleWeb('alice')->addDomainFtp('example.com', 'ftpuser', 'secret', '/public_html'),
@@ -465,6 +468,129 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainProxy('example.com', true),
 			'v-delete-web-domain-proxy',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::changeDomainIp' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainIp('example.com', '192.0.2.20', true),
+			'v-change-web-domain-ip',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.20', 'arg4' => 'yes']
+		];
+		yield 'Webs::addDomainRedirect' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainRedirect('example.com', 'www.example.com', 302, true),
+			'v-add-web-domain-redirect',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => '302', 'arg5' => 'yes']
+		];
+		yield 'Webs::deleteDomainRedirect' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainRedirect('example.com', true),
+			'v-delete-web-domain-redirect',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
+		yield 'Webs::addDomainHttpAuth' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainHttpAuth('example.com', 'guard', 'secret', true),
+			'v-add-web-domain-httpauth',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'guard', 'arg4' => 'secret', 'arg5' => 'yes']
+		];
+		yield 'Webs::changeDomainHttpAuthPassword' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainHttpAuthPassword('example.com', 'guard', 'secret', true),
+			'v-change-web-domain-httpauth',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'guard', 'arg4' => 'secret', 'arg5' => 'yes']
+		];
+		yield 'Webs::deleteDomainHttpAuth' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainHttpAuth('example.com', 'guard', true),
+			'v-delete-web-domain-httpauth',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'guard', 'arg4' => 'yes']
+		];
+
+		yield 'Mails::changeAccountQuota' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeAccountQuota('example.com', 'info', 2048),
+			'v-change-mail-account-quota',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => '2048']
+		];
+		yield 'Mails::addDomainCatchall' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomainCatchall('example.com', 'all@example.org'),
+			'v-add-mail-domain-catchall',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'all@example.org']
+		];
+		yield 'Mails::changeDomainCatchall' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeDomainCatchall('example.com', 'all@example.org'),
+			'v-change-mail-domain-catchall',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'all@example.org']
+		];
+		yield 'Mails::deleteDomainCatchall' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteDomainCatchall('example.com'),
+			'v-delete-mail-domain-catchall',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		yield 'Mails::deleteDomainSsl' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteDomainSsl('example.com'),
+			'v-delete-mail-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
+		foreach ([
+			'addDomainAntispam' => 'v-add-mail-domain-antispam',
+			'deleteDomainAntispam' => 'v-delete-mail-domain-antispam',
+			'addDomainAntivirus' => 'v-add-mail-domain-antivirus',
+			'deleteDomainAntivirus' => 'v-delete-mail-domain-antivirus',
+			'deleteDomainDkim' => 'v-delete-mail-domain-dkim',
+			'addDomainRejectSpam' => 'v-add-mail-domain-reject',
+			'deleteDomainRejectSpam' => 'v-delete-mail-domain-reject'
+		] as $method => $cmd) {
+			yield 'Mails::' . $method => [
+				fn (Client $c) => $c->getModuleMail('alice')->$method('example.com'),
+				$cmd,
+				['arg1' => 'alice', 'arg2' => 'example.com']
+			];
+		}
+		yield 'Mails::addDomainDkim' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomainDkim('example.com', 4096, 's2026'),
+			'v-add-mail-domain-dkim',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '4096', 'arg4' => 's2026']
+		];
+		yield 'Mails::addDomainSsl' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomainSsl('example.com', '/tmp', true),
+			'v-add-mail-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp', 'arg4' => 'yes']
+		];
+		yield 'Mails::changeDomainSslCert' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeDomainSslCert('example.com', '/tmp', true),
+			'v-change-mail-domain-sslcert',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp', 'arg4' => 'yes']
+		];
+
+		yield 'Users::changeName' => [
+			fn (Client $c) => $c->getModuleUser()->changeName('bob', 'Bob', 'Smith'),
+			'v-change-user-name',
+			['arg1' => 'bob', 'arg2' => 'Bob', 'arg3' => 'Smith']
+		];
+		yield 'Users::changeShell' => [
+			fn (Client $c) => $c->getModuleUser()->changeShell('bob', 'bash'),
+			'v-change-user-shell',
+			['arg1' => 'bob', 'arg2' => 'bash']
+		];
+		yield 'Users::changeLanguage' => [
+			fn (Client $c) => $c->getModuleUser()->changeLanguage('bob', 'de'),
+			'v-change-user-language',
+			['arg1' => 'bob', 'arg2' => 'de']
+		];
+		yield 'Users::changeRole' => [
+			fn (Client $c) => $c->getModuleUser()->changeRole('bob', 'admin'),
+			'v-change-user-role',
+			['arg1' => 'bob', 'arg2' => 'admin']
+		];
+
+		yield 'Packages::copy' => [
+			fn (Client $c) => $c->getModulePackage()->copy('gold', 'silver'),
+			'v-copy-user-package',
+			['arg1' => 'gold', 'arg2' => 'silver']
+		];
+		yield 'Packages::rename' => [
+			fn (Client $c) => $c->getModulePackage()->rename('gold', 'platinum'),
+			'v-rename-user-package',
+			['arg1' => 'gold', 'arg2' => 'platinum']
+		];
+		yield 'Packages::delete' => [
+			fn (Client $c) => $c->getModulePackage()->delete('gold'),
+			'v-delete-user-package',
+			['arg1' => 'gold']
 		];
 	}
 
@@ -600,6 +726,12 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
 			false
 		];
+		yield 'Mails::listDomainSsl' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomainSsl('example.com'),
+			'v-list-mail-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
+		];
 		yield 'Mails::listDomainDkimDns' => [
 			fn (Client $c) => $c->getModuleMail('alice')->listDomainDkimDns('example.com'),
 			'v-list-mail-domain-dkim-dns',
@@ -694,6 +826,140 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		$this->assertRequest($cmd, $args, 'no');
 	}
 
+	public function testBackupsUpdateExclusions(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModuleBackup('alice')->updateExclusions([
+			'WEB' => ['example.com:public_html/cache', 'example.net'],
+			'DB' => ['*']
+		]));
+
+		$this->assertCount(2, $this->history);
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => "WEB='example.com:public_html/cache,example.net'\nDNS=''\nMAIL=''\nDB='*'\nCRON=''\nUSER=''",
+			'arg2' => 'hestiacp-api-backup-exclusions-alice',
+			'returncode' => 'no',
+			'cmd' => 'v-make-tmp-file'
+		], $params);
+
+		parse_str((string) $this->history[1]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => 'alice',
+			'arg2' => '/tmp/hestiacp-api-backup-exclusions-alice',
+			'returncode' => 'yes',
+			'cmd' => 'v-update-user-backup-exclusions'
+		], $params);
+	}
+
+	public function testBackupsUpdateExclusionsEmptyClearsAll(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModuleBackup('alice')->updateExclusions([]));
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame("WEB=''\nDNS=''\nMAIL=''\nDB=''\nCRON=''\nUSER=''", $params['arg1']);
+	}
+
+	// nothing is written when the tmp file fails
+	public function testBackupsUpdateExclusionsStopsWhenTmpFileFails(): void {
+		$client = $this->createClient(new Response(403, ['Hestia-Exit-Code' => '10'], 'Error: Unable to create temporary file'));
+
+		try {
+			$client->getModuleBackup('alice')->updateExclusions(['DB' => ['*']]);
+			$this->fail('AuthorizationException expected');
+		} catch (\neto737\HestiaCP\Exceptions\AuthorizationException) {
+			$this->assertCount(1, $this->history);
+		}
+	}
+
+	/**
+	 * @return iterable<string, array{array<string, list<string>>}>
+	 */
+	public static function invalidExclusionsProvider(): iterable {
+		yield 'unknown type' => [['FILES' => ['x']]];
+		yield 'lowercase type' => [['web' => ['example.com']]];
+		yield 'empty entry' => [['DB' => ['']]];
+		yield 'quote' => [['USER' => ["it's"]]];
+		yield 'comma' => [['DB' => ['a,b']]];
+		yield 'newline' => [['DNS' => ["example.com\nDB='*'"]]];
+	}
+
+	/**
+	 * @param array<string, list<string>> $exclusions
+	 */
+	#[DataProvider('invalidExclusionsProvider')]
+	public function testBackupsUpdateExclusionsInvalid(array $exclusions): void {
+		$client = $this->createClient();
+
+		try {
+			$client->getModuleBackup('alice')->updateExclusions($exclusions);
+			$this->fail('InvalidArgumentException expected');
+		} catch (\neto737\HestiaCP\Exceptions\InvalidArgumentException) {
+			$this->assertCount(0, $this->history);
+		}
+	}
+
+	public function testPackagesAdd(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModulePackage()->add('gold', ['WEB_DOMAINS' => 5, 'DISK_QUOTA' => 'unlimited', 'NS' => 'ns1.example.com,ns2.example.com']));
+
+		$this->assertCount(2, $this->history);
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => "WEB_DOMAINS='5'\nDISK_QUOTA='unlimited'\nNS='ns1.example.com,ns2.example.com'",
+			'arg2' => 'hestiacp-api-package-gold',
+			'returncode' => 'no',
+			'cmd' => 'v-make-tmp-file'
+		], $params);
+
+		parse_str((string) $this->history[1]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => '/tmp/hestiacp-api-package-gold',
+			'arg2' => 'gold',
+			'returncode' => 'yes',
+			'cmd' => 'v-add-user-package'
+		], $params);
+	}
+
+	public function testPackagesAddRewrite(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModulePackage()->add('gold', ['WEB_DOMAINS' => 5], true));
+		parse_str((string) $this->history[1]['request']->getBody(), $params);
+		$this->assertSame('yes', $params['arg3']);
+	}
+
+	/**
+	 * @return iterable<string, array{array<string, int|string>}>
+	 */
+	public static function invalidPackageSettingsProvider(): iterable {
+		yield 'lowercase key' => [['web_domains' => 5]];
+		yield 'key with a space' => [['WEB DOMAINS' => 5]];
+		yield 'quote' => [['NS' => "ns1.example.com'"]];
+		yield 'newline' => [['SHELL' => "nologin\nBACKUPS='99'"]];
+		yield 'carriage return' => [['SHELL' => "nologin\rx"]];
+	}
+
+	/**
+	 * @param array<string, int|string> $settings
+	 */
+	#[DataProvider('invalidPackageSettingsProvider')]
+	public function testPackagesAddInvalid(array $settings): void {
+		$client = $this->createClient();
+
+		try {
+			$client->getModulePackage()->add('gold', $settings);
+			$this->fail('InvalidArgumentException expected');
+		} catch (\neto737\HestiaCP\Exceptions\InvalidArgumentException) {
+			$this->assertCount(0, $this->history);
+		}
+	}
+
 	/**
 	 * Keeps the providers in sync with the modules, so a new module method can't be added without a test.
 	 */
@@ -708,7 +974,13 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			}
 		}
 
-		$tested = [...array_keys(iterator_to_array(self::processProvider())), ...array_keys(iterator_to_array(self::listProvider()))];
+		$tested = [
+			...array_keys(iterator_to_array(self::processProvider())),
+			...array_keys(iterator_to_array(self::listProvider())),
+			// methods that send more than one request, tested on their own
+			'Backups::updateExclusions',
+			'Packages::add'
+		];
 
 		sort($methods);
 		sort($tested);

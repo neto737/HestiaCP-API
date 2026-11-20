@@ -4,29 +4,55 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
+use neto737\HestiaCP\Command\Web\AddLetsEncryptDomain;
+use neto737\HestiaCP\Command\Web\AddWebDomain;
 use neto737\HestiaCP\Command\Web\AddWebDomainAlias;
+use neto737\HestiaCP\Command\Web\AddWebDomainFtp;
 use neto737\HestiaCP\Command\Web\AddWebDomainProxy;
 use neto737\HestiaCP\Command\Web\AddWebDomainSsl;
 use neto737\HestiaCP\Command\Web\AddWebDomainSslForce;
 use neto737\HestiaCP\Command\Web\AddWebDomainSslHsts;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainBackendTpl;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPassword;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPath;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainProxyTpl;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainSslCert;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainSslHome;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainTpl;
+use neto737\HestiaCP\Command\Web\DeleteLetsEncryptDomain;
+use neto737\HestiaCP\Command\Web\DeleteWebDomain;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainAlias;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainFtp;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainProxy;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainSsl;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainSslForce;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainSslHsts;
 use neto737\HestiaCP\Command\Web\ListWebDomain;
+use neto737\HestiaCP\Command\Web\ListWebDomains;
 use neto737\HestiaCP\Command\Web\ListWebDomainSsl;
 use neto737\HestiaCP\Command\Web\ListWebTemplates;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesBackend;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesProxy;
+use neto737\HestiaCP\Command\Web\SuspendWebDomain;
+use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
+use neto737\HestiaCP\Command\Web\AddWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\AddWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainHttpAuth;
 
 class WebTest extends \PHPUnit\Framework\TestCase {
+
+	public function testListWebDomains(): void {
+		$command = new ListWebDomains('admin');
+		$this->assertSame('v-list-web-domains', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process(new Response()));
+	}
 
 	public function testListWebDomain(): void {
 		$command = new ListWebDomain('admin', 'example.com');
@@ -36,7 +62,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testListWebDomainSsl(): void {
@@ -47,7 +73,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testListWebTemplates(): void {
@@ -60,8 +86,208 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 			$this->assertSame(['arg1' => 'json'], $command->getRequestParams());
 
 			$this->assertFalse($command->needReturnCode());
-			$this->assertSame([], $command->process());
+			$this->assertSame([], $command->process(new Response()));
 		}
+	}
+
+	public function testAddWebDomain(): void {
+		$command = new AddWebDomain('admin', 'domain.com');
+		$this->assertSame('v-add-web-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => '',
+			'arg4' => 'no',
+			'arg5' => 'none'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testAddWebDomainWithIpAndProxyExtensions(): void {
+		$command = new AddWebDomain('admin', 'domain.com', null, null, 'jpg,png');
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => '',
+			'arg4' => 'no',
+			'arg5' => 'none',
+			'arg6' => 'jpg,png'
+		], $command->getRequestParams());
+
+		$command = new AddWebDomain('admin', 'domain.com', '127.0.0.1', 'www.domain.com', null, true);
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => '127.0.0.1',
+			'arg4' => 'yes',
+			'arg5' => 'www.domain.com'
+		], $command->getRequestParams());
+	}
+
+	public function testAddWebDomainFtp(): void {
+		$command = new AddWebDomainFtp('admin', 'domain.com', 'account', 'pass');
+		$this->assertSame('v-add-web-domain-ftp', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'account',
+			'arg4' => 'pass'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testAddLetsEncryptDomain(): void {
+		$command = new AddLetsEncryptDomain('admin', 'domain.com');
+		$this->assertSame('v-add-letsencrypt-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => '',
+			'arg4' => 'no'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testAddLetsEncryptDomainMailAndKeyAlgo(): void {
+		$command = new AddLetsEncryptDomain('admin', 'domain.com', 'www.domain.com', true, AddLetsEncryptDomain::KEY_ALGO_RSA);
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'www.domain.com',
+			'arg4' => 'yes',
+			'arg5' => 'rsa'
+		], $command->getRequestParams());
+	}
+
+	public function testAddLetsEncryptDomainInvalidKeyAlgo(): void {
+		$this->expectException(InvalidArgumentException::class);
+		new AddLetsEncryptDomain('admin', 'domain.com', null, false, 'dsa');
+	}
+
+	public function testChangeWebDomainFtpPassword(): void {
+		$command = new ChangeWebDomainFtpPassword('admin', 'domain', 'account', 'pass');
+		$this->assertSame('v-change-web-domain-ftp-password', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain',
+			'arg3' => 'account',
+			'arg4' => 'pass'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testChangeWebDomainFtpPath(): void {
+		$command = new ChangeWebDomainFtpPath('admin', 'domain', 'account', 'path');
+		$this->assertSame('v-change-web-domain-ftp-path', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain',
+			'arg3' => 'account',
+			'arg4' => 'path'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testDeleteWebDomain(): void {
+		$command = new DeleteWebDomain('admin', 'domain.com');
+		$this->assertSame('v-delete-web-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testDeleteWebDomainFtp(): void {
+		$command = new DeleteWebDomainFtp('admin', 'domain.com', 'account');
+		$this->assertSame('v-delete-web-domain-ftp', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'account'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testDeleteLetsEncryptDomain(): void {
+		$command = new DeleteLetsEncryptDomain('admin', 'domain.com');
+		$this->assertSame('v-delete-letsencrypt-domain', $command->getName());
+		// no MAIL argument: HestiaCP reads any value, "no" included, as the mail domain
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no'
+		], $command->getRequestParams());
+
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no',
+			'arg4' => 'yes'
+		], (new DeleteLetsEncryptDomain('admin', 'domain.com', false, true))->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testSuspendWebDomain(): void {
+		$command = new SuspendWebDomain('admin', 'domain.com');
+		$this->assertSame('v-suspend-web-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testUnsuspendWebDomain(): void {
+		$command = new UnsuspendWebDomain('admin', 'domain.com');
+		$this->assertSame('v-unsuspend-web-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainAlias(): void {
@@ -72,7 +298,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testDeleteWebDomainAlias(): void {
@@ -83,7 +309,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainSsl(): void {
@@ -94,7 +320,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainSslRestartWithoutSslHome(): void {
@@ -116,7 +342,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainSslHome(): void {
@@ -127,7 +353,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainSslHomeInvalid(): void {
@@ -158,7 +384,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainBackendTpl(): void {
@@ -169,7 +395,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeWebDomainProxyTpl(): void {
@@ -180,7 +406,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainProxy(): void {
@@ -191,7 +417,7 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddWebDomainProxyExtensionsWithoutTemplate(): void {
@@ -224,5 +450,31 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'admin', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'no'],
 			(new DeleteWebDomainAlias('admin', 'example.com', 'www.example.com', false))->getRequestParams()
 		);
+	}
+
+	/**
+	 * @return iterable<string, array{\neto737\HestiaCP\Command\ICommand<mixed>, array<string, string>}>
+	 */
+	public static function domainSettingProvider(): iterable {
+		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
+		yield 'v-change-web-domain-ip' => [new ChangeWebDomainIp('admin', 'example.com', '192.0.2.20'), $domain + ['arg3' => '192.0.2.20']];
+		yield 'v-change-web-domain-ip restart' => [new ChangeWebDomainIp('admin', 'example.com', '192.0.2.20', false), $domain + ['arg3' => '192.0.2.20', 'arg4' => 'no']];
+		yield 'v-add-web-domain-redirect' => [new AddWebDomainRedirect('admin', 'example.com', 'www.example.com'), $domain + ['arg3' => 'www.example.com', 'arg4' => '301']];
+		yield 'v-add-web-domain-redirect code and restart' => [new AddWebDomainRedirect('admin', 'example.com', 'https://example.org/', 302, true), $domain + ['arg3' => 'https://example.org/', 'arg4' => '302', 'arg5' => 'yes']];
+		yield 'v-delete-web-domain-redirect' => [new DeleteWebDomainRedirect('admin', 'example.com'), $domain];
+		yield 'v-add-web-domain-httpauth' => [new AddWebDomainHttpAuth('admin', 'example.com', 'guard', 'secret'), $domain + ['arg3' => 'guard', 'arg4' => 'secret']];
+		yield 'v-change-web-domain-httpauth' => [new ChangeWebDomainHttpAuth('admin', 'example.com', 'guard', 'secret', false), $domain + ['arg3' => 'guard', 'arg4' => 'secret', 'arg5' => 'no']];
+		yield 'v-delete-web-domain-httpauth' => [new DeleteWebDomainHttpAuth('admin', 'example.com', 'guard'), $domain + ['arg3' => 'guard']];
+	}
+
+	/**
+	 * @param \neto737\HestiaCP\Command\ICommand<mixed> $command
+	 * @param array<string, string> $params
+	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('domainSettingProvider')]
+	public function testDomainSettingCommands(\neto737\HestiaCP\Command\ICommand $command, array $params): void {
+		$this->assertSame(explode(' ', (string) $this->dataName())[0], $command->getName());
+		$this->assertSame($params, $command->getRequestParams());
+		$this->assertTrue($command->needReturnCode());
 	}
 }

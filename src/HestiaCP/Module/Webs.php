@@ -36,6 +36,12 @@ use neto737\HestiaCP\Command\Web\ListWebDomains;
 use neto737\HestiaCP\Command\Web\ListWebTemplates;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesBackend;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesProxy;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
+use neto737\HestiaCP\Command\Web\AddWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\AddWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainHttpAuth;
 
 class Webs extends Module {
 
@@ -121,12 +127,13 @@ class Webs extends Module {
 	 *
 	 * @param string $domain
 	 * @param bool   $restart
+	 * @param bool   $mail    Delete the mail domain's certificate (mail.DOMAIN) instead of the web domain's
 	 * @return bool
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function deleteDomainLetsEncrypt(string $domain, bool $restart = false): bool {
-		return $this->client->send(new DeleteLetsEncryptDomain($this->user, $domain, $restart));
+	public function deleteDomainLetsEncrypt(string $domain, bool $restart = false, bool $mail = false): bool {
+		return $this->client->send(new DeleteLetsEncryptDomain($this->user, $domain, $restart, $mail));
 	}
 
 	/**
@@ -140,7 +147,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function addDomainFtp(string $domain, string $ftpUser, string $ftpPassword, ?string $ftpPath = null): bool {
+	public function addDomainFtp(string $domain, string $ftpUser, #[\SensitiveParameter] string $ftpPassword, ?string $ftpPath = null): bool {
 		return $this->client->send(new AddWebDomainFtp($this->user, $domain, $ftpUser, $ftpPassword, $ftpPath));
 	}
 
@@ -154,7 +161,7 @@ class Webs extends Module {
 	 * @throws \neto737\HestiaCP\Exceptions\ClientException
 	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
 	 */
-	public function changeDomainFtpPassword(string $domain, string $ftpUser, string $ftpPassword): bool {
+	public function changeDomainFtpPassword(string $domain, string $ftpUser, #[\SensitiveParameter] string $ftpPassword): bool {
 		return $this->client->send(new ChangeWebDomainFtpPassword($this->user, $domain, $ftpUser, $ftpPassword));
 	}
 
@@ -462,5 +469,91 @@ class Webs extends Module {
 	 */
 	public function deleteDomainProxy(string $domain, ?bool $restart = null): bool {
 		return $this->client->send(new DeleteWebDomainProxy($this->user, $domain, $restart));
+	}
+
+	/**
+	 * This function changes the IP address of a web domain.
+	 *
+	 * @param string    $domain
+	 * @param string    $ip
+	 * @param bool|null $restart Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainIp(string $domain, string $ip, ?bool $restart = null): bool {
+		return $this->client->send(new ChangeWebDomainIp($this->user, $domain, $ip, $restart));
+	}
+
+	/**
+	 * This function redirects every request to a web domain to another address.
+	 *
+	 * @param string    $domain
+	 * @param string    $redirect Target, e.g. www.example.com or https://example.org/path
+	 * @param int       $code     HTTP status code of the redirect, e.g. 301 or 302
+	 * @param bool|null $restart  Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainRedirect(string $domain, string $redirect, int $code = 301, ?bool $restart = null): bool {
+		return $this->client->send(new AddWebDomainRedirect($this->user, $domain, $redirect, $code, $restart));
+	}
+
+	/**
+	 * This function removes the redirect of a web domain.
+	 *
+	 * @param string    $domain
+	 * @param bool|null $restart Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainRedirect(string $domain, ?bool $restart = null): bool {
+		return $this->client->send(new DeleteWebDomainRedirect($this->user, $domain, $restart));
+	}
+
+	/**
+	 * This function protects a web domain with HTTP authentication, adding a user that can log in.
+	 *
+	 * @param string    $domain
+	 * @param string    $authUser
+	 * @param string    $authPassword
+	 * @param bool|null $restart      Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainHttpAuth(string $domain, string $authUser, #[\SensitiveParameter] string $authPassword, ?bool $restart = null): bool {
+		return $this->client->send(new AddWebDomainHttpAuth($this->user, $domain, $authUser, $authPassword, $restart));
+	}
+
+	/**
+	 * This function changes the password of an HTTP authentication user of a web domain.
+	 *
+	 * @param string    $domain
+	 * @param string    $authUser
+	 * @param string    $authPassword
+	 * @param bool|null $restart      Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainHttpAuthPassword(string $domain, string $authUser, #[\SensitiveParameter] string $authPassword, ?bool $restart = null): bool {
+		return $this->client->send(new ChangeWebDomainHttpAuth($this->user, $domain, $authUser, $authPassword, $restart));
+	}
+
+	/**
+	 * This function deletes an HTTP authentication user of a web domain. The last one turns the protection off.
+	 *
+	 * @param string    $domain
+	 * @param string    $authUser
+	 * @param bool|null $restart  Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainHttpAuth(string $domain, string $authUser, ?bool $restart = null): bool {
+		return $this->client->send(new DeleteWebDomainHttpAuth($this->user, $domain, $authUser, $restart));
 	}
 }

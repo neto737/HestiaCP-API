@@ -4,19 +4,57 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
+use neto737\HestiaCP\Command\Mail\AddMailAccount;
 use neto737\HestiaCP\Command\Mail\AddMailAccountAlias;
 use neto737\HestiaCP\Command\Mail\AddMailAccountAutoreply;
 use neto737\HestiaCP\Command\Mail\AddMailAccountForward;
 use neto737\HestiaCP\Command\Mail\AddMailAccountFwdOnly;
+use neto737\HestiaCP\Command\Mail\AddMailDomain;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
+use neto737\HestiaCP\Command\Mail\DeleteMailAccount;
 use neto737\HestiaCP\Command\Mail\DeleteMailAccountAlias;
 use neto737\HestiaCP\Command\Mail\DeleteMailAccountAutoreply;
 use neto737\HestiaCP\Command\Mail\DeleteMailAccountForward;
 use neto737\HestiaCP\Command\Mail\DeleteMailAccountFwdOnly;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomain;
 use neto737\HestiaCP\Command\Mail\ListMailAccount;
 use neto737\HestiaCP\Command\Mail\ListMailAccountAutoreply;
+use neto737\HestiaCP\Command\Mail\ListMailAccounts;
 use neto737\HestiaCP\Command\Mail\ListMailDomain;
+use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
+use neto737\HestiaCP\Command\Mail\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
+use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
+use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountQuota;
+use neto737\HestiaCP\Command\Mail\AddMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\AddMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\AddMailDomainReject;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainReject;
+use neto737\HestiaCP\Command\Mail\ListMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\AddMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainSslCert;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainSsl;
 
 class MailTest extends \PHPUnit\Framework\TestCase {
+
+	public function testListMailDomains(): void {
+		$command = new ListMailDomains('admin');
+		$this->assertSame('v-list-mail-domains', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process(new Response()));
+	}
 
 	public function testListMailDomain(): void {
 		$command = new ListMailDomain('admin', 'example.com');
@@ -26,7 +64,31 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
+	}
+
+	public function testListMailDomainDkim(): void {
+		$command = new ListMailDomainDkim('admin', 'domain');
+		$this->assertSame('v-list-mail-domain-dkim', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process(new Response()));
+	}
+
+	public function testListMailDomainDkimDns(): void {
+		$command = new ListMailDomainDkimDns('admin', 'domain');
+		$this->assertSame('v-list-mail-domain-dkim-dns', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process(new Response()));
+	}
+
+	public function testListMailAccounts(): void {
+		$command = new ListMailAccounts('admin', 'domain');
+		$this->assertSame('v-list-mail-accounts', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'domain', 'arg3' => 'json'], $command->getRequestParams());
+
+		$this->assertSame([], $command->process(new Response()));
 	}
 
 	public function testListMailAccountCommands(): void {
@@ -40,12 +102,178 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 			$this->assertFalse($command->needReturnCode());
 
 			try {
-				$command->process();
+				$command->process(new Response());
 				$this->fail('Expected an empty response to throw');
 			} catch (\neto737\HestiaCP\Exceptions\InvalidResponseException $e) {
 				$this->assertSame('Empty response', $e->getMessage());
 			}
 		}
+	}
+
+	public function testAddMailDomain(): void {
+		$command = new AddMailDomain('admin', 'domain.com');
+		$this->assertSame('v-add-mail-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'yes',
+			'arg4' => 'yes',
+			'arg5' => 'yes'
+		], $command->getRequestParams());
+
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'no',
+			'arg4' => 'no',
+			'arg5' => 'yes',
+			'arg6' => '4096',
+			'arg7' => 'no',
+			'arg8' => 'yes',
+			'arg9' => 'sel2026'
+		], (new AddMailDomain('admin', 'domain.com', false, false, true, 4096, false, true, 'sel2026'))->getRequestParams());
+
+		// arguments before a set one are sent empty, except REJECT_SPAM, which HestiaCP would store empty
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'yes',
+			'arg4' => 'yes',
+			'arg5' => 'yes',
+			'arg6' => '',
+			'arg7' => '',
+			'arg8' => 'no',
+			'arg9' => 'sel2026'
+		], (new AddMailDomain('admin', 'domain.com', dkimSelector: 'sel2026'))->getRequestParams());
+
+		$this->assertSame('2048', (new AddMailDomain('admin', 'domain.com', dkimSize: 2048))->getRequestParams()['arg6']);
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testAddMailAccount(): void {
+		$command = new AddMailAccount('admin', 'domain.com', 'account', 'pass');
+		$this->assertSame('v-add-mail-account', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'account',
+			'arg4' => 'pass'
+		], $command->getRequestParams());
+
+		$this->assertSame('1024', (new AddMailAccount('admin', 'domain.com', 'account', 'pass', 1024))->getRequestParams()['arg5']);
+		$this->assertSame('0', (new AddMailAccount('admin', 'domain.com', 'account', 'pass', 0))->getRequestParams()['arg5']);
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testChangeMailAccountPassword(): void {
+		$command = new ChangeMailAccountPassword('admin', 'domain', 'account', 'pass');
+		$this->assertSame('v-change-mail-account-password', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain',
+			'arg3' => 'account',
+			'arg4' => 'pass'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testDeleteMailDomain(): void {
+		$command = new DeleteMailDomain('admin', 'domain.com');
+		$this->assertSame('v-delete-mail-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testDeleteMailAccount(): void {
+		$command = new DeleteMailAccount('admin', 'domain.com', 'account');
+		$this->assertSame('v-delete-mail-account', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'account'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testSuspendMailDomain(): void {
+		$command = new SuspendMailDomain('admin', 'domain.com');
+		$this->assertSame('v-suspend-mail-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testSuspendMailAccount(): void {
+		$command = new SuspendMailAccount('admin', 'domain.com', 'account');
+		$this->assertSame('v-suspend-mail-account', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'account'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testUnsuspendMailDomain(): void {
+		$command = new UnsuspendMailDomain('admin', 'domain.com');
+		$this->assertSame('v-unsuspend-mail-domain', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
+	}
+
+	public function testUnsuspendMailAccount(): void {
+		$command = new UnsuspendMailAccount('admin', 'domain.com', 'account');
+		$this->assertSame('v-unsuspend-mail-account', $command->getName());
+		$this->assertSame([
+			'arg1' => 'admin',
+			'arg2' => 'domain.com',
+			'arg3' => 'account'
+		], $command->getRequestParams());
+
+		$this->assertTrue($command->needReturnCode());
+
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
+		$command->process(new Response());
 	}
 
 	public function testAccountValueCommands(): void {
@@ -76,6 +304,57 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 
 	public function testProcessWithoutResponse(): void {
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		(new AddMailAccountAlias('admin', 'example.com', 'info', 'sales'))->process();
+		(new AddMailAccountAlias('admin', 'example.com', 'info', 'sales'))->process(new Response());
+	}
+
+	/**
+	 * @return iterable<string, array{\neto737\HestiaCP\Command\ICommand<mixed>, array<string, string>}>
+	 */
+	public static function domainSettingProvider(): iterable {
+		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
+		yield 'v-change-mail-account-quota' => [new ChangeMailAccountQuota('admin', 'example.com', 'info', 2048), $domain + ['arg3' => 'info', 'arg4' => '2048']];
+		yield 'v-change-mail-account-quota unlimited' => [new ChangeMailAccountQuota('admin', 'example.com', 'info', 0), $domain + ['arg3' => 'info', 'arg4' => 'unlimited']];
+		yield 'v-add-mail-domain-catchall' => [new AddMailDomainCatchall('admin', 'example.com', 'all@example.org'), $domain + ['arg3' => 'all@example.org']];
+		yield 'v-change-mail-domain-catchall' => [new ChangeMailDomainCatchall('admin', 'example.com', 'all@example.org'), $domain + ['arg3' => 'all@example.org']];
+		yield 'v-delete-mail-domain-catchall' => [new DeleteMailDomainCatchall('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-antispam' => [new AddMailDomainAntispam('admin', 'example.com'), $domain];
+		yield 'v-delete-mail-domain-antispam' => [new DeleteMailDomainAntispam('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-antivirus' => [new AddMailDomainAntivirus('admin', 'example.com'), $domain];
+		yield 'v-delete-mail-domain-antivirus' => [new DeleteMailDomainAntivirus('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-dkim' => [new AddMailDomainDkim('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-dkim size and selector' => [new AddMailDomainDkim('admin', 'example.com', 4096, 's2026'), $domain + ['arg3' => '4096', 'arg4' => 's2026']];
+		yield 'v-add-mail-domain-dkim selector only' => [new AddMailDomainDkim('admin', 'example.com', dkimSelector: 's2026'), $domain + ['arg3' => '', 'arg4' => 's2026']];
+		yield 'v-delete-mail-domain-dkim' => [new DeleteMailDomainDkim('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-reject' => [new AddMailDomainReject('admin', 'example.com'), $domain];
+		yield 'v-delete-mail-domain-reject' => [new DeleteMailDomainReject('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-ssl' => [new AddMailDomainSsl('admin', 'example.com', '/tmp'), $domain + ['arg3' => '/tmp']];
+		yield 'v-add-mail-domain-ssl restart' => [new AddMailDomainSsl('admin', 'example.com', '/tmp', false), $domain + ['arg3' => '/tmp', 'arg4' => 'no']];
+		yield 'v-change-mail-domain-sslcert' => [new ChangeMailDomainSslCert('admin', 'example.com', '/tmp', true), $domain + ['arg3' => '/tmp', 'arg4' => 'yes']];
+		yield 'v-delete-mail-domain-ssl' => [new DeleteMailDomainSsl('admin', 'example.com'), $domain];
+	}
+
+	/**
+	 * @param \neto737\HestiaCP\Command\ICommand<mixed> $command
+	 * @param array<string, string> $params
+	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('domainSettingProvider')]
+	public function testDomainSettingCommands(\neto737\HestiaCP\Command\ICommand $command, array $params): void {
+		$this->assertSame(explode(' ', (string) $this->dataName())[0], $command->getName());
+		$this->assertSame($params, $command->getRequestParams());
+		$this->assertTrue($command->needReturnCode());
+	}
+
+	public function testChangeMailAccountQuotaNegative(): void {
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidArgumentException::class);
+		new ChangeMailAccountQuota('admin', 'example.com', 'info', -1);
+	}
+
+	public function testListMailDomainSsl(): void {
+		$command = new ListMailDomainSsl('admin', 'example.com');
+		$this->assertSame('v-list-mail-domain-ssl', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'example.com', 'arg3' => 'json'], $command->getRequestParams());
+		$this->assertFalse($command->needReturnCode());
+
+		$this->assertSame(['CRT' => 'x'], $command->process(new Response(200, ['Hestia-Exit-Code' => '0'], '{"example.com": {"CRT": "x"}}')));
 	}
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\Dns\AddDnsDomain;
 use neto737\HestiaCP\Command\Dns\AddDnsRecord;
 use neto737\HestiaCP\Command\Dns\ChangeDnsDomainDnssec;
@@ -36,7 +37,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
 		$this->assertFalse($command->needReturnCode());
-		$this->assertSame([], $command->process());
+		$this->assertSame([], $command->process(new Response()));
 	}
 
 	public function testDomainDetailCommands(): void {
@@ -49,7 +50,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 			$this->assertFalse($command->needReturnCode());
 
 			try {
-				$command->process();
+				$command->process(new Response());
 				$this->fail($name . ' should throw on an empty response');
 			} catch (\neto737\HestiaCP\Exceptions\InvalidResponseException) {
 			}
@@ -62,7 +63,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'example.com', 'arg3' => 'json'], $command->getRequestParams());
 
 		$this->assertFalse($command->needReturnCode());
-		$this->assertSame([], $command->process());
+		$this->assertSame([], $command->process(new Response()));
 	}
 
 	public function testListDnsTemplates(): void {
@@ -75,7 +76,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'default', 'arg2' => 'json'], $command->getRequestParams());
 
 		$this->assertFalse($command->needReturnCode());
-		$this->assertSame([], $command->process());
+		$this->assertSame([], $command->process(new Response()));
 	}
 
 	public function testAddDnsDomain(): void {
@@ -86,7 +87,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddDnsDomainWithNameservers(): void {
@@ -164,7 +165,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddDnsRecordTtlOnly(): void {
@@ -189,7 +190,7 @@ class DnsTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testChangeDnsRecordId(): void {

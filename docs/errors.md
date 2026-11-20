@@ -1,6 +1,6 @@
 # Error handling
 
-Every failure is thrown as an exception. All of them extend `\neto737\HestiaCP\Exceptions\Exception`.
+Every failure is thrown as an exception. All of them implement the `\neto737\HestiaCP\Exceptions\Exception` interface, so `catch (Exception $e)` catches any of them. They also extend PHP's `\InvalidArgumentException` or `\RuntimeException`, so code that catches those standard types catches them too.
 
 ```php
 use neto737\HestiaCP\Command\ResponseCode;
@@ -17,11 +17,11 @@ try {
 		// the user already exists
 	}
 } catch (ClientException $e) {
-	// connection problem (timeout, DNS, TLS, ...)
+	// connection problem (timeout, DNS, TLS, ...), or the host isn't HestiaCP
 }
 ```
 
-Catch `AuthorizationException` before `ProcessException`, because it is a subclass.
+Catch `AuthorizationException` before `ProcessException`, because it is a subclass. Likewise, catch `InvalidResponseException` before `ClientException` to tell a host that isn't HestiaCP apart from a connection problem.
 
 ## Exception types
 
@@ -30,10 +30,11 @@ All classes are in the `neto737\HestiaCP\Exceptions` namespace.
 | Exception | Extends | Thrown when |
 | --- | --- | --- |
 | `AuthorizationException` | `ProcessException` | The credentials are wrong (exit code 9) or the user may not run the command (exit code 10). |
-| `InvalidResponseException` | `ProcessException` | The response isn't what HestiaCP sends, for example when the hostname points to another server. |
-| `ProcessException` | `RuntimeException` | HestiaCP ran the command and it failed with any other exit code, or a list command returned invalid JSON. |
+| `InvalidResponseException` | `ClientException` | The response isn't what HestiaCP sends, for example when the hostname points to another server: a body that isn't an exit code, a redirect or an HTTP error status without an exit code, or a list command body that isn't a JSON object or array. |
+| `ProcessException` | `RuntimeException` | HestiaCP ran the command and it failed with any other exit code. |
 | `ClientException` | `RuntimeException` | The request didn't complete: timeout, DNS failure, TLS error, refused connection. The original Guzzle exception is available with `getPrevious()`. |
-| `InvalidArgumentException` | `Exception` | An argument is invalid before anything is sent, for example a malformed hostname or a `RawCommand` name that isn't a HestiaCP script name. |
+| `RuntimeException` | `\RuntimeException` | Not thrown itself; the parent of the four classes above. |
+| `InvalidArgumentException` | `\InvalidArgumentException` | An argument is invalid before anything is sent, for example a malformed hostname or a `RawCommand` name that isn't a HestiaCP script name. |
 
 ## Exit codes
 
@@ -63,6 +64,10 @@ For `ProcessException` and its subclasses, `getCode()` returns the HestiaCP exit
 | 20 | `E_RESTART` | Service restart failed |
 | 21 | `E_BACKUP` / `E_API_DISABLED` | Backup failed, or API access is disabled for this user |
 
-HestiaCP uses 21 for two things: `E_BACKUP` in its scripts and `E_API_DISABLED` in the API. Both constants have the value 21.
+HestiaCP uses 21 for two things: `E_BACKUP` in its scripts and `E_API_DISABLED` in the API. Both constants have the value 21. The command tells them apart: a backup command fails with `E_BACKUP`, and any command sent with a non-admin user's access key fails with `E_API_DISABLED` while the server allows API access for the admin only. To allow it for all users, change that in the server settings, or run `v-change-sys-config-value API_SYSTEM 2` on the server. With an access key, the message also includes HestiaCP's own text, `Error: API has been disabled`.
 
 An unknown code gets the message `Unknown error (exit code N)`. `ResponseCode::getMessage($code)` returns the message for any code.
+
+## Legacy API key and password
+
+With a legacy API key or a username and password, HestiaCP doesn't send the exit code of a list command (`list*()`, `detail()`, `stats()`, `RawListCommand`). When one fails, the `ProcessException` has the code `0` and HestiaCP's own message, for example `Command failed (Error: user jane doesn't exist)`, so you can't compare `getCode()` with a `ResponseCode` constant. The other commands aren't affected. Use an [access key](authentication.md#credentials) to get the exit code from every command.

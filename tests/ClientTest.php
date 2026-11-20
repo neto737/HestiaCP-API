@@ -16,11 +16,6 @@ class ClientTest extends \PHPUnit\Framework\TestCase {
 		$client = new Client($host);
 
 		$this->assertSame($host, $client->getHost());
-
-		$otherHost = new Host('https://otherHost', $credentials);
-		$client->setHost($otherHost);
-		$this->assertNotSame($host, $client->getHost());
-		$this->assertSame($otherHost, $client->getHost());
 	}
 
 	public function testHost(): void {
@@ -29,11 +24,6 @@ class ClientTest extends \PHPUnit\Framework\TestCase {
 		$client = new Client($host);
 
 		$this->assertSame($host, $client->getHost());
-
-		$otherHost = new Host('https://otherHost', $credentials);
-		$client->setHost($otherHost);
-		$this->assertNotSame($host, $client->getHost());
-		$this->assertSame($otherHost, $client->getHost());
 	}
 
 	public function testSimpleFactoryWithAPIKey(): void {

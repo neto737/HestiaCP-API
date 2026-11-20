@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://packagist.org/packages/neto737/hestiacp-api"><img src="https://img.shields.io/packagist/v/neto737/hestiacp-api?label=packagist" alt="Latest Stable Version"></a>
   <a href="https://packagist.org/packages/neto737/hestiacp-api"><img src="https://img.shields.io/packagist/dt/neto737/hestiacp-api" alt="Total Downloads"></a>
-  <img src="https://img.shields.io/badge/php-%E2%89%A5%208.2-777BB4?logo=php&logoColor=white" alt="PHP 8.2 or later">
+  <img src="https://img.shields.io/badge/php-%E2%89%A5%208.3-777BB4?logo=php&logoColor=white" alt="PHP 8.3 or later">
   <a href="https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml"><img src="https://github.com/neto737/HestiaCP-API/actions/workflows/tests.yml/badge.svg?branch=main" alt="Tests"></a>
   <a href="https://codecov.io/gh/neto737/HestiaCP-API"><img src="https://codecov.io/gh/neto737/HestiaCP-API/branch/main/graph/badge.svg?token=F93I5JQXY6" alt="Coverage"></a>
   <a href="LICENSE"><img src="https://img.shields.io/packagist/l/neto737/hestiacp-api" alt="License"></a>
@@ -28,12 +28,15 @@
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
 - **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
-- Tested on PHP 8.2 to 8.5 and checked against HestiaCP 1.10.
+- **Tested against a real server:** besides the unit tests on PHP 8.3 to 8.5, every module method was tested against a live HestiaCP 1.10.9 server, with all three login methods.
 
 ## Requirements
 
-- PHP 8.2 or later
+- PHP 8.3 or later
 - HestiaCP with the API enabled, and the IP address of the calling machine allowed in the server settings
+- HestiaCP 1.6 or later for access keys. The library is tested on HestiaCP 1.10.9; an older version may lack some scripts or arguments, which HestiaCP reports as a failed command (a `ProcessException`).
+
+Where HestiaCP 1.10.9 behaves unexpectedly, the docs say so, for example in [packages](docs/packages.md#copying-renaming-and-deleting) and [DNSSEC](docs/dns.md#dnssec).
 
 ## Installation
 
@@ -73,12 +76,12 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 
 | Module | Get it with | What it covers |
 | --- | --- | --- |
-| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, contact emails and packages, suspend and unsuspend, list usage stats, back up all users. |
-| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Aliases, SSL certificates, Let's Encrypt, templates, proxy and FTP accounts. |
-| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, aliases, forwarding, autoreplies, DKIM keys and DNS records. |
+| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, contact emails, packages, names, shells, languages and roles, suspend and unsuspend, list usage stats, back up all users. |
+| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Change the IP address. Aliases, redirects, HTTP authentication, SSL certificates, Let's Encrypt, templates, proxy and FTP accounts. |
+| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, quotas, suspending, aliases, forwarding, autoreplies, catch-all addresses, antispam and antivirus, DKIM keys and DNS records, SSL certificates. |
 | [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. Change passwords, suspend and unsuspend. |
-| [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
-| [Packages](docs/packages.md) | `getModulePackage()` | List and show hosting packages. |
+| [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List, update and delete backup exclusions. |
+| [Packages](docs/packages.md) | `getModulePackage()` | List, show, add, copy, rename and delete hosting packages. |
 | [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
 | [DNS](docs/dns.md) | `getModuleDns($user)` | DNS domains and records: add, change, suspend, unsuspend and delete. TTL, SOA, templates and DNSSEC. |
 
@@ -101,7 +104,7 @@ try {
 		// the user already exists
 	}
 } catch (ClientException $e) {
-	// connection problem: timeout, DNS, TLS, ...
+	// connection problem (timeout, DNS, TLS, ...), or the host isn't HestiaCP
 }
 ```
 
@@ -111,7 +114,7 @@ All exception types and exit codes are listed in [Error handling](docs/errors.md
 
 - [Authentication and client setup](docs/authentication.md): access keys, legacy API keys, passwords, hostname rules, TLS and timeouts
 - [Error handling](docs/errors.md): exception types and HestiaCP exit codes
-- Modules: [Users](docs/users.md) · [Web domains](docs/web.md) · [Mail](docs/mail.md) · [Databases](docs/databases.md) · [Backups](docs/backups.md)
+- Modules: [Users](docs/users.md) · [Web domains](docs/web.md) · [Mail](docs/mail.md) · [DNS](docs/dns.md) · [Databases](docs/databases.md) · [Backups](docs/backups.md) · [Cron jobs](docs/cron.md) · [Packages](docs/packages.md)
 - [Sending commands directly](docs/commands.md): using the command classes, and writing your own
 
 **Upgrading from v1?** Read [UPGRADING.md](UPGRADING.md). All changes are listed in [CHANGELOG.md](CHANGELOG.md).
@@ -128,6 +131,8 @@ composer check    # coding style, static analysis and tests
 Each check can also run on its own: `composer test` (PHPUnit), `composer analyse` (PHPStan) and `composer cs` (PHP-CS-Fixer). `composer cs-fix` fixes the coding style. The code uses tabs for indentation and LF line endings.
 
 The tests use Guzzle's mock handler, so they don't need a HestiaCP server.
+
+A separate suite runs against a real HestiaCP server, to catch what a mock can't: `composer test:live`. It needs `HESTIACP_HOST` and `HESTIACP_ACCESS_KEY` (an admin access key, `ACCESS_KEY:SECRET_KEY`), and optionally `HESTIACP_HASH` and `HESTIACP_PASSWORD` to test the legacy endpoint, and `HESTIACP_VERIFY` (a CA bundle path, or `0`). Each test class creates a user and deletes it afterwards, so use a test server, not a production one. The suite covers every module method except `Users::backup()`, which backs up every user on the server, and Let's Encrypt, which needs a domain that resolves to the server; both were tested by hand against HestiaCP 1.10.9.
 
 ## Credits
 

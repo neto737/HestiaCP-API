@@ -10,11 +10,11 @@ use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 class AddWebDomainSsl extends ProcessCommand {
 
 	/** HTTPS serves the same directory as HTTP (public_html) */
-	public const SSL_HOME_SAME = 'same';
+	public const string SSL_HOME_SAME = 'same';
 	/** HTTPS serves its own directory (public_shtml) */
-	public const SSL_HOME_SINGLE = 'single';
+	public const string SSL_HOME_SINGLE = 'single';
 
-	private const SSL_HOMES = [self::SSL_HOME_SAME, self::SSL_HOME_SINGLE];
+	private const array SSL_HOMES = [self::SSL_HOME_SAME, self::SSL_HOME_SINGLE];
 
 	/**
 	 * @param string      $sslDir  Directory on the server holding <domain>.crt, <domain>.key and optionally <domain>.ca

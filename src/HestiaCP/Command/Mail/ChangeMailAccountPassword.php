@@ -12,7 +12,7 @@ class ChangeMailAccountPassword extends ProcessCommand {
 		private readonly string $user,
 		private readonly string $domain,
 		private readonly string $account,
-		private readonly string $password
+		#[\SensitiveParameter] private readonly string $password
 	) {}
 
 	public function getName(): string {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace neto737\HestiaCP\Tests\Command;
 
+use GuzzleHttp\Psr7\Response;
 use neto737\HestiaCP\Command\Cron\AddCronJob;
 use neto737\HestiaCP\Command\Cron\ChangeCronJob;
 use neto737\HestiaCP\Command\Cron\DeleteCronJob;
@@ -20,7 +21,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(['arg1' => 'admin', 'arg2' => 'json'], $command->getRequestParams());
 
 		$this->assertFalse($command->needReturnCode());
-		$this->assertSame([], $command->process());
+		$this->assertSame([], $command->process(new Response()));
 	}
 
 	public function testListCronJob(): void {
@@ -31,7 +32,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddCronJob(): void {
@@ -50,7 +51,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testAddCronJobWithJobAndRestart(): void {
@@ -81,7 +82,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testDeleteCronJob(): void {
@@ -92,7 +93,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testSuspendCronJob(): void {
@@ -103,7 +104,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testUnsuspendCronJob(): void {
@@ -114,7 +115,7 @@ class CronTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($command->needReturnCode());
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
-		$command->process();
+		$command->process(new Response());
 	}
 
 	public function testRestartIsSentWhenSet(): void {
