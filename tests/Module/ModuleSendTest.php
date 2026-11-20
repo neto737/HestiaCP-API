@@ -474,6 +474,16 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-change-web-domain-ip',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.20', 'arg4' => 'yes']
 		];
+		yield 'Webs::addDomainRedirect' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainRedirect('example.com', 'www.example.com', 302, true),
+			'v-add-web-domain-redirect',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => '302', 'arg5' => 'yes']
+		];
+		yield 'Webs::deleteDomainRedirect' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainRedirect('example.com', true),
+			'v-delete-web-domain-redirect',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
+		];
 
 		yield 'Mails::changeAccountQuota' => [
 			fn (Client $c) => $c->getModuleMail('alice')->changeAccountQuota('example.com', 'info', 2048),

@@ -38,6 +38,8 @@ use neto737\HestiaCP\Command\Web\SuspendWebDomain;
 use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
+use neto737\HestiaCP\Command\Web\AddWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainRedirect;
 
 class WebTest extends \PHPUnit\Framework\TestCase {
 
@@ -454,6 +456,9 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
 		yield 'v-change-web-domain-ip' => [new ChangeWebDomainIp('admin', 'example.com', '192.0.2.20'), $domain + ['arg3' => '192.0.2.20']];
 		yield 'v-change-web-domain-ip restart' => [new ChangeWebDomainIp('admin', 'example.com', '192.0.2.20', false), $domain + ['arg3' => '192.0.2.20', 'arg4' => 'no']];
+		yield 'v-add-web-domain-redirect' => [new AddWebDomainRedirect('admin', 'example.com', 'www.example.com'), $domain + ['arg3' => 'www.example.com', 'arg4' => '301']];
+		yield 'v-add-web-domain-redirect code and restart' => [new AddWebDomainRedirect('admin', 'example.com', 'https://example.org/', 302, true), $domain + ['arg3' => 'https://example.org/', 'arg4' => '302', 'arg5' => 'yes']];
+		yield 'v-delete-web-domain-redirect' => [new DeleteWebDomainRedirect('admin', 'example.com'), $domain];
 	}
 
 	/**

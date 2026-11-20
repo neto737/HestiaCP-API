@@ -40,6 +40,17 @@ To move a domain to another of the server's IP addresses:
 $web->changeDomainIp('example.com', '192.0.2.20');
 ```
 
+## Redirects
+
+```php
+$web->addDomainRedirect('example.com', 'www.example.com');             // 301 to the same path on www.example.com
+$web->addDomainRedirect('example.com', 'https://example.org/new', 302); // any status code
+
+$web->deleteDomainRedirect('example.com');
+```
+
+The redirect is stored as `REDIRECT` and `REDIRECT_CODE` in `listDomain()`. HestiaCP removes a trailing slash from the target.
+
 ## Aliases
 
 ```php

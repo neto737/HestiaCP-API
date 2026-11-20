@@ -125,6 +125,12 @@ class WebLiveTest extends LiveTestCase {
 		$domain = self::domain('webset');
 		$this->assertTrue($web->addDomain($domain, self::ip()));
 
+		$this->assertTrue($web->addDomainRedirect($domain, 'https://example.org/landing', 302));
+		$detail = $web->listDomain($domain);
+		$this->assertSame(['https://example.org/landing', '302'], [$detail['REDIRECT'], $detail['REDIRECT_CODE']]);
+		$this->assertTrue($web->deleteDomainRedirect($domain));
+		$this->assertSame('', $web->listDomain($domain)['REDIRECT']);
+
 		$this->assertTrue($web->changeDomainIp($domain, self::ip()));
 		$this->assertSame(self::ip(), $web->listDomain($domain)['IP']);
 

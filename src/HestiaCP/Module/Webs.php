@@ -37,6 +37,8 @@ use neto737\HestiaCP\Command\Web\ListWebTemplates;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesBackend;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesProxy;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
+use neto737\HestiaCP\Command\Web\AddWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainRedirect;
 
 class Webs extends Module {
 
@@ -478,5 +480,33 @@ class Webs extends Module {
 	 */
 	public function changeDomainIp(string $domain, string $ip, ?bool $restart = null): bool {
 		return $this->client->send(new ChangeWebDomainIp($this->user, $domain, $ip, $restart));
+	}
+
+	/**
+	 * This function redirects every request to a web domain to another address.
+	 *
+	 * @param string    $domain
+	 * @param string    $redirect Target, e.g. www.example.com or https://example.org/path
+	 * @param int       $code     HTTP status code of the redirect, e.g. 301 or 302
+	 * @param bool|null $restart  Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainRedirect(string $domain, string $redirect, int $code = 301, ?bool $restart = null): bool {
+		return $this->client->send(new AddWebDomainRedirect($this->user, $domain, $redirect, $code, $restart));
+	}
+
+	/**
+	 * This function removes the redirect of a web domain.
+	 *
+	 * @param string    $domain
+	 * @param bool|null $restart Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainRedirect(string $domain, ?bool $restart = null): bool {
+		return $this->client->send(new DeleteWebDomainRedirect($this->user, $domain, $restart));
 	}
 }
