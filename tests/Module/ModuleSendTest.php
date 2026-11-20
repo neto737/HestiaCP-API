@@ -484,6 +484,21 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-web-domain-redirect',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
 		];
+		yield 'Webs::addDomainHttpAuth' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->addDomainHttpAuth('example.com', 'guard', 'secret', true),
+			'v-add-web-domain-httpauth',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'guard', 'arg4' => 'secret', 'arg5' => 'yes']
+		];
+		yield 'Webs::changeDomainHttpAuthPassword' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainHttpAuthPassword('example.com', 'guard', 'secret', true),
+			'v-change-web-domain-httpauth',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'guard', 'arg4' => 'secret', 'arg5' => 'yes']
+		];
+		yield 'Webs::deleteDomainHttpAuth' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->deleteDomainHttpAuth('example.com', 'guard', true),
+			'v-delete-web-domain-httpauth',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'guard', 'arg4' => 'yes']
+		];
 
 		yield 'Mails::changeAccountQuota' => [
 			fn (Client $c) => $c->getModuleMail('alice')->changeAccountQuota('example.com', 'info', 2048),

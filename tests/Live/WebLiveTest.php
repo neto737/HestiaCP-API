@@ -131,6 +131,14 @@ class WebLiveTest extends LiveTestCase {
 		$this->assertTrue($web->deleteDomainRedirect($domain));
 		$this->assertSame('', $web->listDomain($domain)['REDIRECT']);
 
+		$this->assertTrue($web->addDomainHttpAuth($domain, 'guard', self::password()));
+		$this->assertTrue($web->addDomainHttpAuth($domain, 'guard2', self::password()));
+		$this->assertSame('guard:guard2', $web->listDomain($domain)['AUTH_USER']);
+		$this->assertTrue($web->changeDomainHttpAuthPassword($domain, 'guard', self::password()));
+		$this->assertTrue($web->deleteDomainHttpAuth($domain, 'guard'));
+		$this->assertTrue($web->deleteDomainHttpAuth($domain, 'guard2'));
+		$this->assertSame('', $web->listDomain($domain)['AUTH_USER']);
+
 		$this->assertTrue($web->changeDomainIp($domain, self::ip()));
 		$this->assertSame(self::ip(), $web->listDomain($domain)['IP']);
 

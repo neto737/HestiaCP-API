@@ -13,7 +13,9 @@ use neto737\HestiaCP\Command\Mail\ChangeMailAccountPassword;
 use neto737\HestiaCP\Command\User\AddUser;
 use neto737\HestiaCP\Command\User\ChangeUserPassword;
 use neto737\HestiaCP\Command\Web\AddWebDomainFtp;
+use neto737\HestiaCP\Command\Web\AddWebDomainHttpAuth;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainFtpPassword;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainHttpAuth;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 use neto737\HestiaCP\Module\Databases;
 use neto737\HestiaCP\Module\Mails;
@@ -43,6 +45,8 @@ class SensitiveParameterTest extends \PHPUnit\Framework\TestCase {
 			'Databases::changePassword' => [Databases::class, 'changePassword', ['dbpass']],
 			'Webs::addDomainFtp' => [Webs::class, 'addDomainFtp', ['ftpPassword']],
 			'Webs::changeDomainFtpPassword' => [Webs::class, 'changeDomainFtpPassword', ['ftpPassword']],
+			'Webs::addDomainHttpAuth' => [Webs::class, 'addDomainHttpAuth', ['authPassword']],
+			'Webs::changeDomainHttpAuthPassword' => [Webs::class, 'changeDomainHttpAuthPassword', ['authPassword']],
 			'AddUser' => [AddUser::class, '__construct', ['password']],
 			'ChangeUserPassword' => [ChangeUserPassword::class, '__construct', ['password']],
 			'AddMailAccount' => [AddMailAccount::class, '__construct', ['password']],
@@ -50,7 +54,9 @@ class SensitiveParameterTest extends \PHPUnit\Framework\TestCase {
 			'AddDatabase' => [AddDatabase::class, '__construct', ['dbpass']],
 			'ChangeDatabasePassword' => [ChangeDatabasePassword::class, '__construct', ['dbpass']],
 			'AddWebDomainFtp' => [AddWebDomainFtp::class, '__construct', ['ftpPassword']],
-			'ChangeWebDomainFtpPassword' => [ChangeWebDomainFtpPassword::class, '__construct', ['ftpPassword']]
+			'ChangeWebDomainFtpPassword' => [ChangeWebDomainFtpPassword::class, '__construct', ['ftpPassword']],
+			'AddWebDomainHttpAuth' => [AddWebDomainHttpAuth::class, '__construct', ['authPassword']],
+			'ChangeWebDomainHttpAuth' => [ChangeWebDomainHttpAuth::class, '__construct', ['authPassword']]
 		];
 	}
 

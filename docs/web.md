@@ -51,6 +51,16 @@ $web->deleteDomainRedirect('example.com');
 
 The redirect is stored as `REDIRECT` and `REDIRECT_CODE` in `listDomain()`. HestiaCP removes a trailing slash from the target.
 
+## HTTP authentication
+
+```php
+$web->addDomainHttpAuth('example.com', 'guest', 'pa$$word'); // turns it on, call again to add more users
+$web->changeDomainHttpAuthPassword('example.com', 'guest', 'otherPa$$word');
+$web->deleteDomainHttpAuth('example.com', 'guest');          // deleting the last user turns it off
+```
+
+`listDomain()` lists the users in `AUTH_USER`, separated by colons.
+
 ## Aliases
 
 ```php

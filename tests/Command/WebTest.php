@@ -40,6 +40,9 @@ use neto737\HestiaCP\Exceptions\InvalidArgumentException;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
 use neto737\HestiaCP\Command\Web\AddWebDomainRedirect;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\AddWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainHttpAuth;
 
 class WebTest extends \PHPUnit\Framework\TestCase {
 
@@ -459,6 +462,9 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 		yield 'v-add-web-domain-redirect' => [new AddWebDomainRedirect('admin', 'example.com', 'www.example.com'), $domain + ['arg3' => 'www.example.com', 'arg4' => '301']];
 		yield 'v-add-web-domain-redirect code and restart' => [new AddWebDomainRedirect('admin', 'example.com', 'https://example.org/', 302, true), $domain + ['arg3' => 'https://example.org/', 'arg4' => '302', 'arg5' => 'yes']];
 		yield 'v-delete-web-domain-redirect' => [new DeleteWebDomainRedirect('admin', 'example.com'), $domain];
+		yield 'v-add-web-domain-httpauth' => [new AddWebDomainHttpAuth('admin', 'example.com', 'guard', 'secret'), $domain + ['arg3' => 'guard', 'arg4' => 'secret']];
+		yield 'v-change-web-domain-httpauth' => [new ChangeWebDomainHttpAuth('admin', 'example.com', 'guard', 'secret', false), $domain + ['arg3' => 'guard', 'arg4' => 'secret', 'arg5' => 'no']];
+		yield 'v-delete-web-domain-httpauth' => [new DeleteWebDomainHttpAuth('admin', 'example.com', 'guard'), $domain + ['arg3' => 'guard']];
 	}
 
 	/**

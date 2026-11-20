@@ -39,6 +39,9 @@ use neto737\HestiaCP\Command\Web\ListWebTemplatesProxy;
 use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
 use neto737\HestiaCP\Command\Web\AddWebDomainRedirect;
 use neto737\HestiaCP\Command\Web\DeleteWebDomainRedirect;
+use neto737\HestiaCP\Command\Web\AddWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainHttpAuth;
+use neto737\HestiaCP\Command\Web\DeleteWebDomainHttpAuth;
 
 class Webs extends Module {
 
@@ -508,5 +511,49 @@ class Webs extends Module {
 	 */
 	public function deleteDomainRedirect(string $domain, ?bool $restart = null): bool {
 		return $this->client->send(new DeleteWebDomainRedirect($this->user, $domain, $restart));
+	}
+
+	/**
+	 * This function protects a web domain with HTTP authentication, adding a user that can log in.
+	 *
+	 * @param string    $domain
+	 * @param string    $authUser
+	 * @param string    $authPassword
+	 * @param bool|null $restart      Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainHttpAuth(string $domain, string $authUser, #[\SensitiveParameter] string $authPassword, ?bool $restart = null): bool {
+		return $this->client->send(new AddWebDomainHttpAuth($this->user, $domain, $authUser, $authPassword, $restart));
+	}
+
+	/**
+	 * This function changes the password of an HTTP authentication user of a web domain.
+	 *
+	 * @param string    $domain
+	 * @param string    $authUser
+	 * @param string    $authPassword
+	 * @param bool|null $restart      Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainHttpAuthPassword(string $domain, string $authUser, #[\SensitiveParameter] string $authPassword, ?bool $restart = null): bool {
+		return $this->client->send(new ChangeWebDomainHttpAuth($this->user, $domain, $authUser, $authPassword, $restart));
+	}
+
+	/**
+	 * This function deletes an HTTP authentication user of a web domain. The last one turns the protection off.
+	 *
+	 * @param string    $domain
+	 * @param string    $authUser
+	 * @param bool|null $restart  Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainHttpAuth(string $domain, string $authUser, ?bool $restart = null): bool {
+		return $this->client->send(new DeleteWebDomainHttpAuth($this->user, $domain, $authUser, $restart));
 	}
 }
