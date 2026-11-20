@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-11-20
+
+This release removes what 2.1.0 deprecated, cleans up the structure and contains breaking changes, marked **BC break** below. See [UPGRADING.md](UPGRADING.md) for how to migrate from v2. It also adds mail quotas, catch-all addresses, mail domain settings and SSL, web redirects and HTTP authentication, user profile changes and package management. Every module method was tested against a live HestiaCP 1.10.9 server.
+
 ### Added
 
 - Backups: `updateExclusions()` replaces the backup exclusion list, for example `updateExclusions(['WEB' => ['example.com:public_html/cache'], 'DB' => ['*']])`. It writes the list to a file on the server with the new `MakeTmpFile` command (`v-make-tmp-file`, handled by HestiaCP's API itself), then runs the new `Backup\UpdateUserBackupExclusions` command (`v-update-user-backup-exclusions`), which reads it.
@@ -181,7 +185,8 @@ This release brings the library up to date with HestiaCP 1.10 and contains break
 
 First release, with the user, web and mail modules.
 
-[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/neto737/HestiaCP-API/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/neto737/HestiaCP-API/compare/v2.1.0...v3.0.0
 [2.1.0]: https://github.com/neto737/HestiaCP-API/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/neto737/HestiaCP-API/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/neto737/HestiaCP-API/compare/v1.1.0...v1.2.0
