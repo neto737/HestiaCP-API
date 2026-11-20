@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Tests\Live;
 
 use neto737\HestiaCP\Client;
+use neto737\HestiaCP\Command\MakeTmpFile;
 use neto737\HestiaCP\Command\RawListCommand;
 
 /**
@@ -74,5 +75,45 @@ abstract class LiveTestCase extends \PHPUnit\Framework\TestCase {
 		$ips = static::$client->send(new RawListCommand('v-list-sys-ips', ['json']));
 
 		return (string) array_key_first($ips);
+	}
+
+	/**
+	 * Writes a new self-signed certificate and its key to /tmp/<domain>.crt and /tmp/<domain>.key on the server,
+	 * where v-add-web-domain-ssl and v-add-mail-domain-ssl read them. HestiaCP's web UI also uploads them to /tmp.
+	 *
+	 * @return string the certificate
+	 */
+	protected static function uploadCertificate(string $domain): string {
+		// PHP on Windows ships without an openssl.cnf
+		$config = (string) tempnam(sys_get_temp_dir(), 'cnf');
+		file_put_contents($config, "[req]\ndistinguished_name = dn\n[dn]\n");
+		$options = ['config' => $config, 'private_key_type' => OPENSSL_KEYTYPE_RSA, 'private_key_bits' => 2048, 'digest_alg' => 'sha256'];
+
+		try {
+			$key = openssl_pkey_new($options);
+			self::assertNotFalse($key);
+			$csr = openssl_csr_new(['commonName' => $domain], $key, $options);
+			self::assertNotFalse($csr);
+			self::assertNotTrue($csr);
+			$certificate = openssl_csr_sign($csr, null, $key, 30, $options, random_int(1, PHP_INT_MAX));
+			self::assertNotFalse($certificate);
+			self::assertTrue(openssl_x509_export($certificate, $crt));
+			self::assertTrue(openssl_pkey_export($key, $keyPem, null, $options));
+		} finally {
+			unlink($config);
+		}
+
+		static::$client->send(new MakeTmpFile($domain . '.crt', $crt));
+		static::$client->send(new MakeTmpFile($domain . '.key', $keyPem));
+
+		return $crt;
+	}
+
+	/**
+	 * Empties the files uploadCertificate() wrote, since v-make-tmp-file leaves them behind.
+	 */
+	protected static function clearCertificate(string $domain): void {
+		static::$client->send(new MakeTmpFile($domain . '.crt', ''));
+		static::$client->send(new MakeTmpFile($domain . '.key', ''));
 	}
 }

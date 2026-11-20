@@ -46,4 +46,50 @@ class DnsLiveTest extends LiveTestCase {
 		$this->expectExceptionCode(ResponseCode::E_NOTEXIST);
 		$dns->listDomain($domain);
 	}
+
+	public function testIpAndTemplate(): void {
+		$dns = static::$client->getModuleDns(self::user());
+		$domain = self::domain('dnsip');
+		$this->assertTrue($dns->addDomain($domain, self::ip()));
+
+		// the records that held the old IP move to the new one
+		$this->assertTrue($dns->changeDomainIp($domain, '203.0.113.10'));
+		$this->assertSame('203.0.113.10', $dns->listDomain($domain)['IP']);
+		$this->assertContains('203.0.113.10', array_column($dns->listRecords($domain), 'VALUE'));
+		$this->assertNotContains(self::ip(), array_column($dns->listRecords($domain), 'VALUE'));
+
+		$current = $dns->listDomain($domain)['TPL'];
+		$other = array_values(array_diff($dns->listTemplates(), [$current]));
+		if ($other === []) {
+			$this->markTestSkipped('The server has only one DNS template');
+		}
+		$this->assertTrue($dns->changeDomainTemplate($domain, $other[0]));
+		$this->assertSame($other[0], $dns->listDomain($domain)['TPL']);
+
+		$this->assertTrue($dns->deleteDomain($domain));
+	}
+
+	public function testDnssec(): void {
+		$dns = static::$client->getModuleDns(self::user());
+		$domain = self::domain('dnssec');
+		$this->assertTrue($dns->addDomain($domain, self::ip()));
+
+		try {
+			$this->assertTrue($dns->changeDomainDnssec($domain, true));
+		} catch (ProcessException $e) {
+			if ($e->getCode() !== ResponseCode::E_DISABLED) {
+				throw $e;
+			}
+			$dns->deleteDomain($domain);
+			$this->markTestSkipped('The server doesn\'t support DNSSEC: ' . $e->getMessage());
+		}
+
+		$this->assertSame('yes', $dns->listDomain($domain)['DNSSEC']);
+		$key = $dns->listDnssecPublicKey($domain);
+		$this->assertNotSame('', $key['DS'] ?? '');
+
+		$this->assertTrue($dns->changeDomainDnssec($domain, false));
+		$this->assertSame('no', $dns->listDomain($domain)['DNSSEC']);
+		$this->assertTrue($dns->deleteDomain($domain));
+	}
 }

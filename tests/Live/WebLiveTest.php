@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace neto737\HestiaCP\Tests\Live;
 
 use neto737\HestiaCP\Command\ResponseCode;
+use neto737\HestiaCP\Command\Web\AddWebDomainSsl;
 use neto737\HestiaCP\Exceptions\ProcessException;
 use neto737\HestiaCP\Module\Webs;
 
@@ -61,6 +62,62 @@ class WebLiveTest extends LiveTestCase {
 
 		$this->assertTrue($web->deleteDomain($domain));
 		$this->assertSame([], $web->listDomains());
+	}
+
+	public function testTemplate(): void {
+		$web = self::web();
+		$domain = self::domain('tpl');
+
+		$this->assertTrue($web->addDomain($domain, self::ip()));
+		$current = $web->listDomain($domain)['TPL'];
+		$other = array_values(array_diff($web->listTemplates(), [$current]));
+		if ($other === []) {
+			$this->markTestSkipped('The server has only one web template');
+		}
+
+		$this->assertTrue($web->changeDomainTemplate($domain, $other[0]));
+		$this->assertSame($other[0], $web->listDomain($domain)['TPL']);
+		$this->assertTrue($web->changeDomainTemplate($domain, $current));
+		$this->assertTrue($web->deleteDomain($domain));
+	}
+
+	public function testSsl(): void {
+		if (!extension_loaded('openssl')) {
+			$this->markTestSkipped('The openssl extension is needed to create a certificate');
+		}
+
+		$web = self::web();
+		$domain = self::domain('ssl');
+		$this->assertTrue($web->addDomain($domain, self::ip()));
+
+		try {
+			// HestiaCP's own web UI also writes the files to /tmp before running the script
+			$first = self::uploadCertificate($domain);
+			$this->assertTrue($web->addDomainSsl($domain, '/tmp', AddWebDomainSsl::SSL_HOME_SINGLE));
+			$detail = $web->listDomain($domain);
+			$this->assertSame(['yes', 'single'], [$detail['SSL'], $detail['SSL_HOME']]);
+			$this->assertSame(openssl_x509_fingerprint($first, 'sha256'), openssl_x509_fingerprint($web->listDomainSsl($domain)['CRT'], 'sha256'));
+
+			$this->assertTrue($web->changeDomainSslHome($domain, AddWebDomainSsl::SSL_HOME_SAME));
+			$this->assertTrue($web->addDomainSslForce($domain));
+			$this->assertTrue($web->addDomainSslHsts($domain));
+			$detail = $web->listDomain($domain);
+			$this->assertSame(['same', 'yes', 'yes'], [$detail['SSL_HOME'], $detail['SSL_FORCE'], $detail['SSL_HSTS']]);
+			$this->assertTrue($web->deleteDomainSslHsts($domain));
+			$this->assertTrue($web->deleteDomainSslForce($domain));
+			$detail = $web->listDomain($domain);
+			$this->assertSame(['no', 'no'], [$detail['SSL_FORCE'], $detail['SSL_HSTS']]);
+
+			$second = self::uploadCertificate($domain);
+			$this->assertTrue($web->changeDomainSslCert($domain, '/tmp'));
+			$this->assertSame(openssl_x509_fingerprint($second, 'sha256'), openssl_x509_fingerprint($web->listDomainSsl($domain)['CRT'], 'sha256'));
+		} finally {
+			self::clearCertificate($domain);
+		}
+
+		$this->assertTrue($web->deleteDomainSsl($domain));
+		$this->assertSame('no', $web->listDomain($domain)['SSL']);
+		$this->assertTrue($web->deleteDomain($domain));
 	}
 
 	public function testMissingDomain(): void {
