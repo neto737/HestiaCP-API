@@ -469,6 +469,27 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-web-domain-proxy',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
 		];
+
+		foreach ([
+			'addDomainAntispam' => 'v-add-mail-domain-antispam',
+			'deleteDomainAntispam' => 'v-delete-mail-domain-antispam',
+			'addDomainAntivirus' => 'v-add-mail-domain-antivirus',
+			'deleteDomainAntivirus' => 'v-delete-mail-domain-antivirus',
+			'deleteDomainDkim' => 'v-delete-mail-domain-dkim',
+			'addDomainRejectSpam' => 'v-add-mail-domain-reject',
+			'deleteDomainRejectSpam' => 'v-delete-mail-domain-reject'
+		] as $method => $cmd) {
+			yield 'Mails::' . $method => [
+				fn (Client $c) => $c->getModuleMail('alice')->$method('example.com'),
+				$cmd,
+				['arg1' => 'alice', 'arg2' => 'example.com']
+			];
+		}
+		yield 'Mails::addDomainDkim' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomainDkim('example.com', 4096, 's2026'),
+			'v-add-mail-domain-dkim',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '4096', 'arg4' => 's2026']
+		];
 	}
 
 	/**

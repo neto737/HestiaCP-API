@@ -29,6 +29,14 @@ use neto737\HestiaCP\Command\Mail\ListMailDomain;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
 use neto737\HestiaCP\Command\Mail\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\AddMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\AddMailDomainReject;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainReject;
 
 class Mails extends Module {
 
@@ -354,5 +362,103 @@ class Mails extends Module {
 	 */
 	public function deleteAccountAutoreply(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccountAutoreply($this->user, $domain, $account));
+	}
+
+	/**
+	 * This function turns on spam filtering for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainAntispam(string $domain): bool {
+		return $this->client->send(new AddMailDomainAntispam($this->user, $domain));
+	}
+
+	/**
+	 * This function turns off spam filtering for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainAntispam(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainAntispam($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on virus scanning for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainAntivirus(string $domain): bool {
+		return $this->client->send(new AddMailDomainAntivirus($this->user, $domain));
+	}
+
+	/**
+	 * This function turns off virus scanning for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainAntivirus(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainAntivirus($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on DKIM signing for a mail domain and creates its key.
+	 *
+	 * @param string      $domain
+	 * @param int|null    $dkimSize     DKIM key size in bits (HestiaCP's default: 2048)
+	 * @param string|null $dkimSelector DKIM selector (HestiaCP's default: mail)
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainDkim(string $domain, ?int $dkimSize = null, ?string $dkimSelector = null): bool {
+		return $this->client->send(new AddMailDomainDkim($this->user, $domain, $dkimSize, $dkimSelector));
+	}
+
+	/**
+	 * This function turns off DKIM signing for a mail domain and deletes its key.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainDkim(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainDkim($this->user, $domain));
+	}
+
+	/**
+	 * This function makes a mail domain reject messages marked as spam instead of delivering them.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainRejectSpam(string $domain): bool {
+		return $this->client->send(new AddMailDomainReject($this->user, $domain));
+	}
+
+	/**
+	 * This function makes a mail domain deliver messages marked as spam again.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainRejectSpam(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainReject($this->user, $domain));
 	}
 }

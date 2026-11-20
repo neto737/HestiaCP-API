@@ -53,4 +53,30 @@ class MailLiveTest extends LiveTestCase {
 		$this->assertTrue($mail->deleteDomain($domain));
 		$this->assertSame([], $mail->listDomains());
 	}
+
+	public function testDomainSettings(): void {
+		$mail = static::$client->getModuleMail(self::user());
+		$domain = self::domain('mailset');
+
+		// without SpamAssassin or ClamAV, HestiaCP adds the domain with both off
+		$this->assertTrue($mail->addDomain($domain, false, false, true));
+		$this->assertTrue($mail->deleteDomainDkim($domain));
+		$detail = $mail->listDomain($domain);
+		$this->assertSame(['no', 'no', 'no'], [$detail['ANTISPAM'], $detail['ANTIVIRUS'], $detail['DKIM']]);
+
+		$this->assertTrue($mail->addDomainAntispam($domain));
+		$this->assertTrue($mail->addDomainAntivirus($domain));
+		$this->assertTrue($mail->addDomainDkim($domain, 1024, 'sel2'));
+		$this->assertTrue($mail->addDomainRejectSpam($domain));
+		$detail = $mail->listDomain($domain);
+		$this->assertSame(['yes', 'yes', 'yes', 'sel2', 'yes'], [$detail['ANTISPAM'], $detail['ANTIVIRUS'], $detail['DKIM'], $detail['DKIM_SELECTOR'], $detail['REJECT']]);
+		$this->assertArrayHasKey('sel2._domainkey', $mail->listDomainDkimDns($domain));
+		$this->assertTrue($mail->deleteDomainRejectSpam($domain));
+		$this->assertTrue($mail->deleteDomainAntispam($domain));
+		$this->assertTrue($mail->deleteDomainAntivirus($domain));
+		$detail = $mail->listDomain($domain);
+		$this->assertSame(['no', 'no', 'no'], [$detail['REJECT'], $detail['ANTISPAM'], $detail['ANTIVIRUS']]);
+
+		$this->assertTrue($mail->deleteDomain($domain));
+	}
 }

@@ -29,6 +29,14 @@ use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntispam;
+use neto737\HestiaCP\Command\Mail\AddMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntivirus;
+use neto737\HestiaCP\Command\Mail\AddMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainDkim;
+use neto737\HestiaCP\Command\Mail\AddMailDomainReject;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainReject;
 
 class MailTest extends \PHPUnit\Framework\TestCase {
 
@@ -289,5 +297,33 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 	public function testProcessWithoutResponse(): void {
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		(new AddMailAccountAlias('admin', 'example.com', 'info', 'sales'))->process(new Response());
+	}
+
+	/**
+	 * @return iterable<string, array{\neto737\HestiaCP\Command\ICommand<mixed>, array<string, string>}>
+	 */
+	public static function domainSettingProvider(): iterable {
+		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
+		yield 'v-add-mail-domain-antispam' => [new AddMailDomainAntispam('admin', 'example.com'), $domain];
+		yield 'v-delete-mail-domain-antispam' => [new DeleteMailDomainAntispam('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-antivirus' => [new AddMailDomainAntivirus('admin', 'example.com'), $domain];
+		yield 'v-delete-mail-domain-antivirus' => [new DeleteMailDomainAntivirus('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-dkim' => [new AddMailDomainDkim('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-dkim size and selector' => [new AddMailDomainDkim('admin', 'example.com', 4096, 's2026'), $domain + ['arg3' => '4096', 'arg4' => 's2026']];
+		yield 'v-add-mail-domain-dkim selector only' => [new AddMailDomainDkim('admin', 'example.com', dkimSelector: 's2026'), $domain + ['arg3' => '', 'arg4' => 's2026']];
+		yield 'v-delete-mail-domain-dkim' => [new DeleteMailDomainDkim('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-reject' => [new AddMailDomainReject('admin', 'example.com'), $domain];
+		yield 'v-delete-mail-domain-reject' => [new DeleteMailDomainReject('admin', 'example.com'), $domain];
+	}
+
+	/**
+	 * @param \neto737\HestiaCP\Command\ICommand<mixed> $command
+	 * @param array<string, string> $params
+	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('domainSettingProvider')]
+	public function testDomainSettingCommands(\neto737\HestiaCP\Command\ICommand $command, array $params): void {
+		$this->assertSame(explode(' ', (string) $this->dataName())[0], $command->getName());
+		$this->assertSame($params, $command->getRequestParams());
+		$this->assertTrue($command->needReturnCode());
 	}
 }

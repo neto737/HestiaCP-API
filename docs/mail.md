@@ -40,11 +40,30 @@ $mail->addDomain(
 
 Without SpamAssassin on the server, HestiaCP turns antispam and spam rejection off whatever you pass; without ClamAV, antivirus.
 
+To change them later:
+
+```php
+$mail->addDomainAntispam('example.com');
+$mail->deleteDomainAntispam('example.com');
+
+$mail->addDomainAntivirus('example.com');
+$mail->deleteDomainAntivirus('example.com');
+
+$mail->addDomainRejectSpam('example.com');    // reject messages marked as spam
+$mail->deleteDomainRejectSpam('example.com'); // deliver them again
+```
+
+Turning one on that is already on, or off that is already off, throws a `ProcessException`: `E_EXISTS` or `E_NOTEXIST`. These methods only set HestiaCP's flags: without SpamAssassin or ClamAV, nothing filters the mail even when the flag is on.
+
 ## DKIM
 
 ```php
 $mail->listDomainDkim('example.com');    // the domain's DKIM key
 $mail->listDomainDkimDns('example.com'); // the DNS record to publish
+
+$mail->deleteDomainDkim('example.com');               // turn DKIM off and delete the key
+$mail->addDomainDkim('example.com');                  // turn it on with a new key
+$mail->addDomainDkim('example.com', 4096, 's2026');   // key size and selector (defaults: 2048, "mail")
 ```
 
 ## Accounts
