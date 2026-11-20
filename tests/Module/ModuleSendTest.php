@@ -470,6 +470,21 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
 		];
 
+		yield 'Mails::addDomainCatchall' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomainCatchall('example.com', 'all@example.org'),
+			'v-add-mail-domain-catchall',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'all@example.org']
+		];
+		yield 'Mails::changeDomainCatchall' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeDomainCatchall('example.com', 'all@example.org'),
+			'v-change-mail-domain-catchall',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'all@example.org']
+		];
+		yield 'Mails::deleteDomainCatchall' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteDomainCatchall('example.com'),
+			'v-delete-mail-domain-catchall',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
 		foreach ([
 			'addDomainAntispam' => 'v-add-mail-domain-antispam',
 			'deleteDomainAntispam' => 'v-delete-mail-domain-antispam',

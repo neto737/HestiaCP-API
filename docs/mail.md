@@ -55,6 +55,16 @@ $mail->deleteDomainRejectSpam('example.com'); // deliver them again
 
 Turning one on that is already on, or off that is already off, throws a `ProcessException`: `E_EXISTS` or `E_NOTEXIST`. These methods only set HestiaCP's flags: without SpamAssassin or ClamAV, nothing filters the mail even when the flag is on.
 
+## Catch-all address
+
+Mail sent to an account that doesn't exist goes to the catch-all address, if the domain has one:
+
+```php
+$mail->addDomainCatchall('example.com', 'postmaster@example.org');
+$mail->changeDomainCatchall('example.com', 'admin@example.org');
+$mail->deleteDomainCatchall('example.com');
+```
+
 ## DKIM
 
 ```php

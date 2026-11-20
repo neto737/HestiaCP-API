@@ -29,6 +29,9 @@ use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\AddMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainCatchall;
 use neto737\HestiaCP\Command\Mail\AddMailDomainAntispam;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntispam;
 use neto737\HestiaCP\Command\Mail\AddMailDomainAntivirus;
@@ -304,6 +307,9 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public static function domainSettingProvider(): iterable {
 		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
+		yield 'v-add-mail-domain-catchall' => [new AddMailDomainCatchall('admin', 'example.com', 'all@example.org'), $domain + ['arg3' => 'all@example.org']];
+		yield 'v-change-mail-domain-catchall' => [new ChangeMailDomainCatchall('admin', 'example.com', 'all@example.org'), $domain + ['arg3' => 'all@example.org']];
+		yield 'v-delete-mail-domain-catchall' => [new DeleteMailDomainCatchall('admin', 'example.com'), $domain];
 		yield 'v-add-mail-domain-antispam' => [new AddMailDomainAntispam('admin', 'example.com'), $domain];
 		yield 'v-delete-mail-domain-antispam' => [new DeleteMailDomainAntispam('admin', 'example.com'), $domain];
 		yield 'v-add-mail-domain-antivirus' => [new AddMailDomainAntivirus('admin', 'example.com'), $domain];

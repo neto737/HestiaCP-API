@@ -77,6 +77,13 @@ class MailLiveTest extends LiveTestCase {
 		$detail = $mail->listDomain($domain);
 		$this->assertSame(['no', 'no', 'no'], [$detail['REJECT'], $detail['ANTISPAM'], $detail['ANTIVIRUS']]);
 
+		$this->assertTrue($mail->addDomainCatchall($domain, 'all@example.net'));
+		$this->assertSame('all@example.net', $mail->listDomain($domain)['CATCHALL']);
+		$this->assertTrue($mail->changeDomainCatchall($domain, 'other@example.net'));
+		$this->assertSame('other@example.net', $mail->listDomain($domain)['CATCHALL']);
+		$this->assertTrue($mail->deleteDomainCatchall($domain));
+		$this->assertSame('', $mail->listDomain($domain)['CATCHALL']);
+
 		$this->assertTrue($mail->deleteDomain($domain));
 	}
 }

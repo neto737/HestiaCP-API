@@ -29,6 +29,9 @@ use neto737\HestiaCP\Command\Mail\ListMailDomain;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
 use neto737\HestiaCP\Command\Mail\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\AddMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainCatchall;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainCatchall;
 use neto737\HestiaCP\Command\Mail\AddMailDomainAntispam;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainAntispam;
 use neto737\HestiaCP\Command\Mail\AddMailDomainAntivirus;
@@ -362,6 +365,44 @@ class Mails extends Module {
 	 */
 	public function deleteAccountAutoreply(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccountAutoreply($this->user, $domain, $account));
+	}
+
+	/**
+	 * This function sets the address that receives mail sent to unknown accounts of a mail domain.
+	 *
+	 * @param string $domain
+	 * @param string $email
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainCatchall(string $domain, string $email): bool {
+		return $this->client->send(new AddMailDomainCatchall($this->user, $domain, $email));
+	}
+
+	/**
+	 * This function changes the catch-all address of a mail domain.
+	 *
+	 * @param string $domain
+	 * @param string $email
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainCatchall(string $domain, string $email): bool {
+		return $this->client->send(new ChangeMailDomainCatchall($this->user, $domain, $email));
+	}
+
+	/**
+	 * This function removes the catch-all address of a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainCatchall(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainCatchall($this->user, $domain));
 	}
 
 	/**
