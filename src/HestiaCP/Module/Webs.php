@@ -36,6 +36,7 @@ use neto737\HestiaCP\Command\Web\ListWebDomains;
 use neto737\HestiaCP\Command\Web\ListWebTemplates;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesBackend;
 use neto737\HestiaCP\Command\Web\ListWebTemplatesProxy;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
 
 class Webs extends Module {
 
@@ -463,5 +464,19 @@ class Webs extends Module {
 	 */
 	public function deleteDomainProxy(string $domain, ?bool $restart = null): bool {
 		return $this->client->send(new DeleteWebDomainProxy($this->user, $domain, $restart));
+	}
+
+	/**
+	 * This function changes the IP address of a web domain.
+	 *
+	 * @param string    $domain
+	 * @param string    $ip
+	 * @param bool|null $restart Restart the web server, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainIp(string $domain, string $ip, ?bool $restart = null): bool {
+		return $this->client->send(new ChangeWebDomainIp($this->user, $domain, $ip, $restart));
 	}
 }

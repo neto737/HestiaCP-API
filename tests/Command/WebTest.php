@@ -37,6 +37,7 @@ use neto737\HestiaCP\Command\Web\ListWebTemplatesProxy;
 use neto737\HestiaCP\Command\Web\SuspendWebDomain;
 use neto737\HestiaCP\Command\Web\UnsuspendWebDomain;
 use neto737\HestiaCP\Exceptions\InvalidArgumentException;
+use neto737\HestiaCP\Command\Web\ChangeWebDomainIp;
 
 class WebTest extends \PHPUnit\Framework\TestCase {
 
@@ -444,5 +445,25 @@ class WebTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'admin', 'arg2' => 'example.com', 'arg3' => 'www.example.com', 'arg4' => 'no'],
 			(new DeleteWebDomainAlias('admin', 'example.com', 'www.example.com', false))->getRequestParams()
 		);
+	}
+
+	/**
+	 * @return iterable<string, array{\neto737\HestiaCP\Command\ICommand<mixed>, array<string, string>}>
+	 */
+	public static function domainSettingProvider(): iterable {
+		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
+		yield 'v-change-web-domain-ip' => [new ChangeWebDomainIp('admin', 'example.com', '192.0.2.20'), $domain + ['arg3' => '192.0.2.20']];
+		yield 'v-change-web-domain-ip restart' => [new ChangeWebDomainIp('admin', 'example.com', '192.0.2.20', false), $domain + ['arg3' => '192.0.2.20', 'arg4' => 'no']];
+	}
+
+	/**
+	 * @param \neto737\HestiaCP\Command\ICommand<mixed> $command
+	 * @param array<string, string> $params
+	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('domainSettingProvider')]
+	public function testDomainSettingCommands(\neto737\HestiaCP\Command\ICommand $command, array $params): void {
+		$this->assertSame(explode(' ', (string) $this->dataName())[0], $command->getName());
+		$this->assertSame($params, $command->getRequestParams());
+		$this->assertTrue($command->needReturnCode());
 	}
 }

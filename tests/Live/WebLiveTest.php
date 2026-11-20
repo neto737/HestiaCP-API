@@ -120,6 +120,17 @@ class WebLiveTest extends LiveTestCase {
 		$this->assertTrue($web->deleteDomain($domain));
 	}
 
+	public function testDomainSettings(): void {
+		$web = self::web();
+		$domain = self::domain('webset');
+		$this->assertTrue($web->addDomain($domain, self::ip()));
+
+		$this->assertTrue($web->changeDomainIp($domain, self::ip()));
+		$this->assertSame(self::ip(), $web->listDomain($domain)['IP']);
+
+		$this->assertTrue($web->deleteDomain($domain));
+	}
+
 	public function testMissingDomain(): void {
 		$this->expectException(ProcessException::class);
 		$this->expectExceptionCode(ResponseCode::E_NOTEXIST);

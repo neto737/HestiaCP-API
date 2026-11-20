@@ -469,6 +469,11 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-web-domain-proxy',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
 		];
+		yield 'Webs::changeDomainIp' => [
+			fn (Client $c) => $c->getModuleWeb('alice')->changeDomainIp('example.com', '192.0.2.20', true),
+			'v-change-web-domain-ip',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '192.0.2.20', 'arg4' => 'yes']
+		];
 
 		yield 'Mails::changeAccountQuota' => [
 			fn (Client $c) => $c->getModuleMail('alice')->changeAccountQuota('example.com', 'info', 2048),

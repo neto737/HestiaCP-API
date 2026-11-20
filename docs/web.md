@@ -34,6 +34,12 @@ $web->addDomain(
 
 `suspendDomain()` and `unsuspendDomain()` take an optional `$restart` argument (default `false`).
 
+To move a domain to another of the server's IP addresses:
+
+```php
+$web->changeDomainIp('example.com', '192.0.2.20');
+```
+
 ## Aliases
 
 ```php
