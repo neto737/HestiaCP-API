@@ -48,7 +48,7 @@ $web->deleteDomainAlias('example.com', 'shop.example.com'); // one at a time
 $web->listDomainSsl('example.com'); // ['CRT' => '...', 'KEY' => '...', 'CA' => '...', 'SUBJECT' => '...', 'NOT_AFTER' => '...', ...]
 ```
 
-To use your own certificate, put `example.com.crt`, `example.com.key` and, if you have one, `example.com.ca` in a directory **on the HestiaCP server**, and pass that directory. HestiaCP copies the files, so the directory can be deleted afterwards. The API can't upload the files for you.
+To use your own certificate, put `example.com.crt`, `example.com.key` and, if you have one, `example.com.ca` in a directory **on the HestiaCP server**, and pass that directory. HestiaCP copies the files, so the directory can be deleted afterwards. See [Uploading a certificate](#uploading-a-certificate) to send the files through the API.
 
 ```php
 use neto737\HestiaCP\Command\Web\AddWebDomainSsl;
@@ -75,6 +75,25 @@ $web->deleteDomainSslForce('example.com');
 $web->addDomainSslHsts('example.com');
 $web->deleteDomainSslHsts('example.com');
 ```
+
+### Uploading a certificate
+
+The `MakeTmpFile` command writes a file to `/tmp` on the server, as HestiaCP's web UI does with an uploaded certificate. Write the files there and pass `/tmp`:
+
+```php
+use neto737\HestiaCP\Command\MakeTmpFile;
+
+$client->send(new MakeTmpFile('example.com.crt', $certificate)); // PEM
+$client->send(new MakeTmpFile('example.com.key', $privateKey));  // PEM, without a passphrase
+$client->send(new MakeTmpFile('example.com.ca', $chain));        // intermediate certificates, if any
+
+$web->addDomainSsl('example.com', '/tmp');
+
+// HestiaCP doesn't delete the files, and the API can't either: empty the key at least
+$client->send(new MakeTmpFile('example.com.key', ''));
+```
+
+The files stay in `/tmp` until the server cleans it up. While `/tmp/example.com.ca` exists, even empty, HestiaCP checks the certificate against it, so a later certificate without a chain fails with `SSL intermediate chain is not valid`. Upload the chain again with each certificate that has one.
 
 ## Let's Encrypt
 

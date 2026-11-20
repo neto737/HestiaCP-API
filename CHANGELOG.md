@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Mail: `addAccount()` and `AddMailAccount` take an optional mailbox quota in MB, `addAccount('example.com', 'info', 'pa$$word', 1024)`. `0` means unlimited, like HestiaCP's default when the quota isn't set.
 - Mail: `addDomain()` and `AddMailDomain` take the rest of `v-add-mail-domain`'s options: the DKIM key size, `$restart`, rejecting spam and the DKIM selector, for example `addDomain('example.com', dkimSize: 4096, dkimSelector: 's2026')`. Each is only sent when set, so HestiaCP keeps its own defaults.
 - Databases: `add()` and `AddDatabase` take an optional database host and character set, for example `add('wordpress', 'wp', 'pa$$word', charset: 'LATIN1')`. Without a host, HestiaCP picks one; without a character set, it uses UTF8MB4.
+- Web: [docs/web.md](docs/web.md#uploading-a-certificate) shows how to upload your own certificate through the API with `MakeTmpFile`, for `addDomainSsl()`.
 - Web: `deleteDomainLetsEncrypt()` and `DeleteLetsEncryptDomain` take `$mail`, to delete the mail domain's Let's Encrypt certificate instead of the web domain's, like `addDomainLetsEncrypt()` does when adding one. It's only sent when `true`, because HestiaCP reads any value, `no` included, as the mail domain.
 
 ### Changed
