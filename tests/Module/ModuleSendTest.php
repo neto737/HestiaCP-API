@@ -576,6 +576,22 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-change-user-role',
 			['arg1' => 'bob', 'arg2' => 'admin']
 		];
+
+		yield 'Packages::copy' => [
+			fn (Client $c) => $c->getModulePackage()->copy('gold', 'silver'),
+			'v-copy-user-package',
+			['arg1' => 'gold', 'arg2' => 'silver']
+		];
+		yield 'Packages::rename' => [
+			fn (Client $c) => $c->getModulePackage()->rename('gold', 'platinum'),
+			'v-rename-user-package',
+			['arg1' => 'gold', 'arg2' => 'platinum']
+		];
+		yield 'Packages::delete' => [
+			fn (Client $c) => $c->getModulePackage()->delete('gold'),
+			'v-delete-user-package',
+			['arg1' => 'gold']
+		];
 	}
 
 	/**
@@ -885,6 +901,65 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
+	public function testPackagesAdd(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModulePackage()->add('gold', ['WEB_DOMAINS' => 5, 'DISK_QUOTA' => 'unlimited', 'NS' => 'ns1.example.com,ns2.example.com']));
+
+		$this->assertCount(2, $this->history);
+		parse_str((string) $this->history[0]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => "WEB_DOMAINS='5'\nDISK_QUOTA='unlimited'\nNS='ns1.example.com,ns2.example.com'",
+			'arg2' => 'hestiacp-api-package-gold',
+			'returncode' => 'no',
+			'cmd' => 'v-make-tmp-file'
+		], $params);
+
+		parse_str((string) $this->history[1]['request']->getBody(), $params);
+		$this->assertSame([
+			'hash' => 'API_KEY',
+			'arg1' => '/tmp/hestiacp-api-package-gold',
+			'arg2' => 'gold',
+			'returncode' => 'yes',
+			'cmd' => 'v-add-user-package'
+		], $params);
+	}
+
+	public function testPackagesAddRewrite(): void {
+		$client = $this->createClient(new Response(200, [], 'OK'), new Response(200, [], '0'));
+
+		$this->assertTrue($client->getModulePackage()->add('gold', ['WEB_DOMAINS' => 5], true));
+		parse_str((string) $this->history[1]['request']->getBody(), $params);
+		$this->assertSame('yes', $params['arg3']);
+	}
+
+	/**
+	 * @return iterable<string, array{array<string, int|string>}>
+	 */
+	public static function invalidPackageSettingsProvider(): iterable {
+		yield 'lowercase key' => [['web_domains' => 5]];
+		yield 'key with a space' => [['WEB DOMAINS' => 5]];
+		yield 'quote' => [['NS' => "ns1.example.com'"]];
+		yield 'newline' => [['SHELL' => "nologin\nBACKUPS='99'"]];
+		yield 'carriage return' => [['SHELL' => "nologin\rx"]];
+	}
+
+	/**
+	 * @param array<string, int|string> $settings
+	 */
+	#[DataProvider('invalidPackageSettingsProvider')]
+	public function testPackagesAddInvalid(array $settings): void {
+		$client = $this->createClient();
+
+		try {
+			$client->getModulePackage()->add('gold', $settings);
+			$this->fail('InvalidArgumentException expected');
+		} catch (\neto737\HestiaCP\Exceptions\InvalidArgumentException) {
+			$this->assertCount(0, $this->history);
+		}
+	}
+
 	/**
 	 * Keeps the providers in sync with the modules, so a new module method can't be added without a test.
 	 */
@@ -903,7 +978,8 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			...array_keys(iterator_to_array(self::processProvider())),
 			...array_keys(iterator_to_array(self::listProvider())),
 			// methods that send more than one request, tested on their own
-			'Backups::updateExclusions'
+			'Backups::updateExclusions',
+			'Packages::add'
 		];
 
 		sort($methods);

@@ -72,6 +72,49 @@ class UsersLiveTest extends LiveTestCase {
 		$this->assertArrayHasKey('WEB_DOMAINS', $packages->detail('default'));
 	}
 
+	public function testPackageLifecycle(): void {
+		$packages = static::$client->getModulePackage();
+		$users = static::$client->getModuleUser();
+		$name = self::user();
+
+		try {
+			$this->assertTrue($packages->add($name, ['WEB_DOMAINS' => 3, 'DISK_QUOTA' => 1024] + $packages->detail('default')));
+			$this->assertSame(['3', '1024'], [$packages->detail($name)['WEB_DOMAINS'], $packages->detail($name)['DISK_QUOTA']]);
+
+			try {
+				$packages->add($name, $packages->detail('default'));
+				$this->fail('ProcessException expected');
+			} catch (ProcessException $e) {
+				$this->assertSame(ResponseCode::E_EXISTS, $e->getCode());
+			}
+			$this->assertTrue($packages->add($name, ['WEB_DOMAINS' => 4] + $packages->detail($name), true));
+			$this->assertSame('4', $packages->detail($name)['WEB_DOMAINS']);
+
+			$this->assertTrue($packages->copy($name, $name . 'c'));
+			$this->assertSame('4', $packages->detail($name . 'c')['WEB_DOMAINS']);
+			// no user has the copy: as of HestiaCP 1.10.9, renaming leaves its users on the old name
+			$this->assertTrue($packages->rename($name . 'c', $name . 'r'));
+			$this->assertArrayHasKey($name . 'r', $packages->list());
+			$this->assertArrayNotHasKey($name . 'c', $packages->list());
+			$this->assertTrue($packages->delete($name . 'r'));
+
+			// deleting a package moves its users to the default package
+			$this->assertTrue($users->changePackage($name, $name));
+			$this->assertSame($name, $users->detail($name)['PACKAGE']);
+			$this->assertTrue($packages->delete($name));
+			$this->assertArrayNotHasKey($name, $packages->list());
+			$this->assertSame('default', $users->detail($name)['PACKAGE']);
+		} finally {
+			// leave no package behind when an assertion fails
+			foreach ([$name, $name . 'c', $name . 'r'] as $package) {
+				if (array_key_exists($package, $packages->list())) {
+					$users->changePackage($name, 'default');
+					$packages->delete($package);
+				}
+			}
+		}
+	}
+
 	public function testProfile(): void {
 		$users = static::$client->getModuleUser();
 
