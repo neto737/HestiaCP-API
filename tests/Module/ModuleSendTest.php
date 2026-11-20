@@ -470,6 +470,11 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'yes']
 		];
 
+		yield 'Mails::changeAccountQuota' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeAccountQuota('example.com', 'info', 2048),
+			'v-change-mail-account-quota',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'info', 'arg4' => '2048']
+		];
 		yield 'Mails::addDomainCatchall' => [
 			fn (Client $c) => $c->getModuleMail('alice')->addDomainCatchall('example.com', 'all@example.org'),
 			'v-add-mail-domain-catchall',

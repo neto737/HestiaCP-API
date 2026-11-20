@@ -29,6 +29,7 @@ use neto737\HestiaCP\Command\Mail\SuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\SuspendMailDomain;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailAccount;
 use neto737\HestiaCP\Command\Mail\UnsuspendMailDomain;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountQuota;
 use neto737\HestiaCP\Command\Mail\AddMailDomainCatchall;
 use neto737\HestiaCP\Command\Mail\ChangeMailDomainCatchall;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainCatchall;
@@ -307,6 +308,8 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public static function domainSettingProvider(): iterable {
 		$domain = ['arg1' => 'admin', 'arg2' => 'example.com'];
+		yield 'v-change-mail-account-quota' => [new ChangeMailAccountQuota('admin', 'example.com', 'info', 2048), $domain + ['arg3' => 'info', 'arg4' => '2048']];
+		yield 'v-change-mail-account-quota unlimited' => [new ChangeMailAccountQuota('admin', 'example.com', 'info', 0), $domain + ['arg3' => 'info', 'arg4' => 'unlimited']];
 		yield 'v-add-mail-domain-catchall' => [new AddMailDomainCatchall('admin', 'example.com', 'all@example.org'), $domain + ['arg3' => 'all@example.org']];
 		yield 'v-change-mail-domain-catchall' => [new ChangeMailDomainCatchall('admin', 'example.com', 'all@example.org'), $domain + ['arg3' => 'all@example.org']];
 		yield 'v-delete-mail-domain-catchall' => [new DeleteMailDomainCatchall('admin', 'example.com'), $domain];
@@ -331,5 +334,10 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(explode(' ', (string) $this->dataName())[0], $command->getName());
 		$this->assertSame($params, $command->getRequestParams());
 		$this->assertTrue($command->needReturnCode());
+	}
+
+	public function testChangeMailAccountQuotaNegative(): void {
+		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidArgumentException::class);
+		new ChangeMailAccountQuota('admin', 'example.com', 'info', -1);
 	}
 }

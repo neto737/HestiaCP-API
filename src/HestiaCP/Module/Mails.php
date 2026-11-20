@@ -29,6 +29,7 @@ use neto737\HestiaCP\Command\Mail\ListMailDomain;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\ListMailDomainDkimDns;
 use neto737\HestiaCP\Command\Mail\ListMailDomains;
+use neto737\HestiaCP\Command\Mail\ChangeMailAccountQuota;
 use neto737\HestiaCP\Command\Mail\AddMailDomainCatchall;
 use neto737\HestiaCP\Command\Mail\ChangeMailDomainCatchall;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainCatchall;
@@ -365,6 +366,21 @@ class Mails extends Module {
 	 */
 	public function deleteAccountAutoreply(string $domain, string $account): bool {
 		return $this->client->send(new DeleteMailAccountAutoreply($this->user, $domain, $account));
+	}
+
+	/**
+	 * This function changes the mailbox size limit of a mail account.
+	 *
+	 * @param string $domain
+	 * @param string $account
+	 * @param int    $quota   Mailbox size limit in MB, 0 for unlimited
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\InvalidArgumentException
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeAccountQuota(string $domain, string $account, int $quota): bool {
+		return $this->client->send(new ChangeMailAccountQuota($this->user, $domain, $account, $quota));
 	}
 
 	/**

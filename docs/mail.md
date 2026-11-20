@@ -86,6 +86,7 @@ $mail->addAccount('example.com', 'info', 'pa$$word'); // creates info@example.co
 $mail->addAccount('example.com', 'sales', 'pa$$word', 1024); // with a 1024 MB quota; 0 or no quota means unlimited
 
 $mail->changeAccountPassword('example.com', 'info', 'otherPa$$word');
+$mail->changeAccountQuota('example.com', 'info', 2048); // in MB, 0 for unlimited
 
 $mail->suspendAccount('example.com', 'info');
 $mail->unsuspendAccount('example.com', 'info');

@@ -84,6 +84,12 @@ class MailLiveTest extends LiveTestCase {
 		$this->assertTrue($mail->deleteDomainCatchall($domain));
 		$this->assertSame('', $mail->listDomain($domain)['CATCHALL']);
 
+		$this->assertTrue($mail->addAccount($domain, 'quota', self::password(), 100));
+		$this->assertTrue($mail->changeAccountQuota($domain, 'quota', 250));
+		$this->assertSame('250', $mail->listAccount($domain, 'quota')['QUOTA']);
+		$this->assertTrue($mail->changeAccountQuota($domain, 'quota', 0));
+		$this->assertSame('unlimited', $mail->listAccount($domain, 'quota')['QUOTA']);
+
 		$this->assertTrue($mail->deleteDomain($domain));
 	}
 }
