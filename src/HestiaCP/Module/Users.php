@@ -15,6 +15,10 @@ use neto737\HestiaCP\Command\User\ListUser;
 use neto737\HestiaCP\Command\User\ListUsers;
 use neto737\HestiaCP\Command\User\ListUserStats;
 use neto737\HestiaCP\Command\User\BackupUsers;
+use neto737\HestiaCP\Command\User\ChangeUserName;
+use neto737\HestiaCP\Command\User\ChangeUserShell;
+use neto737\HestiaCP\Command\User\ChangeUserLanguage;
+use neto737\HestiaCP\Command\User\ChangeUserRole;
 
 class Users extends Module {
 
@@ -157,5 +161,58 @@ class Users extends Module {
 	 */
 	public function backup(): bool {
 		return $this->client->send(new BackupUsers());
+	}
+
+	/**
+	 * This function changes user's first and last name.
+	 *
+	 * @param string      $user
+	 * @param string      $name
+	 * @param string|null $lastname
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeName(string $user, string $name, ?string $lastname = null): bool {
+		return $this->client->send(new ChangeUserName($user, $name, $lastname));
+	}
+
+	/**
+	 * This function changes user's system shell, which decides whether the user can log in with SSH.
+	 *
+	 * @param string $user
+	 * @param string $shell e.g. nologin, bash or sh
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeShell(string $user, string $shell): bool {
+		return $this->client->send(new ChangeUserShell($user, $shell));
+	}
+
+	/**
+	 * This function changes the language of user's control panel.
+	 *
+	 * @param string $user
+	 * @param string $language Language code, e.g. en or de
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeLanguage(string $user, string $language): bool {
+		return $this->client->send(new ChangeUserLanguage($user, $language));
+	}
+
+	/**
+	 * This function changes user's role.
+	 *
+	 * @param string $user
+	 * @param string $role user, admin or dns-cluster
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeRole(string $user, string $role): bool {
+		return $this->client->send(new ChangeUserRole($user, $role));
 	}
 }

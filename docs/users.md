@@ -47,6 +47,18 @@ $users->changePackage('other_user', 'gold', true); // even if the user's current
 
 To see the available packages, use the [package module](packages.md).
 
+## Changing the name, shell, language or role
+
+```php
+$users->changeName('other_user', 'Jane', 'Doe'); // the last name is optional
+
+$users->changeShell('other_user', 'bash'); // nologin keeps the user from logging in with SSH
+
+$users->changeLanguage('other_user', 'de'); // the control panel's language
+
+$users->changeRole('other_user', 'admin'); // user, admin or dns-cluster
+```
+
 ## Suspending and deleting
 
 ```php

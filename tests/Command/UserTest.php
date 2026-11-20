@@ -15,6 +15,10 @@ use neto737\HestiaCP\Command\User\ListUsers;
 use neto737\HestiaCP\Command\User\ListUserStats;
 use neto737\HestiaCP\Command\User\SuspendUser;
 use neto737\HestiaCP\Command\User\UnsuspendUser;
+use neto737\HestiaCP\Command\User\ChangeUserName;
+use neto737\HestiaCP\Command\User\ChangeUserShell;
+use neto737\HestiaCP\Command\User\ChangeUserLanguage;
+use neto737\HestiaCP\Command\User\ChangeUserRole;
 
 class UserTest extends \PHPUnit\Framework\TestCase {
 
@@ -155,5 +159,27 @@ class UserTest extends \PHPUnit\Framework\TestCase {
 
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidResponseException::class);
 		$command->process(new Response());
+	}
+
+	/**
+	 * @return iterable<string, array{\neto737\HestiaCP\Command\ICommand<mixed>, array<string, string>}>
+	 */
+	public static function profileProvider(): iterable {
+		yield 'v-change-user-name' => [new ChangeUserName('bob', 'Bob'), ['arg1' => 'bob', 'arg2' => 'Bob']];
+		yield 'v-change-user-name with last name' => [new ChangeUserName('bob', 'Bob', 'Smith'), ['arg1' => 'bob', 'arg2' => 'Bob', 'arg3' => 'Smith']];
+		yield 'v-change-user-shell' => [new ChangeUserShell('bob', 'bash'), ['arg1' => 'bob', 'arg2' => 'bash']];
+		yield 'v-change-user-language' => [new ChangeUserLanguage('bob', 'de'), ['arg1' => 'bob', 'arg2' => 'de']];
+		yield 'v-change-user-role' => [new ChangeUserRole('bob', 'admin'), ['arg1' => 'bob', 'arg2' => 'admin']];
+	}
+
+	/**
+	 * @param \neto737\HestiaCP\Command\ICommand<mixed> $command
+	 * @param array<string, string> $params
+	 */
+	#[\PHPUnit\Framework\Attributes\DataProvider('profileProvider')]
+	public function testProfileCommands(\neto737\HestiaCP\Command\ICommand $command, array $params): void {
+		$this->assertSame(explode(' ', (string) $this->dataName())[0], $command->getName());
+		$this->assertSame($params, $command->getRequestParams());
+		$this->assertTrue($command->needReturnCode());
 	}
 }

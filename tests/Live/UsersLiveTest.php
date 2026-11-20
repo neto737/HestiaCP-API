@@ -72,6 +72,22 @@ class UsersLiveTest extends LiveTestCase {
 		$this->assertArrayHasKey('WEB_DOMAINS', $packages->detail('default'));
 	}
 
+	public function testProfile(): void {
+		$users = static::$client->getModuleUser();
+
+		$this->assertTrue($users->changeName(self::user(), 'Ada', 'Lovelace'));
+		$this->assertSame('Ada Lovelace', $users->detail(self::user())['NAME']);
+		$this->assertTrue($users->changeLanguage(self::user(), 'de'));
+		$this->assertSame('de', $users->detail(self::user())['LANGUAGE']);
+		$this->assertTrue($users->changeShell(self::user(), 'bash'));
+		$this->assertSame('bash', $users->detail(self::user())['SHELL']);
+		$this->assertTrue($users->changeShell(self::user(), 'nologin'));
+		$this->assertTrue($users->changeRole(self::user(), 'admin'));
+		$this->assertSame('admin', $users->detail(self::user())['ROLE']);
+		$this->assertTrue($users->changeRole(self::user(), 'user'));
+		$this->assertSame('user', $users->detail(self::user())['ROLE']);
+	}
+
 	public function testRawCommands(): void {
 		$this->assertArrayHasKey('sysinfo', static::$client->send(new RawListCommand('v-list-sys-info', ['json'])));
 		$this->assertTrue(static::$client->send(new RawCommand('v-change-user-name', [self::user(), 'Raw', 'Name'])));

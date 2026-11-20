@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Web: `changeDomainIp()` (`Web\ChangeWebDomainIp`, `v-change-web-domain-ip`).
 - Web: redirects, `addDomainRedirect()` and `deleteDomainRedirect()`, with the HTTP status code (default `301`) (`Web\AddWebDomainRedirect`, `Web\DeleteWebDomainRedirect`; `v-add-web-domain-redirect`, `v-delete-web-domain-redirect`).
 - Web: HTTP authentication, `addDomainHttpAuth()`, `changeDomainHttpAuthPassword()` and `deleteDomainHttpAuth()` (`Web\AddWebDomainHttpAuth`, `Web\ChangeWebDomainHttpAuth`, `Web\DeleteWebDomainHttpAuth`; `v-add-web-domain-httpauth`, `v-change-web-domain-httpauth`, `v-delete-web-domain-httpauth`). The password is marked `#[\SensitiveParameter]`.
+- Users: `changeName()`, `changeShell()`, `changeLanguage()` and `changeRole()` (`User\ChangeUserName`, `User\ChangeUserShell`, `User\ChangeUserLanguage`, `User\ChangeUserRole`; `v-change-user-name`, `v-change-user-shell`, `v-change-user-language`, `v-change-user-role`).
 - Web: [docs/web.md](docs/web.md#uploading-a-certificate) shows how to upload your own certificate through the API with `MakeTmpFile`, for `addDomainSsl()` and `Mails::addDomainSsl()`.
 - Web: `deleteDomainLetsEncrypt()` and `DeleteLetsEncryptDomain` take `$mail`, to delete the mail domain's Let's Encrypt certificate instead of the web domain's, like `addDomainLetsEncrypt()` does when adding one. It's only sent when `true`, because HestiaCP reads any value, `no` included, as the mail domain.
 

@@ -555,6 +555,27 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-change-mail-domain-sslcert',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp', 'arg4' => 'yes']
 		];
+
+		yield 'Users::changeName' => [
+			fn (Client $c) => $c->getModuleUser()->changeName('bob', 'Bob', 'Smith'),
+			'v-change-user-name',
+			['arg1' => 'bob', 'arg2' => 'Bob', 'arg3' => 'Smith']
+		];
+		yield 'Users::changeShell' => [
+			fn (Client $c) => $c->getModuleUser()->changeShell('bob', 'bash'),
+			'v-change-user-shell',
+			['arg1' => 'bob', 'arg2' => 'bash']
+		];
+		yield 'Users::changeLanguage' => [
+			fn (Client $c) => $c->getModuleUser()->changeLanguage('bob', 'de'),
+			'v-change-user-language',
+			['arg1' => 'bob', 'arg2' => 'de']
+		];
+		yield 'Users::changeRole' => [
+			fn (Client $c) => $c->getModuleUser()->changeRole('bob', 'admin'),
+			'v-change-user-role',
+			['arg1' => 'bob', 'arg2' => 'admin']
+		];
 	}
 
 	/**
