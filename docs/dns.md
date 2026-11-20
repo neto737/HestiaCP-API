@@ -57,7 +57,7 @@ $dns->listDnssecPublicKey('example.com'); // ['RECORD' => '...', 'KEYTAG' => '..
 
 HestiaCP supports DNSSEC only when `DNS_CLUSTER_SYSTEM` is `hestia-zone` and BIND is newer than 9.16.18. Otherwise `changeDomainDnssec()` throws a `ProcessException` with the code `ResponseCode::E_DISABLED`.
 
-`addDomain()` doesn't run this check (as of HestiaCP 1.10.8): with `$dnssec` set to `true` on such a server, HestiaCP still creates the keys and marks the domain as DNSSEC-enabled, but `changeDomainDnssec()` then can't turn it off. Pass `$dnssec` only on a server that supports DNSSEC.
+`addDomain()` doesn't run this check (as of HestiaCP 1.10.9): with `$dnssec` set to `true` on such a server, HestiaCP still creates the keys and marks the domain as DNSSEC-enabled, but `changeDomainDnssec()` then can't turn it off. Pass `$dnssec` only on a server that supports DNSSEC.
 
 ## Records
 

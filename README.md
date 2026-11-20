@@ -28,7 +28,7 @@
 - **TLS verification on by default,** with an option for self-signed certificates.
 - **Plain PHP arrays** as results. The only dependency is Guzzle.
 - **Lower-level access:** send any of the bundled command classes directly, run any `v-*` script by name with `RawCommand` and `RawListCommand`, or write your own.
-- Tested on PHP 8.3 to 8.5, and against a live HestiaCP 1.10.8 server with all three login methods.
+- Tested on PHP 8.3 to 8.5, and against a live HestiaCP 1.10.9 server with all three login methods.
 
 ## Requirements
 
@@ -73,12 +73,12 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 
 | Module | Get it with | What it covers |
 | --- | --- | --- |
-| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, contact emails and packages, suspend and unsuspend, list usage stats, back up all users. |
-| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Aliases, SSL certificates, Let's Encrypt, templates, proxy and FTP accounts. |
-| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, suspending, aliases, forwarding, autoreplies, DKIM keys and DNS records. |
+| [Users](docs/users.md) | `getModuleUser()` | List, show, add and delete users. Change passwords, contact emails, packages, names, shells, languages and roles, suspend and unsuspend, list usage stats, back up all users. |
+| [Web domains](docs/web.md) | `getModuleWeb($user)` | Add, delete, suspend and unsuspend domains. Change the IP address. Aliases, redirects, HTTP authentication, SSL certificates, Let's Encrypt, templates, proxy and FTP accounts. |
+| [Mail](docs/mail.md) | `getModuleMail($user)` | Mail domains and accounts, passwords, quotas, suspending, aliases, forwarding, autoreplies, catch-all addresses, antispam and antivirus, DKIM keys and DNS records, SSL certificates. |
 | [Databases](docs/databases.md) | `getModuleDatabase($user)` | Create, list and delete databases. Change passwords, suspend and unsuspend. |
-| [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List and delete backup exclusions. |
-| [Packages](docs/packages.md) | `getModulePackage()` | List and show hosting packages. |
+| [Backups](docs/backups.md) | `getModuleBackup($user)` | Create, list and delete backups. List, update and delete backup exclusions. |
+| [Packages](docs/packages.md) | `getModulePackage()` | List, show, add, copy, rename and delete hosting packages. |
 | [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
 | [DNS](docs/dns.md) | `getModuleDns($user)` | DNS domains and records: add, change, suspend, unsuspend and delete. TTL, SOA, templates and DNSSEC. |
 

@@ -48,6 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - PHPStan runs at level 8 instead of 6, so it also checks how `null` values are handled.
 
+- Tested against HestiaCP 1.10.9.
+
 - A live test suite, `composer test:live`, runs the modules against a real HestiaCP server, with an access key and, when given, a legacy API key and a password. `composer test` doesn't run it. See the README.
 
 ### Removed
