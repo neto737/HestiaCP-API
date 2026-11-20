@@ -92,4 +92,31 @@ class MailLiveTest extends LiveTestCase {
 
 		$this->assertTrue($mail->deleteDomain($domain));
 	}
+
+	public function testSsl(): void {
+		if (!extension_loaded('openssl')) {
+			$this->markTestSkipped('The openssl extension is needed to create a certificate');
+		}
+
+		$mail = static::$client->getModuleMail(self::user());
+		$domain = self::domain('mailssl');
+		$this->assertTrue($mail->addDomain($domain));
+
+		try {
+			$first = self::uploadCertificate($domain);
+			$this->assertTrue($mail->addDomainSsl($domain, '/tmp'));
+			$this->assertSame('yes', $mail->listDomain($domain)['SSL']);
+			$this->assertSame(openssl_x509_fingerprint($first, 'sha256'), openssl_x509_fingerprint($mail->listDomainSsl($domain)['CRT'], 'sha256'));
+
+			$second = self::uploadCertificate($domain);
+			$this->assertTrue($mail->changeDomainSslCert($domain, '/tmp'));
+			$this->assertSame(openssl_x509_fingerprint($second, 'sha256'), openssl_x509_fingerprint($mail->listDomainSsl($domain)['CRT'], 'sha256'));
+		} finally {
+			self::clearCertificate($domain);
+		}
+
+		$this->assertTrue($mail->deleteDomainSsl($domain));
+		$this->assertSame('no', $mail->listDomain($domain)['SSL']);
+		$this->assertTrue($mail->deleteDomain($domain));
+	}
 }

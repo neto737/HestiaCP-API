@@ -490,6 +490,11 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-delete-mail-domain-catchall',
 			['arg1' => 'alice', 'arg2' => 'example.com']
 		];
+		yield 'Mails::deleteDomainSsl' => [
+			fn (Client $c) => $c->getModuleMail('alice')->deleteDomainSsl('example.com'),
+			'v-delete-mail-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com']
+		];
 		foreach ([
 			'addDomainAntispam' => 'v-add-mail-domain-antispam',
 			'deleteDomainAntispam' => 'v-delete-mail-domain-antispam',
@@ -509,6 +514,16 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			fn (Client $c) => $c->getModuleMail('alice')->addDomainDkim('example.com', 4096, 's2026'),
 			'v-add-mail-domain-dkim',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '4096', 'arg4' => 's2026']
+		];
+		yield 'Mails::addDomainSsl' => [
+			fn (Client $c) => $c->getModuleMail('alice')->addDomainSsl('example.com', '/tmp', true),
+			'v-add-mail-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp', 'arg4' => 'yes']
+		];
+		yield 'Mails::changeDomainSslCert' => [
+			fn (Client $c) => $c->getModuleMail('alice')->changeDomainSslCert('example.com', '/tmp', true),
+			'v-change-mail-domain-sslcert',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => '/tmp', 'arg4' => 'yes']
 		];
 	}
 
@@ -643,6 +658,12 @@ class ModuleSendTest extends \PHPUnit\Framework\TestCase {
 			'v-list-mail-domain-dkim',
 			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
 			false
+		];
+		yield 'Mails::listDomainSsl' => [
+			fn (Client $c) => $c->getModuleMail('alice')->listDomainSsl('example.com'),
+			'v-list-mail-domain-ssl',
+			['arg1' => 'alice', 'arg2' => 'example.com', 'arg3' => 'json'],
+			true
 		];
 		yield 'Mails::listDomainDkimDns' => [
 			fn (Client $c) => $c->getModuleMail('alice')->listDomainDkimDns('example.com'),

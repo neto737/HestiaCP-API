@@ -41,6 +41,10 @@ use neto737\HestiaCP\Command\Mail\AddMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\AddMailDomainReject;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainReject;
+use neto737\HestiaCP\Command\Mail\ListMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\AddMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainSslCert;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainSsl;
 
 class MailTest extends \PHPUnit\Framework\TestCase {
 
@@ -323,6 +327,10 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 		yield 'v-delete-mail-domain-dkim' => [new DeleteMailDomainDkim('admin', 'example.com'), $domain];
 		yield 'v-add-mail-domain-reject' => [new AddMailDomainReject('admin', 'example.com'), $domain];
 		yield 'v-delete-mail-domain-reject' => [new DeleteMailDomainReject('admin', 'example.com'), $domain];
+		yield 'v-add-mail-domain-ssl' => [new AddMailDomainSsl('admin', 'example.com', '/tmp'), $domain + ['arg3' => '/tmp']];
+		yield 'v-add-mail-domain-ssl restart' => [new AddMailDomainSsl('admin', 'example.com', '/tmp', false), $domain + ['arg3' => '/tmp', 'arg4' => 'no']];
+		yield 'v-change-mail-domain-sslcert' => [new ChangeMailDomainSslCert('admin', 'example.com', '/tmp', true), $domain + ['arg3' => '/tmp', 'arg4' => 'yes']];
+		yield 'v-delete-mail-domain-ssl' => [new DeleteMailDomainSsl('admin', 'example.com'), $domain];
 	}
 
 	/**
@@ -339,5 +347,14 @@ class MailTest extends \PHPUnit\Framework\TestCase {
 	public function testChangeMailAccountQuotaNegative(): void {
 		$this->expectException(\neto737\HestiaCP\Exceptions\InvalidArgumentException::class);
 		new ChangeMailAccountQuota('admin', 'example.com', 'info', -1);
+	}
+
+	public function testListMailDomainSsl(): void {
+		$command = new ListMailDomainSsl('admin', 'example.com');
+		$this->assertSame('v-list-mail-domain-ssl', $command->getName());
+		$this->assertSame(['arg1' => 'admin', 'arg2' => 'example.com', 'arg3' => 'json'], $command->getRequestParams());
+		$this->assertFalse($command->needReturnCode());
+
+		$this->assertSame(['CRT' => 'x'], $command->process(new Response(200, ['Hestia-Exit-Code' => '0'], '{"example.com": {"CRT": "x"}}')));
 	}
 }

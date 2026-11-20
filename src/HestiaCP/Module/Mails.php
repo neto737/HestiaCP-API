@@ -41,6 +41,10 @@ use neto737\HestiaCP\Command\Mail\AddMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainDkim;
 use neto737\HestiaCP\Command\Mail\AddMailDomainReject;
 use neto737\HestiaCP\Command\Mail\DeleteMailDomainReject;
+use neto737\HestiaCP\Command\Mail\ListMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\AddMailDomainSsl;
+use neto737\HestiaCP\Command\Mail\ChangeMailDomainSslCert;
+use neto737\HestiaCP\Command\Mail\DeleteMailDomainSsl;
 
 class Mails extends Module {
 
@@ -517,5 +521,57 @@ class Mails extends Module {
 	 */
 	public function deleteDomainRejectSpam(string $domain): bool {
 		return $this->client->send(new DeleteMailDomainReject($this->user, $domain));
+	}
+
+	/**
+	 * This function obtains the SSL certificate of a mail domain.
+	 *
+	 * @param string $domain
+	 * @return array<mixed>
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function listDomainSsl(string $domain): array {
+		return $this->client->send(new ListMailDomainSsl($this->user, $domain));
+	}
+
+	/**
+	 * This function turns on SSL for a mail domain (mail.DOMAIN), with a certificate already on the server.
+	 *
+	 * @param string    $domain
+	 * @param string    $sslDir  Directory on the server holding <domain>.crt, <domain>.key and optionally <domain>.ca
+	 * @param bool|null $restart Restart the mail services, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function addDomainSsl(string $domain, string $sslDir, ?bool $restart = null): bool {
+		return $this->client->send(new AddMailDomainSsl($this->user, $domain, $sslDir, $restart));
+	}
+
+	/**
+	 * This function replaces the SSL certificate of a mail domain with one already on the server.
+	 *
+	 * @param string    $domain
+	 * @param string    $sslDir  Directory on the server holding <domain>.crt, <domain>.key and optionally <domain>.ca
+	 * @param bool|null $restart Restart the mail services, or null for HestiaCP's default
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function changeDomainSslCert(string $domain, string $sslDir, ?bool $restart = null): bool {
+		return $this->client->send(new ChangeMailDomainSslCert($this->user, $domain, $sslDir, $restart));
+	}
+
+	/**
+	 * This function turns off SSL for a mail domain.
+	 *
+	 * @param string $domain
+	 * @return bool
+	 * @throws \neto737\HestiaCP\Exceptions\ClientException
+	 * @throws \neto737\HestiaCP\Exceptions\ProcessException
+	 */
+	public function deleteDomainSsl(string $domain): bool {
+		return $this->client->send(new DeleteMailDomainSsl($this->user, $domain));
 	}
 }

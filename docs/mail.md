@@ -76,6 +76,20 @@ $mail->addDomainDkim('example.com');                  // turn it on with a new k
 $mail->addDomainDkim('example.com', 4096, 's2026');   // key size and selector (defaults: 2048, "mail")
 ```
 
+## SSL certificates
+
+The mail domain's certificate covers `mail.example.com`. Like the web module, it reads the files from a directory on the server, named after the domain: `example.com.crt`, `example.com.key` and, optionally, `example.com.ca`. See [Uploading a certificate](web.md#uploading-a-certificate) to send them through the API.
+
+```php
+$mail->listDomainSsl('example.com'); // ['CRT' => '...', 'KEY' => '...', 'CA' => '...', 'SUBJECT' => '...', ...]
+
+$mail->addDomainSsl('example.com', '/tmp');
+$mail->changeDomainSslCert('example.com', '/tmp'); // replace the certificate
+$mail->deleteDomainSsl('example.com');
+```
+
+For a Let's Encrypt certificate, use `addDomainLetsEncrypt('example.com', mail: true)` in the [web module](web.md#lets-encrypt).
+
 ## Accounts
 
 ```php

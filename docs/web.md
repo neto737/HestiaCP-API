@@ -93,7 +93,7 @@ $web->addDomainSsl('example.com', '/tmp');
 $client->send(new MakeTmpFile('example.com.key', ''));
 ```
 
-The files stay in `/tmp` until the server cleans it up. While `/tmp/example.com.ca` exists, even empty, HestiaCP checks the certificate against it, so a later certificate without a chain fails with `SSL intermediate chain is not valid`. Upload the chain again with each certificate that has one.
+The files stay in `/tmp` until the server cleans it up. While `/tmp/example.com.ca` exists, even empty, HestiaCP checks the certificate against it, so a later certificate without a chain fails with `SSL intermediate chain is not valid`. Upload the chain again with each certificate that has one. The same works for a mail domain, with `Mails::addDomainSsl()`.
 
 ## Let's Encrypt
 
