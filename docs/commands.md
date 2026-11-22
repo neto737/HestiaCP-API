@@ -4,7 +4,7 @@ The modules are a convenience layer. Each method creates a command object and pa
 
 ## Using a command class
 
-Each class is named after the HestiaCP script it runs: drop the `v-` prefix and PascalCase the rest. `v-list-users` is `ListUsers`, `v-change-user-password` is `ChangeUserPassword`, and `v-add-letsencrypt-domain` is `AddLetsEncryptDomain`.
+Each class is named after the HestiaCP script it runs: drop the `v-` prefix and PascalCase the rest. `v-list-users` is `ListUsers` and `v-change-user-password` is `ChangeUserPassword`. These compound words are split: `letsencrypt` is `LetsEncrypt`, `httpauth` is `HttpAuth`, `sslcert` is `SslCert` and `sslhome` is `SslHome`, so `v-add-letsencrypt-domain` is `AddLetsEncryptDomain` and `v-change-web-domain-httpauth` is `ChangeWebDomainHttpAuth`. The one exception is `TestAuthorization`, which runs `v-list-sys-info`.
 
 The classes are grouped by the module that sends them: `Command\User`, `Command\Web`, `Command\Mail`, `Command\Database`, `Command\Backup`, `Command\Package`, `Command\Cron` and `Command\Dns`. For example, `v-add-letsencrypt-domain` is sent by the web module, so its class is `Command\Web\AddLetsEncryptDomain`.
 

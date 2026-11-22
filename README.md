@@ -85,6 +85,13 @@ $mail->addAccount('example.com', 'info', 'S3cure-Pa$$word');
 | [Cron jobs](docs/cron.md) | `getModuleCron($user)` | List, add, change, suspend, unsuspend and delete cron jobs. |
 | [DNS](docs/dns.md) | `getModuleDns($user)` | DNS domains and records: add, change, suspend, unsuspend and delete. TTL, SOA, templates and DNSSEC. |
 
+Every module follows the same rules:
+
+- Modules that take a username work on that user's objects. Their methods don't take the username again.
+- Methods that change something return `true`, or throw an exception (see [Error handling](#error-handling)). Methods that read (`list*()`, `detail()`, `stats()`) return an array.
+- The arrays are HestiaCP's JSON as it is. Field names are uppercase, and every field value is a string, numbers included (`'TTL' => '14400'`). Flags are `'yes'` or `'no'`, so check `$domain['SUSPENDED'] === 'yes'`, not `=== true`.
+- An optional argument left as `null` lets HestiaCP use its own default. Parameter names are stable, so you can use named arguments, for example `$db->add('wp', 'wp', $password, charset: 'LATIN1')`.
+
 Need a command that isn't wrapped in a module? See [Sending commands directly](docs/commands.md), or [run any script by name](docs/commands.md#running-any-script) when no command class exists for it.
 
 ## Error handling
